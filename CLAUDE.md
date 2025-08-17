@@ -27,34 +27,84 @@ Building a comprehensive home server on Proxmox VE 8.x with focus on media servi
 7. **Network Services**: PiHole, VPN
 8. **Minecraft Server**: Java Edition
 
-## Thread Schema for Claude Code
+## Git Worktree Threading Strategy
 
-### Reader Thread (Context Gatherer)
-Use for information gathering, status checks, and read-only operations:
-```bash
-# Start reader thread with efficient model
-claude-code --model claude-3-haiku-20240307
-```
-Tasks for Reader Thread:
-- System status checks
-- Log analysis
-- Configuration file reading
-- Documentation lookups
-- Network diagnostics
-- Storage inventory updates
+### Overview
+We use Git worktrees to create isolated working directories for different types of work, allowing parallel Claude sessions without conflicts.
 
-### Writer Thread (Implementation)
-Use for complex coding, system changes, and analysis:
-```bash
-# Start writer thread with full context
-claude-code --model claude-3-opus-20240229
+### Directory Structure
 ```
-Tasks for Writer Thread:
-- Container creation and configuration
-- Service deployment
-- Complex troubleshooting
-- Architecture decisions
-- Security implementations
+~/projects/
+├── proxmox-homelab/          (main branch - planning/documentation)
+├── proxmox-homelab-reader/   (reader branch - research/status)
+├── proxmox-homelab-writer/   (writer branch - implementation)
+└── proxmox-homelab-features/ (feature branches)
+    ├── plex-setup/
+    └── storage-config/
+```
+
+### Quick Setup
+```bash
+# Initial setup (creates all worktrees)
+./scripts/claude_threads.sh setup
+
+# Open specific worktree
+./scripts/claude_threads.sh reader   # Opens reader directory
+./scripts/claude_threads.sh writer   # Opens writer directory
+```
+
+### Thread Types
+
+#### Reader Thread (Research & Status)
+- **Directory**: `~/projects/proxmox-homelab-reader`
+- **Model**: Sonnet (efficient)
+- **Tasks**:
+  - System status checks
+  - Log analysis
+  - Configuration file reading
+  - Documentation lookups
+  - Network diagnostics
+  - Storage inventory
+
+#### Writer Thread (Implementation)
+- **Directory**: `~/projects/proxmox-homelab-writer`
+- **Model**: Opus (powerful)
+- **Tasks**:
+  - Container creation
+  - Service deployment
+  - Complex troubleshooting
+  - Architecture decisions
+  - Security implementations
+
+### Workflow Commands
+```bash
+# Setup worktrees
+./scripts/claude_threads.sh setup
+
+# Start sessions
+./scripts/claude_threads.sh reader    # Research session
+./scripts/claude_threads.sh writer    # Implementation session
+
+# Create feature branch
+./scripts/claude_threads.sh feature plex-setup
+
+# Sync changes between worktrees
+./scripts/claude_threads.sh sync
+
+# Check status
+./scripts/claude_threads.sh status
+
+# List all worktrees
+./scripts/claude_threads.sh list
+```
+
+### Best Practices
+1. **Always update CLAUDE.md** in any worktree when project state changes
+2. **Use reader worktree** for research before implementation
+3. **Use writer worktree** for actual system changes
+4. **Create feature branches** for major features (e.g., plex-setup)
+5. **Sync regularly** to keep branches aligned
+6. **Document changes** in respective WORKTREE.md files
 
 ## Key Commands Reference
 

@@ -1,0 +1,65 @@
+# Git worktree directories (managed separately)
+/proxmox-homelab-reader/
+/proxmox-homelab-writer/
+/proxmox-homelab-features/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Log files
+*.log
+logs/
+
+# SSH keys (never commit)
+*.key
+*.pem
+id_rsa*
+id_ed25519*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ansible
+*.retry
+ansible.cfg
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Credentials and secrets
+credentials/
+secrets/
+*.secret
