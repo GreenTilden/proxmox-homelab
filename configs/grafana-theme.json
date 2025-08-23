@@ -1,0 +1,112 @@
+{
+  "theme": {
+    "name": "16-bit-homelab",
+    "type": "custom",
+    "colors": {
+      "primary": "#0066FF",
+      "secondary": "#FF3366", 
+      "success": "#00CC44",
+      "warning": "#FFAA00",
+      "danger": "#FF0033",
+      "background": "#0F0F1A",
+      "surface": "#1A1A2E",
+      "panel": "#16213E",
+      "border": "#2A2A55",
+      "text": "#FFFFFF",
+      "textMuted": "#AAAADD"
+    },
+    "typography": {
+      "fontFamily": "\"JetBrains Mono\", \"Fira Code\", \"Consolas\", monospace",
+      "fontSize": {
+        "xs": "10px",
+        "sm": "12px", 
+        "md": "14px",
+        "lg": "16px",
+        "xl": "18px"
+      }
+    },
+    "spacing": {
+      "gridUnit": 8,
+      "panelPadding": 16,
+      "panelMargin": 8
+    },
+    "borders": {
+      "radius": 4,
+      "width": 2,
+      "style": "solid"
+    },
+    "effects": {
+      "shadows": false,
+      "animations": "subtle",
+      "scanlines": true,
+      "pixelPerfect": true
+    }
+  },
+  "components": {
+    "panels": {
+      "stat": {
+        "background": "linear-gradient(135deg, var(--surface) 0%, var(--panel) 100%)",
+        "border": "2px solid var(--border)",
+        "titleColor": "var(--primary)",
+        "valueColor": "var(--text)",
+        "sparklineColor": "var(--success)"
+      },
+      "graph": {
+        "gridColor": "var(--border)",
+        "axisColor": "var(--textMuted)",
+        "lineWidth": 3,
+        "pointSize": 6
+      },
+      "gauge": {
+        "track": "var(--surface)",
+        "fill": "var(--primary)",
+        "threshold": {
+          "green": "var(--success)",
+          "yellow": "var(--warning)", 
+          "red": "var(--danger)"
+        }
+      },
+      "table": {
+        "headerBackground": "var(--surface)",
+        "rowStripe": "var(--panel)",
+        "borderColor": "var(--border)"
+      }
+    },
+    "layout": {
+      "dashboard": {
+        "background": "var(--background)",
+        "padding": "var(--panelMargin)"
+      },
+      "row": {
+        "background": "transparent",
+        "titleColor": "var(--primary)",
+        "titleSize": "var(--lg)"
+      }
+    }
+  },
+  "dashboards": {
+    "system_overview": {
+      "title": "System Overview",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "CPU Usage",
+          "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+          "targets": ["cpu_usage_percent"]
+        },
+        {
+          "type": "stat", 
+          "title": "Memory Usage",
+          "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+          "targets": ["memory_usage_percent"]
+        },
+        {
+          "type": "gauge",
+          "title": "Storage Pools",
+          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+          "targets": ["zfs_pool_usage"]
+        }
+      ]
+    }
+  }
+}

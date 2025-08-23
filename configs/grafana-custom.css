@@ -1,0 +1,296 @@
+/* 16-Bit Gaming Homelab Theme for Grafana */
+/* Modular CSS architecture for scalable customization */
+
+/* === ROOT VARIABLES === */
+:root {
+  /* 16-bit Color Palette */
+  --retro-bg: #0F0F1A;
+  --retro-surface: #1A1A2E;
+  --retro-panel: #16213E;
+  --retro-border: #2A2A55;
+  --retro-primary: #0066FF;
+  --retro-secondary: #FF3366;
+  --retro-success: #00CC44;
+  --retro-warning: #FFAA00;
+  --retro-danger: #FF0033;
+  --retro-text: #FFFFFF;
+  --retro-text-muted: #AAAADD;
+  
+  /* Grid System */
+  --grid-unit: 8px;
+  --panel-padding: 16px;
+  --panel-margin: 8px;
+  --border-width: 2px;
+  --border-radius: 4px;
+  
+  /* Typography */
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+}
+
+/* === GLOBAL OVERRIDES === */
+body, .grafana-app {
+  background-color: var(--retro-bg) !important;
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+}
+
+/* === DASHBOARD LAYOUT === */
+.dashboard-container {
+  background: var(--retro-bg) !important;
+  padding: var(--panel-margin);
+}
+
+.panel-container {
+  background: var(--retro-panel) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+  border-radius: var(--border-radius) !important;
+  margin: var(--panel-margin);
+}
+
+/* === PANEL COMPONENTS === */
+.panel-title {
+  color: var(--retro-primary) !important;
+  font-family: var(--font-mono) !important;
+  font-weight: bold !important;
+  font-size: var(--font-size-lg) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Stat Panels */
+.stat-panel {
+  background: linear-gradient(135deg, var(--retro-surface) 0%, var(--retro-panel) 100%) !important;
+  border: var(--border-width) solid var(--retro-primary) !important;
+}
+
+.stat-panel .stat-panel__value {
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+  font-weight: bold !important;
+}
+
+/* Graph Panels */
+.panel-content .flot-base {
+  background: var(--retro-panel) !important;
+}
+
+.flot-grid-line {
+  color: var(--retro-border) !important;
+}
+
+.flot-tick-label {
+  color: var(--retro-text-muted) !important;
+  font-family: var(--font-mono) !important;
+}
+
+/* === TABLE STYLING === */
+.table-panel table {
+  background: var(--retro-panel) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+}
+
+.table-panel th {
+  background: var(--retro-surface) !important;
+  color: var(--retro-primary) !important;
+  font-family: var(--font-mono) !important;
+  border-bottom: var(--border-width) solid var(--retro-border) !important;
+}
+
+.table-panel td {
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+  border-bottom: 1px solid var(--retro-border) !important;
+}
+
+.table-panel tr:nth-child(even) {
+  background: var(--retro-surface) !important;
+}
+
+/* === GAUGE PANELS === */
+.gauge-panel .gauge {
+  background: var(--retro-panel) !important;
+}
+
+.gauge-panel .gauge-track {
+  stroke: var(--retro-surface) !important;
+}
+
+.gauge-panel .gauge-fill {
+  stroke: var(--retro-primary) !important;
+}
+
+/* === NAVIGATION & SIDEBAR === */
+.sidemenu {
+  background: var(--retro-surface) !important;
+  border-right: var(--border-width) solid var(--retro-border) !important;
+}
+
+.sidemenu .sidemenu-item {
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.sidemenu .sidemenu-item:hover,
+.sidemenu .sidemenu-item.active {
+  background: var(--retro-primary) !important;
+  color: var(--retro-bg) !important;
+}
+
+/* === BUTTONS & CONTROLS === */
+.btn-primary {
+  background: var(--retro-primary) !important;
+  border: var(--border-width) solid var(--retro-primary) !important;
+  color: var(--retro-bg) !important;
+  font-family: var(--font-mono) !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  background: var(--retro-secondary) !important;
+  border-color: var(--retro-secondary) !important;
+}
+
+.btn-secondary {
+  background: var(--retro-surface) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+  color: var(--retro-text) !important;
+}
+
+/* === FORMS & INPUTS === */
+.gf-form-input {
+  background: var(--retro-surface) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.gf-form-input:focus {
+  border-color: var(--retro-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.3) !important;
+}
+
+/* === MODALS & DROPDOWNS === */
+.modal-content {
+  background: var(--retro-panel) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+}
+
+.dropdown-menu {
+  background: var(--retro-surface) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+}
+
+.dropdown-item {
+  color: var(--retro-text) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.dropdown-item:hover {
+  background: var(--retro-primary) !important;
+  color: var(--retro-bg) !important;
+}
+
+/* === STATUS INDICATORS === */
+.alert-success {
+  background: var(--retro-success) !important;
+  border-color: var(--retro-success) !important;
+  color: var(--retro-bg) !important;
+}
+
+.alert-warning {
+  background: var(--retro-warning) !important;
+  border-color: var(--retro-warning) !important;
+  color: var(--retro-bg) !important;
+}
+
+.alert-danger {
+  background: var(--retro-danger) !important;
+  border-color: var(--retro-danger) !important;
+  color: var(--retro-bg) !important;
+}
+
+/* === 16-BIT VISUAL EFFECTS === */
+/* Pixel-perfect borders */
+* {
+  box-sizing: border-box;
+  image-rendering: pixelated;
+}
+
+/* Subtle scanline effect */
+.dashboard-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 102, 255, 0.02) 2px,
+    rgba(0, 102, 255, 0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* === RESPONSIVE BREAKPOINTS === */
+@media (max-width: 768px) {
+  .panel-container {
+    margin: calc(var(--panel-margin) / 2);
+  }
+  
+  .panel-title {
+    font-size: var(--font-size-md) !important;
+  }
+}
+
+/* === UTILITY CLASSES === */
+.retro-glow {
+  box-shadow: 0 0 10px var(--retro-primary) !important;
+}
+
+.retro-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.pixel-perfect {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* === COMPONENT OVERRIDES FOR MODERN GRAFANA === */
+/* Dark theme compatibility */
+[data-theme="dark"] {
+  --retro-bg: #0F0F1A;
+  --retro-surface: #1A1A2E;
+  --retro-panel: #16213E;
+}
+
+/* Panel header styling */
+.panel-header {
+  background: var(--retro-surface) !important;
+  border-bottom: var(--border-width) solid var(--retro-border) !important;
+}
+
+/* Time picker styling */
+.time-picker {
+  background: var(--retro-surface) !important;
+  border: var(--border-width) solid var(--retro-border) !important;
+  font-family: var(--font-mono) !important;
+}

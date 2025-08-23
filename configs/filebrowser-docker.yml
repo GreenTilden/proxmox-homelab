@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - /mnt/staging:/srv
+      - filebrowser_db:/database
+      - filebrowser_config:/config
+    environment:
+      - FB_NOAUTH=true  # Disable authentication for now
+    
+volumes:
+  filebrowser_db:
+  filebrowser_config:
+
+# Usage:
+# docker-compose -f filebrowser-docker.yml up -d
+#
+# Access: http://192.168.0.99:8080
+# Default login: admin/admin (can be changed via web interface)
+#
+# To stop: docker-compose -f filebrowser-docker.yml down
+# To update: docker-compose -f filebrowser-docker.yml pull && docker-compose -f filebrowser-docker.yml up -d
