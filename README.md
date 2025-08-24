@@ -1,6 +1,6 @@
 # 🏠 Proxmox Homelab Project
 
-**Production-ready Proxmox VE homelab with ZFS storage, dual GPU setup, 16-bit gaming dashboard, and AI/LLM services.**
+**Production-ready Proxmox VE homelab with ZFS storage, dual GPU setup, 16-bit gaming dashboard, AI/LLM services, and orchestrated multi-threaded development workflow.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Proxmox VE](https://img.shields.io/badge/Proxmox-VE%209.0.3-orange)](https://www.proxmox.com/en/proxmox-virtual-environment)
@@ -16,7 +16,8 @@ This repository documents the complete journey of building and maintaining a pro
 - ✅ **Storage**: 9TB+ ZFS pools with data recovery capabilities  
 - ✅ **Monitoring**: Grafana + Prometheus with 16-bit gaming theme
 - ✅ **Services**: FileBrowser, system dashboard, ZFS metrics exporter
-- 🔧 **In Progress**: NVIDIA driver configuration, Plex deployment
+- ✅ **Development**: Orchestrated multi-threaded workflow with Git worktrees
+- 🔧 **In Progress**: NVIDIA driver configuration, Plex deployment via multi-threaded approach
 
 ## 🏗️ Architecture
 
@@ -48,17 +49,29 @@ Proxmox VE 9.0.3
 
 ## 📂 Repository Structure
 
-This repository uses a **multi-worktree development strategy** with specialized branches:
+This repository uses an **orchestrated multi-threaded development strategy** with specialized Git worktrees - a key innovation for complex homelab projects.
+
+### 🚀 Multi-Threaded Development
+
+**Revolutionary Approach**: Instead of single-threaded development, we use coordinated parallel threads for maximum efficiency:
+
+- **Main Thread**: Project orchestration, documentation, coordination
+- **Reader Thread**: Research, system analysis, status monitoring  
+- **Writer Thread**: Implementation, deployments, system modifications
+- **Feature Branches**: Specialized development (AI services, container management)
 
 ### 🌟 Branch Overview
 
-| Branch | Purpose | Use Case |
-|--------|---------|----------|
-| [`main`](../../tree/main) | 📋 **Production Docs** | Stable documentation, configs, and guides |
-| [`reader`](../../tree/reader) | 🔍 **Research & Analysis** | System status, log analysis, diagnostics |
-| [`writer`](../../tree/writer) | ⚡ **Implementation** | Active development, service deployment |
-| [`feature/data-recovery-urgent`](../../tree/feature/data-recovery-urgent) | 🔄 **Data Recovery** | Complete 3.6TB recovery project |
-| [`feature/retro-gaming-dashboard`](../../tree/feature/retro-gaming-dashboard) | 🎮 **Gaming Dashboard** | 16-bit themed Grafana interface |
+| Branch | Purpose | Use Case | Development Focus |
+|--------|---------|----------|-------------------|
+| [`main`](../../tree/main) | 📋 **Orchestration Hub** | Coordination, planning, documentation | Multi-threaded coordination |
+| [`reader`](../../tree/reader) | 🔍 **Research & Analysis** | System status, interface exploration, diagnostics | Read-only operations |
+| [`writer`](../../tree/writer) | ⚡ **Implementation** | Active development, service deployment, configs | System modifications |
+| [`feature/web-interfaces`](../../tree/feature/web-interfaces) | 🌐 **Web Services** | Dashboard enhancements, web interface improvements | Specialized UI work |
+| [`feature/data-recovery-urgent`](../../tree/feature/data-recovery-urgent) | 🔄 **Data Recovery** | Complete 3.6TB recovery project (completed) | Recovery operations |
+| [`feature/retro-gaming-dashboard`](../../tree/feature/retro-gaming-dashboard) | 🎮 **Gaming Dashboard** | 16-bit themed Grafana interface | Visual design |
+
+**Key Advantage**: This approach enables **parallel development** where research, implementation, and specialized features can progress simultaneously without conflicts.
 
 For detailed technical documentation, see [CLAUDE.md](CLAUDE.md) - the comprehensive project guide.
 
@@ -73,11 +86,16 @@ Our custom Grafana theme brings **retro gaming aesthetics** to modern infrastruc
 git clone https://github.com/GreenTilden/proxmox-homelab.git
 cd proxmox-homelab
 
-# Set up development worktrees (optional)
+# Set up orchestrated multi-threaded development  
 ./scripts/claude_threads.sh setup
 
-# Quick system status check
-./scripts/claude_threads.sh status
+# Comprehensive system status across all threads
+./scripts/claude_threads.sh status-all
+
+# Launch specialized development threads
+./scripts/claude_threads.sh reader    # Research & analysis
+./scripts/claude_threads.sh writer    # Implementation
+./scripts/claude_threads.sh feature <name>  # Feature development
 ```
 
 ### Access Services

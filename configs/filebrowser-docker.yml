@@ -3,16 +3,23 @@ version: '3.8'
 services:
   filebrowser:
     image: filebrowser/filebrowser:latest
-    container_name: filebrowser
+    container_name: filebrowser-zfs
     restart: unless-stopped
     ports:
       - "8080:80"
     volumes:
-      - /mnt/staging:/srv
+      # CORRECT: Mount actual ZFS pools for full storage access
+      - /media-pool:/srv/media-pool
+      - /service-pool:/srv/service-pool
+      - /staging-pool:/srv/staging-pool
+      - /mnt:/srv/mnt  # Additional mount points
+      # Persistent container data
       - filebrowser_db:/database
       - filebrowser_config:/config
     environment:
-      - FB_NOAUTH=true  # Disable authentication for now
+      - PUID=0
+      - PGID=0
+    command: --noauth  # No authentication required
     
 volumes:
   filebrowser_db:
@@ -21,8 +28,15 @@ volumes:
 # Usage:
 # docker-compose -f filebrowser-docker.yml up -d
 #
-# Access: http://192.168.0.99:8080
-# Default login: admin/admin (can be changed via web interface)
+# Access: http://192.168.0.99:8080 (no login required)
+# Storage Access:
+#   - /srv/media-pool    -> 9.06TB media and archives 
+#   - /srv/service-pool  -> 232GB fast SSD storage
+#   - /srv/staging-pool  -> 696GB working storage
+#   - /srv/mnt          -> Additional mount points
 #
 # To stop: docker-compose -f filebrowser-docker.yml down
 # To update: docker-compose -f filebrowser-docker.yml pull && docker-compose -f filebrowser-docker.yml up -d
+#
+# BEST PRACTICE: Always mount actual ZFS pool paths, not just /mnt
+# This ensures web interface shows proper storage structure

@@ -1,4 +1,15 @@
-# Weekly Implementation Roadmap
+# ⚠️ **ARCHIVED** - Legacy Weekly Implementation Roadmap
+
+**Status**: This document represents legacy single-threaded development approach and is archived as of v1.0.1.
+
+**Current Approach**: Multi-threaded orchestrated development via Git worktrees.
+**Active Documents**: 
+- `/docs/orchestrated-worktree-strategy.md` - Comprehensive multi-threaded strategy
+- `/docs/next-phase-roadmap.md` - Current roadmap with thread assignments
+
+---
+
+# Legacy Weekly Implementation Roadmap
 
 ## Week 1: Foundation (Current)
 

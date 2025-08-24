@@ -127,6 +127,98 @@ case "$1" in
     ssh proxmox "pvesm status" 2>/dev/null || echo "Unable to check storage"
     ;;
     
+  status-all)
+    echo "=== ORCHESTRATED WORKTREE STATUS REPORT ==="
+    echo "Generated: $(date)"
+    echo ""
+    
+    echo "=== Git Worktrees ==="
+    git worktree list
+    echo ""
+    
+    echo "=== Branch Status ==="
+    for worktree in $(git worktree list --porcelain | grep "^worktree" | cut -d' ' -f2); do
+        branch=$(cd "$worktree" && git branch --show-current)
+        status=$(cd "$worktree" && git status --porcelain | wc -l)
+        echo "  $branch: $status uncommitted changes"
+    done
+    echo ""
+    
+    echo "=== System Health ==="
+    ssh proxmox "pvesh get /nodes/lcib/status" 2>/dev/null || echo "Unable to connect to Proxmox"
+    echo ""
+    
+    echo "=== Service Status ==="
+    echo "Proxmox: $(curl -s -k -m 5 https://192.168.0.99:8006 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+    echo "Grafana: $(curl -s -m 5 http://192.168.0.99:3000 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+    echo "FileBrowser: $(curl -s -m 5 http://192.168.0.99:8080 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+    echo ""
+    ;;
+    
+  report)
+    REPORT_FILE="status-report-$(date +%Y%m%d-%H%M%S).md"
+    echo "Generating consolidated status report: $REPORT_FILE"
+    
+    {
+        echo "# Proxmox Homelab Status Report"
+        echo "**Generated**: $(date)"
+        echo ""
+        
+        echo "## Worktree Status"
+        git worktree list
+        echo ""
+        
+        echo "## System Health"
+        ssh proxmox "pvesh get /nodes/lcib/status" 2>/dev/null || echo "Unable to connect to Proxmox"
+        echo ""
+        
+        echo "## Recent Activity"
+        echo "### Last 24 hours commits:"
+        git log --oneline --since="24 hours ago" --all-match --pretty=format:"- %h %s (%an)" | head -10
+        echo ""
+        
+        echo "## Service Accessibility"
+        echo "- Proxmox: $(curl -s -k -m 5 https://192.168.0.99:8006 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+        echo "- Grafana: $(curl -s -m 5 http://192.168.0.99:3000 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+        echo "- FileBrowser: $(curl -s -m 5 http://192.168.0.99:8080 >/dev/null && echo '✅ Accessible' || echo '❌ Unreachable')"
+    } > "$REPORT_FILE"
+    
+    echo "Report saved to: $REPORT_FILE"
+    ;;
+    
+  sync-all)
+    echo "=== ORCHESTRATED SYNC OPERATION ==="
+    print_info "Syncing all worktrees from main branch coordination"
+    
+    # First sync main
+    cd "$PROJECT_ROOT"
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        print_info "Committing main branch changes..."
+        git add -A
+        git commit -m "Main branch coordination update - $(date)"
+    fi
+    
+    # Sync each worktree
+    for worktree in $(git worktree list --porcelain | grep "^worktree" | cut -d' ' -f2); do
+        if [ "$worktree" != "$PROJECT_ROOT" ]; then
+            branch=$(cd "$worktree" && git branch --show-current)
+            print_info "Syncing $branch worktree..."
+            
+            cd "$worktree"
+            if ! git diff --quiet || ! git diff --cached --quiet; then
+                git add -A
+                git commit -m "Auto-sync from $branch worktree - $(date)"
+            fi
+            
+            # Merge main branch updates
+            git fetch "$PROJECT_ROOT" main:main
+            git merge main --no-edit || print_warning "Merge conflict in $branch - manual resolution needed"
+        fi
+    done
+    
+    print_info "Orchestrated sync complete"
+    ;;
+    
   list)
     echo "Available worktrees:"
     git worktree list
@@ -149,24 +241,33 @@ case "$1" in
     ;;
     
   *)
-    echo "Usage: $0 {setup|reader|writer|feature|sync|status|list|remove}"
+    echo "Usage: $0 {setup|reader|writer|feature|sync|status|status-all|report|sync-all|list|remove}"
     echo ""
-    echo "Commands:"
+    echo "Core Commands:"
     echo "  setup       - Initialize worktree structure"
     echo "  reader      - Open reader worktree (research/read-only)"
     echo "  writer      - Open writer worktree (implementation)"
     echo "  feature <n> - Create feature branch worktree"
-    echo "  sync        - Sync changes between worktrees"
+    echo ""
+    echo "Orchestration Commands:"
+    echo "  status-all  - Comprehensive status of all worktrees and services"
+    echo "  report      - Generate timestamped markdown status report"
+    echo "  sync-all    - Orchestrated sync of all worktrees from main"
+    echo ""
+    echo "Legacy Commands:"
+    echo "  sync        - Basic sync changes between worktrees"
     echo "  status      - Show worktrees and Proxmox status"
     echo "  list        - List all worktrees"
     echo "  remove <n>  - Remove a worktree"
     echo ""
-    echo "Example workflow:"
-    echo "  $0 setup           # Initial setup"
-    echo "  $0 reader          # Start research session"
-    echo "  $0 writer          # Start coding session"
-    echo "  $0 feature plex    # Create plex feature branch"
-    echo "  $0 sync            # Sync changes"
+    echo "Orchestrated Workflow:"
+    echo "  $0 setup            # Initialize all worktrees"
+    echo "  $0 status-all       # Get comprehensive status"
+    echo "  $0 reader           # Start research session (Sonnet)"
+    echo "  $0 writer           # Start implementation session (Opus)" 
+    echo "  $0 feature plex     # Create feature branch"
+    echo "  $0 report           # Generate status report"
+    echo "  $0 sync-all         # Orchestrated synchronization"
     exit 1
     ;;
 esac

@@ -1,7 +1,37 @@
 # Proxmox Homelab Project Guide
 
+## Core Development Principles
+
+### 🔥 **MANDATORY: Multi-Threaded Development**
+**This project EXCLUSIVELY uses orchestrated multi-threaded development via Git worktrees.**
+
+**Never work in single-threaded mode.** All development, research, and implementation MUST use the specialized worktree threads:
+
+- **Main Branch**: Coordination, planning, documentation, project orchestration
+- **Reader Branch**: Research, system status, interface exploration, monitoring
+- **Writer Branch**: Implementation, deployments, system modifications, configurations  
+- **Feature Branches**: Isolated feature development, specialized projects
+
+**Every Claude session MUST include current worktree thread status reporting.**
+
+### System Prompt Integration
+**Standard Template for All Claude Responses:**
+```
+## Current Worktree Thread Status
+- **Main**: [current coordination task]
+- **Reader**: [current research/status task]
+- **Writer**: [current implementation task]  
+- **Active Features**: [list active feature branches]
+```
+
+**Use orchestrated commands ONLY:**
+- `./scripts/claude_threads.sh status-all` - Comprehensive status
+- `./scripts/claude_threads.sh reader` - Research session
+- `./scripts/claude_threads.sh writer` - Implementation session
+- `./scripts/claude_threads.sh sync-all` - Coordinate all branches
+
 ## Project Overview
-Building a comprehensive home server on Proxmox VE 8.x with focus on media serving, storage pooling, and containerized services.
+Building a comprehensive home server on Proxmox VE 8.x with focus on media serving, storage pooling, and containerized services using **orchestrated multi-threaded development**.
 
 ### Development Environment
 - **Project Repository**: Hosted on development laptop (dinux)
@@ -169,6 +199,75 @@ We use Git worktrees to create isolated working directories for different types 
 5. **Sync regularly** to keep branches aligned
 6. **Document changes** in respective WORKTREE.md files
 
+## Orchestrated Multi-Thread Workflow
+
+### Thread Coordination Strategy
+**Main Branch** acts as orchestration hub:
+- Coordinates between all worktrees
+- Consolidates status reports from reader/writer threads
+- Assigns tasks to appropriate branches
+- Maintains project-wide documentation and priorities
+
+### Status Reporting Protocol
+Each thread reports to main branch using standardized format:
+
+**Reader Thread Reports**:
+```
+## Reader Status Report - [DATE]
+### System Health: ✅/⚠️/❌
+- CPU Load: [current load average]
+- Memory Usage: [usage percentage]  
+- ZFS Pools: [pool health status]
+
+### Service Status: ✅/⚠️/❌
+- Proxmox: [interface accessible/issues]
+- Grafana: [dashboard operational/issues]
+- FileBrowser: [working/permission issues]
+
+### Research Findings:
+- [Key discoveries or status changes]
+```
+
+**Writer Thread Reports**:
+```  
+## Writer Status Report - [DATE]
+### Implementations Completed: [count]
+- [List of completed tasks]
+
+### In Progress: [count]  
+- [Current implementation work]
+
+### Blockers: [count]
+- [Issues preventing progress]
+
+### Next Priority:
+- [Next task to be implemented]
+```
+
+### Task Distribution Matrix
+
+| Task Type | Assigned Thread | Rationale |
+|-----------|----------------|-----------|
+| System Status Checks | Reader | Read-only operations, efficient |
+| Interface Exploration | Reader | Research and documentation |
+| Container Deployments | Writer | System modifications required |
+| GPU Configuration | Writer | Hardware changes needed |
+| Documentation Updates | Main | Cross-cutting concerns |
+| Feature Development | Feature Branch | Isolated development |
+
+### Coordination Commands
+```bash
+# Status consolidation from main branch
+./scripts/claude_threads.sh status-all    # All worktree status
+./scripts/claude_threads.sh report        # Generate consolidated report
+./scripts/claude_threads.sh sync-all      # Sync all branches
+
+# Thread-specific operations
+./scripts/claude_threads.sh reader        # Switch to reader
+./scripts/claude_threads.sh writer        # Switch to writer  
+./scripts/claude_threads.sh feature [name] # Create/switch feature branch
+```
+
 ## Key Commands Reference
 
 ### SSH Access
@@ -324,17 +423,26 @@ echo "=== POST-OPERATION HEALTH CHECK ==="
 - ✅ ICY DOCK MB024SP-B mobile rack installed
 - ✅ ZFS Storage: 9.06TB media-pool + 232GB service-pool + 696GB staging-pool
 - ✅ Recovery Mission: Complete with 246MB personal content preserved
+- ✅ **ORCHESTRATED WORKTREE SYSTEM**: Full multi-threaded development operational
+- ✅ **Container Storage Architecture**: Comprehensive ZFS pool mounting best practices
 - ✅ Git worktree system operational (main/reader/writer/features)
 - ✅ Docker installed and operational
-- ✅ FileBrowser web interface (http://192.168.0.99:8080)
-- ✅ **NEW: Grafana Monitoring Stack** (http://192.168.0.99:3000) - admin/admin
-- ✅ **NEW: Prometheus Metrics** (http://192.168.0.99:9090)
-- ✅ **NEW: 16-bit Gaming Theme** - Modular CSS + JSON architecture
-- ✅ **NEW: ZFS Custom Exporter** - Pool, dataset, recovery metrics
+- ✅ FileBrowser web interface (http://192.168.0.99:8080) - No authentication, proper ZFS access
+- ✅ **Grafana Monitoring Stack** (http://192.168.0.99:3000) - admin/admin
+- ✅ **Prometheus Metrics** (http://192.168.0.99:9090)
+- ✅ **16-bit Gaming Theme** - Modular CSS + JSON architecture
+- ✅ **ZFS Custom Exporter** - Pool, dataset, recovery metrics
+- ✅ **Orchestrated Status Reporting** - Automated comprehensive system status
 - ✅ Data curation and preservation workflows complete
-- ⚠️ Repository mixing Bookworm/Trixie (needs fix)
-- ⚠️ NVIDIA drivers not configured (both GPUs need setup)
-- 🚀 Ready for next phase: Plex + AI/LLM + Container services
+- ⚠️ Repository mixing Bookworm/Trixie (needs fix - Writer thread)
+- ⚠️ NVIDIA drivers partially installed (package conflicts resolved, needs final reboot - Writer thread)
+- 🚀 Ready for next phase: Multi-threaded Plex + AI/LLM + Container deployments
+
+## Current Worktree Thread Status
+- **Main**: Documentation cleanup and v1.0.1 release preparation
+- **Reader**: Available for Proxmox/Grafana interface exploration  
+- **Writer**: Available for GPU driver implementation and service deployments
+- **Active Features**: web-interfaces, data-recovery-urgent, retro-gaming-dashboard
 
 ## Services Architecture
 
@@ -354,9 +462,76 @@ echo "=== POST-OPERATION HEALTH CHECK ==="
 - **FileBrowser**: http://192.168.0.99:8080 - ZFS storage management
 - **System Dashboard**: http://192.168.0.99/system-status.html - Basic health check
 
-## Immediate Priority Queue
-1. **GPU Drivers**: Fix nvidia-smi, enable passthrough for both GPUs
-2. **Plex Deployment**: Install on media-pool with RTX transcoding
-3. **Repository Fix**: Correct debian.sources to use Bookworm consistently
-4. **AI Services**: Deploy Ollama + Open WebUI stack
-5. **Container Orchestration**: Add Portainer for easier management
+### Container Storage Best Practices
+**Critical Pattern**: Always mount actual ZFS pool paths, not just `/mnt`
+
+#### Proper ZFS Pool Mounting
+```bash
+# CORRECT: Mount actual ZFS pools
+docker run -d --name service-name \
+  -v /media-pool:/srv/media-pool \
+  -v /service-pool:/srv/service-pool \
+  -v /staging-pool:/srv/staging-pool \
+  image:tag
+
+# INCORRECT: Only mounting /mnt misses actual pools
+docker run -d --name service-name \
+  -v /mnt:/srv \
+  image:tag
+```
+
+#### Storage Access Patterns
+- **Media Services** (Plex, Jellyfin): Mount media-pool for content access
+- **Development Services** (code-server, Git): Mount service-pool for fast I/O  
+- **Management Services** (FileBrowser, Portainer): Mount all pools for full access
+- **Temporary Services** (Processing, uploads): Mount staging-pool primarily
+
+#### Web Interface Integration
+- **Proxmox VE**: https://192.168.0.99:8006 - System/VM/container management
+- **FileBrowser**: http://192.168.0.99:8080 - Direct ZFS pool file management
+- **Grafana**: http://192.168.0.99:3000 - Storage metrics and monitoring
+
+### Proxmox Web Interface Workflows
+
+#### Access Points
+- **Primary Interface**: https://192.168.0.99:8006 (accept SSL certificate)
+- **Node Console**: Direct shell access via web browser
+- **File Manager**: Built-in file browser through node shell
+- **Container Management**: Create, configure, and monitor LXC containers
+
+#### Integration with FileBrowser
+**Complementary Usage Pattern**:
+1. **Proxmox**: System-level operations (containers, VMs, storage pools)
+2. **FileBrowser**: File-level operations (data management, transfers, preview)
+
+**Workflow Examples**:
+- **Container Deployment**: Create container in Proxmox → Mount storage via FileBrowser → Monitor in Grafana
+- **Data Management**: Check pool status in Proxmox → Move/organize files in FileBrowser → Verify metrics in Grafana
+- **Troubleshooting**: System logs in Proxmox → File system access via FileBrowser → Performance data in Grafana
+
+#### Common Administrative Tasks
+```bash
+# Via Proxmox Web Console (Node → Shell):
+pct list                    # List containers
+pct start/stop/restart 100  # Manage containers
+zpool status               # Check pool health
+zfs list                   # View datasets
+
+# Via FileBrowser Web Interface:
+# Navigate to /srv/media-pool, /srv/service-pool, /srv/staging-pool
+# Upload, download, preview, and organize files
+# Create directories and manage permissions
+
+# Via SSH (fallback):
+ssh root@192.168.0.99 "command"  # Direct command execution
+```
+
+## Immediate Priority Queue (Multi-Threaded Assignments)
+1. **GPU Drivers** → **Writer Thread**: Fix nvidia-smi, enable passthrough for both GPUs
+2. **Plex Deployment** → **Writer Thread**: Install on media-pool with RTX transcoding using proper ZFS mounts
+3. **Repository Fix** → **Writer Thread**: Correct debian.sources to use Bookworm consistently  
+4. **Interface Research** → **Reader Thread**: Comprehensive Proxmox + Grafana + monitoring validation
+5. **AI Services** → **Feature Branch**: Deploy Ollama + Open WebUI stack (ai-services branch)
+6. **Container Orchestration** → **Feature Branch**: Add Portainer with proper storage architecture (container-mgmt branch)
+
+**Orchestrated Workflow**: Main branch coordinates, Reader provides system status, Writer implements infrastructure, Features handle specialized deployments.
