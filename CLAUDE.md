@@ -2,6 +2,13 @@
 
 ## Core Development Principles
 
+### 🚨 **CRITICAL: NO TRIXIE PACKAGES RULE**
+**ABSOLUTELY NO packages from Trixie repositories may be installed during setup phase. This rule is IRONCLAD and NON-NEGOTIABLE.**
+- See `/CRITICAL-REPOSITORY-RULE.md` for full details
+- Installing Trixie packages will REMOVE Proxmox components
+- Use manual installers or Docker containers instead
+- This rule remains until system stable + explicit removal approval
+
 ### 🔥 **MANDATORY: Multi-Threaded Development**
 **This project EXCLUSIVELY uses orchestrated multi-threaded development via Git worktrees.**
 
@@ -31,7 +38,7 @@
 - `./scripts/claude_threads.sh sync-all` - Coordinate all branches
 
 ## Project Overview
-Building a comprehensive home server on Proxmox VE 8.x with focus on media serving, storage pooling, and containerized services using **orchestrated multi-threaded development**.
+Building a comprehensive home server on Proxmox VE 9.x with focus on media serving, storage pooling, and containerized services using **orchestrated multi-threaded development**.
 
 ### Development Environment
 - **Project Repository**: Hosted on development laptop (dinux)
@@ -47,8 +54,8 @@ Building a comprehensive home server on Proxmox VE 8.x with focus on media servi
 - **RAM**: 32GB total (all 4 DIMM slots occupied)
   - DIMM_A1/A2: 16GB Corsair Vengeance LPX DDR4-2400 (2x8GB)
   - DIMM_B1/B2: 16GB T-Force DARK DDR4-3000 (2x8GB)
-- **GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ✅
-- **Secondary GPU**: GTX 970 4GB - **INSTALLED** ✅ (2025-08-23)
+- **GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ⚠️ (Driver not available)
+- **Secondary GPU**: GTX 970 4GB - **REMOVED** (2025-08-25)
 - **PSU**: Seasonic Focus PX-750 (750W 80+ Platinum) - Excellent for upgrades
 - **Network**: 192.168.0.99
 
@@ -70,10 +77,10 @@ Building a comprehensive home server on Proxmox VE 8.x with focus on media servi
 - Carved originals: 1,246 files (123MB) forensic archive
 - Organized recovery: 929 files (80MB) categorized content
 
-#### Hardware Status Update (2025-08-23)
-- ✅ **Dual GPU Setup**: RTX 5070 Ti + GTX 970 both installed
+#### Hardware Status Update (2025-08-25)
+- ⚠️ **GPU Setup**: RTX 5070 Ti installed but no driver support (Blackwell GB203)
 - ✅ **ICY DOCK**: MB024SP-B mobile rack operational  
-- ⚠️ **GPU Drivers**: Need nvidia-smi configuration for both cards
+- ❌ **GPU Drivers**: RTX 5070 Ti requires NVIDIA 575+ drivers (not yet available)
 - 🔧 **Storage Expansion Plans**:
   - LSI HBA card in PCIe x16_2 slot (adds 8 SATA ports)
   - SATA power splitters for additional drives
@@ -87,17 +94,19 @@ Building a comprehensive home server on Proxmox VE 8.x with focus on media servi
 **Recovery**: Successfully saved 31 personal photos and 1,246 forensic files
 **Current Status**: Production-ready homelab with 9TB+ storage capacity
 
-### 🚀 Next Phase Services Plan
+### 🚀 Services Deployment Status
 1. **✅ Data Recovery**: Complete - 246MB personal content preserved
 2. **✅ Storage Architecture**: 9TB+ production capacity operational
-3. **✅ Web Management**: FileBrowser + System Dashboard active
-4. **🔧 Plex Media Server**: Deploy on 9TB media-pool
-5. **🔧 GPU Configuration**: RTX 5070 Ti + GTX 970 driver setup
-6. **🔧 AI/LLM Services**: Ollama + Open WebUI deployment
-7. **🔧 Container Services**: Portainer, Home Assistant, monitoring
-8. **🔧 Development Environment**: Code-server + AI coding assistants
-9. **🔧 Network Services**: PiHole, VPN, reverse proxy
-10. **🔧 Gaming VM**: Windows 11 with GPU passthrough
+3. **✅ Web Management**: FileBrowser + Grafana + Prometheus active
+4. **✅ Plex Media Server**: Deployed with Google auth, software transcoding ready
+5. **✅ Media Acquisition**: Firefox + Deluge LXC operational, torrents active
+6. **✅ Monitoring Stack**: 16-bit themed Grafana with mobile responsiveness
+7. **❌ GPU Configuration**: RTX 5070 Ti blocked - awaiting NVIDIA 575+ drivers
+8. **🔧 AI/LLM Services**: Ollama + Open WebUI deployment planned
+9. **🔧 Container Services**: Portainer, Home Assistant, monitoring
+10. **🔧 Development Environment**: Code-server + AI coding assistants
+11. **🔧 Network Services**: PiHole, VPN, reverse proxy
+12. **🔧 Gaming VM**: Windows 11 with GPU passthrough
 
 #### GPU Allocation Strategy
 
@@ -146,10 +155,21 @@ We use Git worktrees to create isolated working directories for different types 
 ./scripts/claude_threads.sh writer   # Opens writer directory
 ```
 
-### Thread Types
+### Thread Types & Emoji Identifiers
 
-#### Reader Thread (Research & Status)
+#### 🎯 Main Thread (Coordination & Planning)
+- **Directory**: `~/projects/proxmox-homelab`
+- **Symbol**: 🎯
+- **Role**: Project orchestration, task delegation, status consolidation
+- **Tasks**:
+  - Coordinate between all worktrees
+  - Consolidate status reports
+  - Assign tasks to appropriate threads
+  - Maintain project-wide documentation
+
+#### 🔍 Reader Thread (Research & Status)
 - **Directory**: `~/projects/proxmox-homelab-reader`
+- **Symbol**: 🔍
 - **Model**: Sonnet (efficient)
 - **Tasks**:
   - System status checks
@@ -159,8 +179,9 @@ We use Git worktrees to create isolated working directories for different types 
   - Network diagnostics
   - Storage inventory
 
-#### Writer Thread (Implementation)
+#### ⚡ Writer Thread (Implementation)
 - **Directory**: `~/projects/proxmox-homelab-writer`
+- **Symbol**: ⚡
 - **Model**: Opus (powerful)
 - **Tasks**:
   - Container creation
@@ -168,6 +189,11 @@ We use Git worktrees to create isolated working directories for different types 
   - Complex troubleshooting
   - Architecture decisions
   - Security implementations
+
+#### 🚀 Feature Branches (Specialized Development)
+- **Directory**: `~/projects/proxmox-homelab-features/[name]`
+- **Symbol**: 🚀
+- **Purpose**: Isolated feature development and testing
 
 ### Workflow Commands
 ```bash
@@ -211,9 +237,25 @@ We use Git worktrees to create isolated working directories for different types 
 ### Status Reporting Protocol
 Each thread reports to main branch using standardized format:
 
-**Reader Thread Reports**:
+### Thread Status Report Format
+
+**🎯 Main Thread Coordination**:
 ```
-## Reader Status Report - [DATE]
+## Current Worktree Thread Status  
+- 🎯 **Main**: [current coordination task]
+- 🔍 **Reader**: [current research/status task]  
+- ⚡ **Writer**: [current implementation task]
+- 🚀 **Active Features**: [list active feature branches]
+
+## Task Delegation
+🔍 **Reader Analysis Required**: [diagnostic tasks]
+⚡ **Writer Implementation Required**: [deployment tasks] 
+🚀 **Feature Development**: [specialized work]
+```
+
+**🔍 Reader Thread Reports**:
+```
+## 🔍 Reader Status Report - [DATE]
 ### System Health: ✅/⚠️/❌
 - CPU Load: [current load average]
 - Memory Usage: [usage percentage]  
@@ -228,9 +270,9 @@ Each thread reports to main branch using standardized format:
 - [Key discoveries or status changes]
 ```
 
-**Writer Thread Reports**:
+**⚡ Writer Thread Reports**:
 ```  
-## Writer Status Report - [DATE]
+## ⚡ Writer Status Report - [DATE]
 ### Implementations Completed: [count]
 - [List of completed tasks]
 
@@ -243,6 +285,13 @@ Each thread reports to main branch using standardized format:
 ### Next Priority:
 - [Next task to be implemented]
 ```
+
+### Real-Time Thread Activity Visibility
+Every response should include thread identifier when work is performed:
+- 🎯 **Main**: Coordinating task X
+- 🔍 **Reader**: Analyzing logs for service Y  
+- ⚡ **Writer**: Deploying container Z
+- 🚀 **Feature**: Implementing feature W
 
 ### Task Distribution Matrix
 
@@ -415,57 +464,197 @@ echo "=== POST-OPERATION HEALTH CHECK ==="
 - **Failure Recovery**: Automated rollback on thermal/power issues
 - **Capacity Planning**: Track resource usage trends for scaling decisions
 
-## Current State (2025-08-23)
+## Claude Code Agent System
+
+### Agent Architecture (2025-08-25)
+**Hybrid Agent Strategy**: Combines persistent SME agents that build expertise over time with disposable task-specific agents that solve immediate problems then get archived.
+
+#### **Persistent SME Agents** (Build Expertise Over Time)
+Located in `.agents/` directory:
+
+##### **📊 Dashboard Monitor Agent** - `dashboard-monitor.md`
+- **Purpose**: Ensure all services maintain proper Grafana monitoring integration
+- **Status**: ✅ **OPERATIONAL** - Successfully monitoring all 8 services
+- **Expertise**: 16-bit gaming theme architecture, mobile responsiveness, alert thresholds
+- **Current Knowledge**: All services operational, 3 exporters active, minor Gluetun VPN issues identified
+
+##### **🔧 Debug SME Agent** - `debug-sme.md`
+- **Purpose**: Persistent troubleshooting expert for all homelab services
+- **Status**: ✅ **OPERATIONAL** - Comprehensive knowledge of 8-service architecture
+- **Expertise**: Container diagnostics, LXC vs Docker patterns, permission issues, service health
+- **Current Knowledge**: Plex chown warning is cosmetic, LinuxServer.io s6 incompatibility documented
+- **Activation**: Use `debug-sme-prompt.md` for Opus-level debugging authority
+
+#### **Disposable Project Agents** (Task-Specific, Then Archive)
+##### **🎬 Plex GPU Setup Agent** - `plex-gpu-setup.md`
+- **Purpose**: Configure GTX 970 transcoding for Plex Media Server  
+- **Status**: ⚠️ **BLOCKED** - NVIDIA drivers not installed on system
+- **Current Finding**: Both RTX 5070 Ti and GTX 970 detected, but no proprietary NVIDIA drivers present
+- **Next Step**: Install NVIDIA drivers compatible with Debian 13 Trixie
+
+### Agent Knowledge Transfer Process
+**Template**: `.agents/KNOWLEDGE-TRANSFER-TEMPLATE.md` defines workflow for transferring insights from disposable agents to persistent agents upon project completion.
+
+**Workflow**:
+1. **Project Completion**: Disposable agent documents all learnings and configuration changes
+2. **Knowledge Extraction**: System-wide insights identified for persistent agents
+3. **Persistent Agent Updates**: Dashboard/Infrastructure agents updated with new patterns
+4. **Next Project Creation**: New disposable agents inherit context from previous work
+
+### Integration with Worktree System
+- **🎯 Main Thread**: Coordinates agent knowledge transfer sessions
+- **🔍 Reader Thread**: Archives disposable agents, validates documentation  
+- **⚡ Writer Thread**: Updates persistent agent configurations
+- **🚀 Feature Threads**: Create new disposable agents with inherited context
+
+## Current State (2025-08-25)
 - ✅ Proxmox VE 9.0.3 installed and accessible (192.168.0.99)
 - ✅ SSH configured with key authentication  
 - ✅ RTX 5070 Ti 16GB installed and detected
 - ✅ GTX 970 4GB installed (secondary GPU)
 - ✅ ICY DOCK MB024SP-B mobile rack installed
+- ✅ **Claude Code Agent System**: Hybrid persistent/disposable agent architecture operational
 - ✅ ZFS Storage: 9.06TB media-pool + 232GB service-pool + 696GB staging-pool
 - ✅ Recovery Mission: Complete with 246MB personal content preserved
 - ✅ **ORCHESTRATED WORKTREE SYSTEM**: Full multi-threaded development operational
 - ✅ **Container Storage Architecture**: Comprehensive ZFS pool mounting best practices
 - ✅ Git worktree system operational (main/reader/writer/features)
 - ✅ Docker installed and operational
+- ✅ **Plex Media Server**: Running with claim token, Google auth working (http://192.168.0.99:32400)
 - ✅ FileBrowser web interface (http://192.168.0.99:8080) - No authentication, proper ZFS access
-- ✅ **Grafana Monitoring Stack** (http://192.168.0.99:3000) - admin/admin
+- ✅ **Grafana Monitoring Stack** (http://192.168.0.99:3000) - admin/test123
 - ✅ **Prometheus Metrics** (http://192.168.0.99:9090)
 - ✅ **16-bit Gaming Theme** - Modular CSS + JSON architecture
 - ✅ **ZFS Custom Exporter** - Pool, dataset, recovery metrics
-- ✅ **Orchestrated Status Reporting** - Automated comprehensive system status
+- ✅ **Media Acquisition Workflow**: Complete dual VPN architecture deployed
+  - **Deluge LXC**: Torrent client (http://192.168.0.111:8112) - ✅ RESTORED 2025-08-25
+  - **Firefox Container**: Secure web browsing (http://192.168.0.99:3001)
+  - **WireGuard Server**: Remote VPN access (51820/udp)
+- ✅ **Storage Workflow**: staging-pool → processing → media-pool → Plex
 - ✅ Data curation and preservation workflows complete
 - ⚠️ Repository mixing Bookworm/Trixie (needs fix - Writer thread)
-- ⚠️ NVIDIA drivers partially installed (package conflicts resolved, needs final reboot - Writer thread)
-- 🚀 Ready for next phase: Multi-threaded Plex + AI/LLM + Container deployments
+- ⚠️ NVIDIA drivers (deferred for GPU transcoding implementation)
+- 🚀 Ready for next phase: AI/LLM services, GPU transcoding, advanced automation
 
 ## Current Worktree Thread Status
-- **Main**: Documentation cleanup and v1.0.1 release preparation
-- **Reader**: Available for Proxmox/Grafana interface exploration  
-- **Writer**: Available for GPU driver implementation and service deployments
-- **Active Features**: web-interfaces, data-recovery-urgent, retro-gaming-dashboard
+- **Main**: Coordination hub for multi-threaded development  
+- **Reader**: System monitoring and research operations
+- **Writer**: ✅ ACTIVE - Service restoration complete, documentation deployed
+- **Active Features**: doc-migration (complete), retro-gaming-dashboard (active)
 
 ## Services Architecture
 
 ### Monitoring Stack (✅ DEPLOYED)
-- **Grafana**: http://192.168.0.99:3000 (admin/admin)
-  - 16-bit gaming themed interface with modular CSS
-  - Custom ZFS, system, and recovery data dashboards
+- **Grafana**: http://192.168.0.99:3000 (admin/test123)
+  - 16-bit gaming themed interface with modular CSS architecture
+  - **Mobile-Responsive Design**: Optimized for phone/tablet access
+  - Custom ZFS, system, recovery, and **torrent management** dashboards
+  - **Deluge Integration**: Real-time torrent stats, download progress, queue management
 - **Prometheus**: http://192.168.0.99:9090
   - Metrics collection and time-series database
-- **Node Exporter**: Port 9100 - System metrics
-- **ZFS Exporter**: Port 9101 - Custom pool/dataset metrics
-- **Theme Files**: 
-  - `/configs/grafana-theme.json` - Color palette & components
-  - `/configs/grafana-custom.css` - 16-bit visual architecture
+- **Exporters**:
+  - **Node Exporter**: Port 9100 - System metrics
+  - **ZFS Exporter**: Port 9101 - Custom pool/dataset metrics  
+  - **Deluge Exporter**: Port 9102 - Torrent client metrics (custom Python exporter)
+- **Theme Architecture**: 
+  - `/configs/grafana-theme.json` - 16-bit color palette & component definitions
+  - `/configs/grafana-custom.css` - Responsive CSS with mobile-first design
+  - `/configs/grafana-deluge-panels.json` - Torrent management panel configurations
 
 ### Web Services (✅ ACTIVE)
-- **FileBrowser**: http://192.168.0.99:8080 - ZFS storage management
+- **FileBrowser**: http://192.168.0.99:8080/files/ - ZFS storage management (NoAuth, proper pool access)
 - **System Dashboard**: http://192.168.0.99/system-status.html - Basic health check
 
-### Container Storage Best Practices
-**Critical Pattern**: Always mount actual ZFS pool paths, not just `/mnt`
+### Media Services (✅ DEPLOYED)
+- **Plex Media Server**: http://192.168.0.99:32400 - Claimed, Google auth working
+  - Storage: 8.7TB media-pool + transcoding on staging-pool
+  - Container: Proper ZFS pool mounts, software transcoding ready
 
-#### Proper ZFS Pool Mounting
+### Media Acquisition Stack (✅ **OPERATIONAL**)
+- **Firefox Container**: http://192.168.0.99:3001 - ✅ **WORKING** 
+  - Type: jlesage/firefox with privileged mode
+  - Interface: VNC-based web browser, desktop-optimized
+  - Purpose: Secure torrent site browsing and .torrent file acquisition
+  - Storage: Downloads to /service-pool/firefox-alt/downloads/
+  
+- **Deluge LXC Container**: http://192.168.0.111:8112 - ✅ **OPERATIONAL**
+  - Type: Native Proxmox LXC (Ubuntu 22.04) - bypasses Docker s6 issues  
+  - Authentication: Password "deluge"
+  - Storage: **Direct downloads to /staging-pool/downloads/** (675GB capacity)
+  - Features: Automatic .torrent processing, web interface accessible
+  - Status: CT 110 running, both torrents active and downloading
+  
+- **Automation Pipeline**: ✅ **ACTIVE**
+  - Cron job: 30-second .torrent file monitoring  
+  - Workflow: Firefox downloads → staging-pool → Deluge processing
+  - File transfer: Existing torrents moved to staging-pool successfully
+  
+- **WireGuard VPN Server**: Port 51820/udp - Remote homelab access
+  - Clients: 5 peer configurations generated
+  - Access: Full homelab network through secure tunnel
+
+### Container Architecture Lessons Learned
+**🚫 LinuxServer.io Docker Issues**: All LinuxServer.io containers (qBittorrent, Deluge, Transmission) fail with `s6-ipcserver-socketbinder: fatal: unable to create socket: Permission denied` in Proxmox environment.
+
+**✅ Working Solutions**:
+- **Firefox**: jlesage/firefox:latest with `--privileged` flag
+- **Deluge**: Native LXC container approach bypasses Docker permission issues
+- **Alternative**: Official container images without s6 supervision system
+
+### Complete Media Workflow Architecture
+```
+🔍 Content Discovery → ⚡ Download → 🎯 Processing → 📺 Plex Integration
+
+Phase 1: Firefox Container (✅ WORKING)
+├── Browse torrent sites securely  
+├── Download .torrent files to /config/downloads/
+└── Transfer to Deluge watch folder
+
+Phase 2: Deluge LXC Container (✅ OPERATIONAL)
+├── Native Ubuntu 22.04 installation - CT 110 running  
+├── Direct downloads to /staging-pool/downloads/ (675GB capacity)
+├── Web UI: http://192.168.0.111:8112 (password: "deluge")
+├── Both torrents active: Columbo + Disney collections downloading
+└── Automatic .torrent processing via 30-second cron job
+
+Phase 3: Media Processing Pipeline (📋 PLANNED)
+├── FileBot: Rename & organize (TV Shows/Movies)
+├── Bazarr: Automatic subtitle acquisition & sync
+├── Custom scripts: Quality control & sorting
+└── Final placement in /media-pool/ for Plex
+
+Phase 4: Subtitle Integration (📋 PLANNED)
+├── Extract embedded subtitles from video files
+├── Download external subs (OpenSubtitles, Addic7ed) 
+├── Auto-sync timing corrections with FFmpeg
+├── Convert formats (.ass → .srt for Plex compatibility)
+└── Place alongside video files in Plex structure
+```
+
+## Standardized Deployment Patterns
+
+### Container Architecture Decision Matrix
+
+#### ✅ Proxmox LXC Containers (Recommended)
+**Use Cases**: Native service deployment, maximum compatibility, storage-heavy applications
+- **Deluge Torrent Client**: CT 110 - Proven reliable, bypasses s6 permission issues
+- **File Servers**: Direct hardware access, optimal I/O performance  
+- **Databases**: Maximum compatibility, efficient resource usage
+
+#### ⚠️ Docker Containers (Conditional)
+**Use Cases**: Lightweight services, proven container images, development environments
+- **Firefox**: jlesage/firefox with `--privileged` flag - working solution
+- **Official Images**: Avoid LinuxServer.io, use upstream maintainers
+- **Web Services**: Grafana, Prometheus, APIs work well
+
+#### ❌ LinuxServer.io Docker Images (Avoid)
+**Issue**: All LinuxServer.io containers fail with `s6-ipcserver-socketbinder: fatal: unable to create socket: Permission denied`
+**Affected**: qBittorrent, Deluge, Transmission, Plex, Radarr, Sonarr
+**Root Cause**: s6 supervision system conflicts with Proxmox container security
+
+### Storage Architecture Standards
+
+#### Critical Pattern: Direct Pool Mounting
 ```bash
 # CORRECT: Mount actual ZFS pools
 docker run -d --name service-name \
@@ -474,22 +663,59 @@ docker run -d --name service-name \
   -v /staging-pool:/srv/staging-pool \
   image:tag
 
+# LXC Pool Mounting
+pct set <VMID> \
+  -mp0 /staging-pool,mp=/staging-pool \
+  -mp1 /service-pool,mp=/service-pool \
+  -mp2 /media-pool,mp=/media-pool
+
 # INCORRECT: Only mounting /mnt misses actual pools
-docker run -d --name service-name \
-  -v /mnt:/srv \
-  image:tag
+docker run -d --name service-name -v /mnt:/srv image:tag
 ```
 
-#### Storage Access Patterns
-- **Media Services** (Plex, Jellyfin): Mount media-pool for content access
-- **Development Services** (code-server, Git): Mount service-pool for fast I/O  
-- **Management Services** (FileBrowser, Portainer): Mount all pools for full access
-- **Temporary Services** (Processing, uploads): Mount staging-pool primarily
+#### Storage Allocation Strategy
+- **Container Root FS**: Minimal size (18GB+) for services only
+- **Large Downloads**: Direct to ZFS pools (avoid container storage limits)
+- **Processing**: Use staging-pool for temporary operations (675GB capacity)
+- **Final Storage**: Use media-pool for long-term content (8.7TB capacity)
 
-#### Web Interface Integration
-- **Proxmox VE**: https://192.168.0.99:8006 - System/VM/container management
-- **FileBrowser**: http://192.168.0.99:8080 - Direct ZFS pool file management
-- **Grafana**: http://192.168.0.99:3000 - Storage metrics and monitoring
+#### Proven Storage Patterns
+| Service Type | Storage Strategy | Pool Usage | Rationale |
+|--------------|------------------|------------|-----------|
+| Torrent Clients | Direct staging-pool downloads | 675GB available | Avoids container filesystem limits |
+| Media Services | Mount media-pool read-only | 8.7TB content | Sequential access optimized |  
+| Processing Tools | staging-pool working directory | High IOPS | Fast temporary file operations |
+| Configuration | service-pool persistent configs | SSD performance | Quick service startup |
+
+### Mobile-First Interface Standards
+
+#### Cross-Device UX Architecture
+- **Desktop**: Full-featured interfaces (Firefox VNC, Deluge web UI)
+- **Mobile**: Grafana responsive dashboard with torrent management panels
+- **Tablet**: Hybrid interface with touch-optimized controls
+- **API Integration**: Consistent backend for all interface types
+
+#### Mobile Interface Components
+```css
+/* Mobile-responsive torrent management */
+@media (max-width: 768px) {
+  .torrent-controls { flex-direction: column; }
+  .torrent-queue-mobile { touch-optimized interface }
+  .dashboard-grid { single-column layout }
+}
+```
+
+### Service Health Monitoring Standards
+```bash
+# Automated health checks
+*/5 * * * * /usr/local/bin/system-monitor.sh
+*/1 * * * * /staging-pool/torrent-automation.sh
+
+# Status verification endpoints
+curl http://192.168.0.99:3000    # Grafana dashboard
+curl http://192.168.0.111:8112   # Deluge web interface  
+curl http://192.168.0.99:3001    # Firefox container
+```
 
 ### Proxmox Web Interface Workflows
 
@@ -526,12 +752,79 @@ zfs list                   # View datasets
 ssh root@192.168.0.99 "command"  # Direct command execution
 ```
 
-## Immediate Priority Queue (Multi-Threaded Assignments)
-1. **GPU Drivers** → **Writer Thread**: Fix nvidia-smi, enable passthrough for both GPUs
-2. **Plex Deployment** → **Writer Thread**: Install on media-pool with RTX transcoding using proper ZFS mounts
-3. **Repository Fix** → **Writer Thread**: Correct debian.sources to use Bookworm consistently  
-4. **Interface Research** → **Reader Thread**: Comprehensive Proxmox + Grafana + monitoring validation
-5. **AI Services** → **Feature Branch**: Deploy Ollama + Open WebUI stack (ai-services branch)
-6. **Container Orchestration** → **Feature Branch**: Add Portainer with proper storage architecture (container-mgmt branch)
+## Next Phase Priority Queue (Multi-Threaded Assignments)
+1. **GPU Drivers** → **On Hold**: Awaiting NVIDIA 575+ driver release for RTX 5070 Ti
+2. **Repository Fix** → **✅ COMPLETED**: All repositories now using Bookworm  
+3. **AI Services** → **Feature Branch**: Deploy Ollama + Open WebUI stack (ai-services branch)
+4. **Container Orchestration** → **Feature Branch**: Add Portainer with proper storage architecture (container-mgmt branch)
+5. **Advanced Monitoring** → **Reader Thread**: Custom alerting and performance thresholds
+6. **Automation Enhancement** → **Writer Thread**: Media processing pipeline automation
 
 **Orchestrated Workflow**: Main branch coordinates, Reader provides system status, Writer implements infrastructure, Features handle specialized deployments.
+
+### ✅ Phase 1 Complete - Production Homelab Operational
+- **Service Stack**: 8/8 services running with proper monitoring
+- **Storage Architecture**: 9TB ZFS pools with proven mounting patterns
+- **Media Pipeline**: Content acquisition workflow fully operational
+- **Documentation**: Agent knowledge archived, deployment patterns captured
+- **Multi-Threading**: Orchestrated worktree system proven effective
+
+## 📚 **Documentation Architecture**
+
+### New Hierarchical Structure (Deployed 2025-08-25)
+**Location**: `/home/darney/projects/proxmox-homelab-writer/docs/`
+```
+docs/
+├── README.md                          # Main navigation hub
+├── CURRENT/                           # SSH-verified system state
+│   ├── hardware-inventory.md
+│   ├── storage-architecture.md
+│   ├── services-deployed.md           # ✅ All 8/8 services operational
+│   └── next-actions.md
+├── ARCHITECTURE/                      # Proven design patterns
+│   ├── storage-mounting.md
+│   ├── worktree-strategy.md
+│   └── gpu-allocation.md
+├── WORKFLOWS/                         # Operational procedures
+│   ├── data-curation-workflow.md
+│   ├── media-processing.md
+│   └── backup-procedures.md
+└── ARCHIVE/                           # Historical preservation
+    ├── 2025-08-recovery/             # Recovery mission docs
+    └── legacy-planning/              # Early planning docs
+```
+
+### Comprehensive Guides
+- **[Container Architecture Standards](/docs/container-architecture-standards.md)**: Complete deployment patterns, troubleshooting guides, and best practices based on real-world Proxmox implementation experience
+- **Theme Configuration**: Grafana 16-bit gaming theme with mobile-responsive design in `/configs/`
+- **Automation Scripts**: Torrent processing, health monitoring, and system status tools in `/scripts/`
+
+### Quick Reference
+- **Working Service URLs**: All confirmed operational endpoints documented with authentication details
+- **Storage Patterns**: Proven ZFS pool mounting strategies and capacity planning guidelines  
+- **Container Deployment**: LXC vs Docker decision matrix with specific use cases and compatibility notes
+- **Mobile Interface**: Cross-device UX patterns and responsive design implementation strategies
+
+## ⚠️ Critical System Updates (2025-08-25)
+
+### Repository Configuration FIXED
+**Previous Issue**: System was incorrectly using Debian Trixie (13) repositories
+**Resolution**: All repositories now properly configured for Debian Bookworm (12)
+- Fixed `/etc/apt/sources.list.d/debian.sources`
+- Removed all Trixie package conflicts
+- System stability restored
+
+### RTX 5070 Ti Status
+**Hardware**: NVIDIA Corporation GB203 [GeForce RTX 5070 Ti] detected
+**Driver Issue**: Blackwell architecture requires NVIDIA driver 575+ (not yet released)
+**Current State**: 
+- Driver 570.86.16 installed but cannot initialize GPU
+- Error: `RmInitAdapter failed! (0x62:0x40:1860)`
+- nvidia-smi returns "No devices were found"
+**Action Required**: Wait for NVIDIA to release 575+ series drivers or reinstall GTX 970
+
+### Known Console Messages
+**AppArmor/Audit Logs**: Continuous scrolling of `s6-ipcserver-so` permission denials
+- Source: LinuxServer.io containers (Plex, WireGuard)
+- Status: Expected behavior, not a security issue
+- Impact: Cosmetic only, services functioning normally

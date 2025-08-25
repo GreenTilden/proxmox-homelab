@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # Commercial VPN Client for secure downloading
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun-vpn
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    ports:
+      - "8081:8080"  # qBittorrent WebUI
+    volumes:
+      - /service-pool/gluetun:/gluetun
+    environment:
+      # Replace with your actual VPN provider credentials
+      - VPN_SERVICE_PROVIDER=mullvad  # or surfshark, protonvpn, etc.
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=YOUR_PRIVATE_KEY
+      - WIREGUARD_ADDRESSES=YOUR_VPN_ADDRESS
+      - SERVER_COUNTRIES=Netherlands
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/openvpn/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # qBittorrent download client behind VPN
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "container:gluetun-vpn"  # Route through VPN
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+    volumes:
+      - /service-pool/qbittorrent:/config
+      - /staging-pool/downloads:/downloads
+      - /media-pool:/media
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/New_York
+      - WEBUI_PORT=8080
+
+  # Firefox container for secure browsing
+  firefox:
+    image: lscr.io/linuxserver/firefox:latest
+    container_name: firefox-browser
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - /service-pool/firefox:/config
+      - /staging-pool/downloads:/downloads
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/New_York
+
+  # WireGuard VPN server for remote homelab access
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard-server
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+    ports:
+      - "51820:51820/udp"
+    volumes:
+      - /service-pool/wireguard:/config
+      - /lib/modules:/lib/modules:ro
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/New_York
+      - SERVERURL=192.168.0.99  # Replace with your public IP for external access
+      - SERVERPORT=51820
+      - PEERS=5
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+
+# Usage Instructions:
+# 1. Replace VPN credentials in gluetun service with your actual provider details
+# 2. For external WireGuard access, replace SERVERURL with your public IP
+# 3. Port forward 51820/udp on your router to 192.168.0.99:51820
+# 4. Deploy with: docker-compose -f media-acquisition-stack.yml up -d
+# 
+# Access URLs:
+# - qBittorrent: http://192.168.0.99:8081 (through VPN)
+# - Firefox: http://192.168.0.99:3001 (VNC web interface)
+# - WireGuard configs: Check /service-pool/wireguard/ for client .conf files
+#
+# Media Workflow:
+# 1. Browse with Firefox container (secure, isolated)
+# 2. Download with qBittorrent (all traffic through commercial VPN)
+# 3. Files appear in /staging-pool/downloads/
+# 4. Move to /media-pool/{movies,tv-shows,music}/ for Plex
+# 5. Access remotely via WireGuard VPN connection

@@ -7,7 +7,7 @@ Web-based file management system for curating recovered data using FileBrowser a
 
 ### FileBrowser Web Interface
 - **URL**: http://192.168.0.99:8080
-- **Default Login**: admin/admin
+- **Default Login**: admin/test123
 - **Mounted Path**: `/srv` → `/mnt/staging` on Proxmox
 - **Features**: Upload, download, delete, move, preview files
 
