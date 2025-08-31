@@ -9,26 +9,44 @@
 - Use manual installers or Docker containers instead
 - This rule remains until system stable + explicit removal approval
 
-### 🔥 **MANDATORY: Multi-Threaded Development**
-**This project EXCLUSIVELY uses orchestrated multi-threaded development via Git worktrees.**
+### 🔥 **MANDATORY: 5-Thread Claude Code Execution Model**
+**This project EXCLUSIVELY uses a 5-thread Claude Code execution model with SEQUENTIAL workflow processing.**
 
-**Never work in single-threaded mode.** All development, research, and implementation MUST use the specialized worktree threads:
+**NEVER work outside this model.** All development, research, and implementation MUST use the specialized Claude Code instances:
 
-- **Main Branch**: Coordination, planning, documentation, project orchestration
-- **Reader Branch**: Research, system status, interface exploration, monitoring
-- **Writer Branch**: Implementation, deployments, system modifications, configurations  
-- **Feature Branches**: Isolated feature development, specialized projects
+- **🎯 Main Thread (Opus)**: Orchestration, task delegation, sequential workflow coordination
+- **🔍 Reader Thread (Sonnet)**: System verification, research, status analysis  
+- **⚡ Writer Thread (Opus)**: Infrastructure implementation, deployments, system modifications
+- **🔧 Debug Thread (Opus)**: Advanced troubleshooting, complex problem resolution
+- **📚 Documentation Thread (Sonnet)**: Knowledge synthesis, documentation updates
 
-**Every Claude session MUST include current worktree thread status reporting.**
+**Sequential Workflow Protocol**: `Main → Reader → Writer → Debug (if needed) → Documentation → Main`
 
-### System Prompt Integration
-**Standard Template for All Claude Responses:**
+**Every thread execution MUST follow prompting standards and generate structured reports for the next thread in sequence.**
+
+### 📚 **UNIFIED DOCUMENTATION - SINGLE SOURCE OF TRUTH**
+**All project documentation is centralized at `/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/`**
+
+**Key Documents**:
+- **Framework**: `/docs/UNIFIED-REFERENCE/FRAMEWORK/5-thread-execution-model.md` - Mandatory execution protocol
+- **Handoffs**: `/docs/UNIFIED-REFERENCE/FRAMEWORK/thread-handoff-templates.md` - Standard templates
+- **Current Cycle**: `/docs/UNIFIED-REFERENCE/THREAD-CYCLES/current-cycle.md` - Active execution status
+- **Master Index**: `/docs/UNIFIED-REFERENCE/MASTER-INDEX.md` - Complete navigation hub
+
+**All worktrees reference this single documentation source to prevent fragmentation.**
+
+### Thread Status Reporting Integration
+**Standard Template for All Thread Reports:**
 ```
-## Current Worktree Thread Status
-- **Main**: [current coordination task]
-- **Reader**: [current research/status task]
-- **Writer**: [current implementation task]  
-- **Active Features**: [list active feature branches]
+## Current 5-Thread Execution Status
+- **🎯 Main (Opus)**: [orchestration task]
+- **🔍 Reader (Sonnet)**: [verification task]  
+- **⚡ Writer (Opus)**: [implementation task]
+- **🔧 Debug (Opus)**: [troubleshooting status]
+- **📚 Documentation (Sonnet)**: [knowledge synthesis task]
+
+## Sequential Workflow Position: [Current thread in sequence]
+## Next Thread Handoff: [Target thread for next prompt]
 ```
 
 **Use orchestrated commands ONLY:**
@@ -108,19 +126,13 @@ Building a comprehensive home server on Proxmox VE 9.x with focus on media servi
 11. **🔧 Network Services**: PiHole, VPN, reverse proxy
 12. **🔧 Gaming VM**: Windows 11 with GPU passthrough
 
-#### GPU Allocation Strategy
+#### Current GPU Configuration
 
-**RTX 5070 Ti (Primary - 16GB VRAM)**:
-- Windows 11 gaming VM
-- AI/LLM workloads (Ollama, local models)
-- Heavy 4K transcoding when needed
-- Large model inference (70B+ parameters)
-
-**GTX 970 (Secondary - 4GB VRAM)**:
-- Dedicated Plex transcoding (1080p optimized)
-- Backup transcoding capacity
-- Development/testing workloads
-- Frees RTX 5070 Ti for gaming/AI
+**RTX 5070 Ti (16GB VRAM) - Single GPU Setup**:
+- Current Status: Hardware installed, awaiting NVIDIA 575+ drivers
+- Planned Usage: Windows 11 gaming VM, AI/LLM workloads (Ollama, local models)
+- Transcoding: Software transcoding only until drivers available
+- Future Capability: Heavy 4K transcoding, large model inference (70B+ parameters)
 
 #### AI/LLM Service Stack
 - **Ollama**: Primary LLM inference server (RTX 5070 Ti)
@@ -368,7 +380,7 @@ proxmox-homelab/
 ## Critical Reminders
 - **🚨 DATA RECOVERY FIRST**: ZFS pool wiped, 3.6TB Plex data at risk
 - **GPU Status**: RTX 5070 Ti installed, nvidia-smi not working (driver issue)
-- **Secondary GPU**: GTX 970 ready to install (pending audio cable clearance)
+- **Storage Expansion**: Ready for LSI HBA card installation
 - **IP Address**: ProxMoxBox (PMB) is at 192.168.0.99 (not .100)
 - **Repository**: Using Bookworm (stable), debian.sources needs Trixie→Bookworm fix
 - **4TB Recovery Drive**: Available for data staging operations
@@ -394,13 +406,13 @@ proxmox-homelab/
 - **SATA cable variety pack** (18", 24", 36" lengths)
 - **Result**: Power for all current + shucked drives
 
-### Priority 2: Secondary GPU Installation (Immediate - $0)
+### Priority 2: Future GPU Transcoding (Dependent on Drivers)
 
-#### GTX 970 4GB Installation
-- **Status**: Ready to install, waiting for right angle audio cables
-- **Purpose**: Dedicated Plex transcoding, frees RTX 5070 Ti
-- **Power**: 145W (well within PSU capacity)
-- **Slot**: PCIe x16_2 (currently available)
+#### RTX 5070 Ti Hardware Transcoding
+- **Status**: Awaiting NVIDIA 575+ driver release for Blackwell architecture
+- **Current Workaround**: Software transcoding in Plex container
+- **Future Setup**: Hardware transcoding with proper GPU passthrough
+- **Power**: Already installed and powered
 
 ### Priority 3: GPU Driver Configuration (Essential - $0)
 - **Fix nvidia-smi**: Install proper NVIDIA drivers
@@ -415,19 +427,19 @@ Essential (Phase 1) - ~$100:
 □ SATA cable variety pack (3-4 cables)
 
 Immediate Hardware Tasks:
-□ Install GTX 970 (waiting for right angle audio cables)
-□ Configure dual GPU passthrough
-□ Fix nvidia-smi driver issues
+□ Wait for NVIDIA 575+ driver release
+□ Configure single GPU passthrough when drivers available
+□ Implement hardware transcoding in Plex
 
 Optional Tools:
 □ USB 3.0 to SATA adapter (~$25)
 □ External drive dock (~$40)
 ```
 
-### What You Get With Each Upgrade
-- **Storage Only**: Full ZFS pool recovery, 10+ drive capacity, professional setup
-- **+ RTX 3060**: Local coding assistants, offline AI development
-- **+ RTX 4060 Ti**: Professional AI capabilities, multiple models, custom agents
+### Expected Capabilities When Drivers Available
+- **Storage Expansion**: 10+ drive capacity with LSI HBA card
+- **RTX 5070 Ti Full Utilization**: Hardware transcoding, AI/LLM inference
+- **Professional AI Stack**: Multiple models, custom agents, local development
 
 ## System Monitoring & Safety Protocol
 
@@ -821,7 +833,7 @@ docs/
 - Driver 570.86.16 installed but cannot initialize GPU
 - Error: `RmInitAdapter failed! (0x62:0x40:1860)`
 - nvidia-smi returns "No devices were found"
-**Action Required**: Wait for NVIDIA to release 575+ series drivers or reinstall GTX 970
+**Action Required**: Wait for NVIDIA to release 575+ series drivers
 
 ### Known Console Messages
 **AppArmor/Audit Logs**: Continuous scrolling of `s6-ipcserver-so` permission denials

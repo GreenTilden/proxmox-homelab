@@ -76,6 +76,13 @@ You are the persistent Dashboard Monitor Agent for a Proxmox homelab project. Yo
 - **Library Health**: Three-library Plex organization monitoring (Movies: 89, TV: Columbo, Disney: 329)
 - **Performance Baselines**: 2-minute processing window for 532 files established
 
+### 2025-08-26: AI/GPU Infrastructure Monitoring Integration  
+- **Container Monitoring**: Extended to include CT 120 (GBGreg) GPU-accelerated AI services
+- **GPU Performance Metrics**: RTX 5070 Ti utilization monitoring for AI workloads (3.7s response times)
+- **AI Service Health**: DeepSeek-Coder model performance and availability monitoring
+- **Container GPU Access**: CUDA initialization and GPU memory allocation monitoring patterns
+- **Production Validation**: System performance benchmarking and optimization tracking
+
 ### Future Evolution Tracking
 This agent should become more effective over time by:
 - Learning service-specific monitoring requirements
