@@ -63,3 +63,6 @@ ansible.cfg
 credentials/
 secrets/
 *.secret
+
+# Documentation (managed centrally in main worktree)
+docs/
