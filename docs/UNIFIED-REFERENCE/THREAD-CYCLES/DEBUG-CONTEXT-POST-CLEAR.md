@@ -1,17 +1,23 @@
 # 🔧 DEBUG THREAD - Post-Clear Context Instructions
 
-## **PRIMARY GOAL: Resolve Project.zip Upload → Chat Workflow Blockers**
-**Mission**: Advanced troubleshooting to eliminate any issues preventing complete end-to-end testing: Upload project.zip → GPU-accelerated processing → Interactive chat with <5s responses.
+## **PRIMARY GOAL: Cycle 13 - Frontend Logging & Communication Issues Advanced Troubleshooting**
+**Mission**: Resolve complex frontend-backend communication issues preventing manual website operation, implement advanced logging diagnostics, and ensure complete system stability while maintaining 77% GPU processing.
 
 ---
 
-## 🎯 **Critical System Context (PRESERVE AT ALL COSTS)**
+## 🎯 **Cycle 13 Debug Context (CRITICAL PRESERVATION)**
 
-### **🚀 GPU ACCELERATION BREAKTHROUGH (NEVER BREAK)**
-- **ACHIEVEMENT**: 77% GPU processing operational (Revolutionary success)
-- **Working Configuration**: deepseek-33b-main container with deepseek-coder:33b
-- **Performance**: <5s chat response capability achieved
-- **Memory**: RTX 5070 Ti 15.5GB/16.3GB efficiently allocated
+### **🚀 GPU ACCELERATION OPERATIONAL (ABSOLUTE PROTECTION REQUIRED)**
+- **Current Achievement**: 77% GPU processing with deepseek-33b-main container
+- **Performance Baseline**: <5s chat responses demonstrated
+- **Preservation Mandate**: ZERO degradation allowed during brand implementation
+- **Container Stability**: deepseek-33b-main must remain operational throughout changes
+
+### **🔍 Frontend Logging & Communication Debug Scope**
+- **Advanced CORS/CSP Resolution**: Complex cross-origin policy troubleshooting
+- **Manual vs Test Environment Analysis**: Debug discrepancies between automated and manual operation
+- **Performance Optimization**: Maintain system speed during logging implementation
+- **Cross-Browser Compatibility**: Ensure logging and error tracking works across all platforms
 
 ### **⚠️ PRESERVATION COMMANDS**
 ```bash

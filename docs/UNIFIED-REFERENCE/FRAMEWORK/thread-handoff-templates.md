@@ -297,6 +297,31 @@ When a thread runs out of context, include these instructions:
 5. **Update UNIFIED-REFERENCE** as part of every thread execution
 6. **Archive completed cycles** to cycle-history with full context
 
+## 🚨 **CRITICAL: Anti-Documentation-Fragmentation Protocol**
+
+### **⚠️ MANDATORY ABSOLUTE PATH REFERENCES ONLY**
+All thread prompts and handoffs MUST reference absolute paths to prevent fragmentation:
+
+- **✅ CORRECT**: `/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/[path]`
+- **❌ FORBIDDEN**: `./docs/`, `../docs/`, `@docs/`, `docs/` (relative references)
+
+### **🚫 STRICT PROHIBITION: Local Documentation Creation**
+**NEVER create local docs directories in any worktree. All documentation MUST use UNIFIED-REFERENCE.**
+
+- **✅ UPDATE EXISTING**: Edit files in UNIFIED-REFERENCE
+- **❌ NEVER CREATE**: New `/docs/` folders in any worktree
+- **❌ NEVER REFERENCE**: Local documentation structures
+
+### **📋 MANDATORY AGENT AUDIT REQUIREMENT**
+As requested by the user: **"This is causing main thread checks to generally fail, once we get this clear with documentation we will need a similar self-reinforcing audit on all of our agents in every thread that we're using for this project"**
+
+Every thread execution MUST include agent audit protocols:
+
+1. **Agent Knowledge Validation**: Verify all agent prompts reference UNIFIED-REFERENCE paths
+2. **Agent Documentation Standards**: Ensure agents follow anti-fragmentation protocols
+3. **Cross-Thread Agent Consistency**: Validate agent references across all threads
+4. **Agent Knowledge Transfer**: Update agents with consolidated documentation practices
+
 ## 🔄 **Integration Points**
 
 ### With 5-Thread Execution Model

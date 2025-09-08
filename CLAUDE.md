@@ -544,9 +544,13 @@ Located in `.agents/` directory:
   - **WireGuard Server**: Remote VPN access (51820/udp)
 - ✅ **Storage Workflow**: staging-pool → processing → media-pool → Plex
 - ✅ Data curation and preservation workflows complete
+- ✅ **External AI Services**: GBGreg laboratory automation platform operational (separate project)
+  - **AI Stack**: 4x Ollama containers on homelab GPU (ports 11436-11439)
+  - **Database**: PostgreSQL on port 5433
+  - **Integration**: GPU sharing and monitoring integration with homelab infrastructure
 - ⚠️ Repository mixing Bookworm/Trixie (needs fix - Writer thread)
 - ⚠️ NVIDIA drivers (deferred for GPU transcoding implementation)
-- 🚀 Ready for next phase: AI/LLM services, GPU transcoding, advanced automation
+- 🚀 Ready for next phase: GPU transcoding, advanced automation
 
 ## Current Worktree Thread Status
 - **Main**: Coordination hub for multi-threaded development  
@@ -767,7 +771,7 @@ ssh root@192.168.0.99 "command"  # Direct command execution
 ## Next Phase Priority Queue (Multi-Threaded Assignments)
 1. **GPU Drivers** → **On Hold**: Awaiting NVIDIA 575+ driver release for RTX 5070 Ti
 2. **Repository Fix** → **✅ COMPLETED**: All repositories now using Bookworm  
-3. **AI Services** → **Feature Branch**: Deploy Ollama + Open WebUI stack (ai-services branch)
+3. **AI Services** → **✅ EXTERNALIZED**: GBGreg AI platform operational (independent project)
 4. **Container Orchestration** → **Feature Branch**: Add Portainer with proper storage architecture (container-mgmt branch)
 5. **Advanced Monitoring** → **Reader Thread**: Custom alerting and performance thresholds
 6. **Automation Enhancement** → **Writer Thread**: Media processing pipeline automation
