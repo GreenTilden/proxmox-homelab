@@ -252,13 +252,13 @@
     background: linear-gradient(135deg,
       rgba(122, 62, 59, 0.15) 0%,
       rgba(166, 99, 74, 0.12) 100%) !important;
-    border: 1px solid rgba(224, 240, 175, 0.08) !important;
+    border: 1px solid rgba(205, 135, 105, 0.08) !important;
     box-shadow: 0 2px 6px rgba(45, 31, 38, 0.3) !important;
   }
 
   .mario-card:hover {
     background: rgba(122, 62, 59, 0.25) !important;
-    border-color: rgba(240, 248, 196, 0.2) !important;
+    border-color: rgba(234, 195, 120, 0.2) !important;
     box-shadow: 0 4px 12px rgba(45, 31, 38, 0.5), 0 0 0 1px rgba(88, 151, 157, 0.3) !important;
     transform: translateY(-2px) !important;
   }
@@ -289,7 +289,7 @@
     background: linear-gradient(90deg,
       var(--j8-2) 0%,
       var(--j8-1) 100%) !important;
-    border-bottom: 1px solid rgba(240, 248, 196, 0.15) !important;
+    border-bottom: 1px solid rgba(234, 195, 120, 0.15) !important;
     box-shadow: 0 2px 8px rgba(45, 31, 38, 0.3) !important;
   }
 
