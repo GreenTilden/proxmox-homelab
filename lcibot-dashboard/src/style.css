@@ -17,7 +17,7 @@
 
   /* Strategic Color Assignment for Homelab Dashboard */
   --bg-color: var(--j8-1);        /* Deep warm gray background */
-  --primary-color: var(--j8-7);   /* Warm green for primary actions */
+  --primary-color: #58979d;       /* Soft teal for primary actions (instead of bright green) */
   --secondary-color: var(--j8-6); /* Soft teal for secondary elements */
   --accent-color: var(--j8-4);    /* Warm yellow for highlights */
   --text-color: var(--j8-8);      /* Warm cream for text */
@@ -298,7 +298,7 @@
   .nav-selected,
   [aria-selected="true"],
   .active {
-    background-color: var(--j8-3) !important;
+    background-color: #58979d !important;
     color: var(--j8-8) !important;
     font-weight: 600 !important;
     text-shadow: none !important;
@@ -346,8 +346,8 @@
   .badge.success,
   .tag.is-success,
   .service-count.online {
-    background-color: var(--j8-7) !important;
-    color: var(--j8-1) !important;
+    background-color: #58979d !important;
+    color: var(--j8-8) !important;
     font-weight: 600 !important;
     text-shadow: none !important;
   }
