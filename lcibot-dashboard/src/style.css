@@ -180,14 +180,22 @@
   /* Chart and monitoring widget styles */
   .monitoring-widget {
     @apply rounded-lg border transition-all duration-300;
-    background: linear-gradient(135deg, var(--card-bg), var(--section-bg));
-    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--j8-1), var(--j8-2));
+    border-color: var(--j8-3);
     border-opacity: 0.3;
   }
   
   .monitoring-widget:hover {
-    border-opacity: 0.6;
+    background: linear-gradient(135deg, var(--j8-2), var(--j8-3));
+    border-color: var(--j8-5);
+    border-opacity: 0.4;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(45, 31, 38, 0.2) !important;
+  }
+
+  /* Override mario-card effects for monitoring widgets */
+  .monitoring-widget::before {
+    display: none !important;
   }
   
   .chart-container {
