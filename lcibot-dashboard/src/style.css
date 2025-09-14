@@ -10,7 +10,7 @@
   --j8-2: #7a3e3b;  /* Muted warm brown-red - secondary surfaces */
   --j8-3: #a6634a;  /* Deeper warm tan - card backgrounds */
   --j8-4: #e8c070;  /* Brighter warm yellow - better contrast for highlights */
-  --j8-5: #475166;  /* Deeper muted blue-gray - muted elements */
+  --j8-5: #5c668a;  /* Deeper muted blue-gray - muted elements */
   --j8-6: #5a8c92;  /* Slightly brighter soft teal - better visibility */
   --j8-7: #7bc96b;  /* Brighter warm green - better contrast for selected states */
   --j8-8: #f0f8c4;  /* Brighter cream for better text readability */
@@ -86,7 +86,7 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #58979d, var(--accent-color, #58979d));
+    background: linear-gradient(135deg, #58979d, var(--j8-5));
     border-radius: 10px;
     z-index: -1;
     opacity: 0;
