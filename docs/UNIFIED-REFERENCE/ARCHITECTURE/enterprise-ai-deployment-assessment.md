@@ -200,7 +200,6 @@
 ### Related Technical Documentation
 - [GPU Maximum Capacity Testing Results](../THREAD-CYCLES/cycle-history/gpu-maximum-capacity-testing-2025-08-28.md)
 - [RTX 5070 Ti Acceleration Guide](rtx-5070-ti-acceleration-guide.md)
-- [GBGreg Integration Roadmap](gbgreg-integration-roadmap.md)
 
 ### Business Planning Resources
 - [Hardware Scaling Strategy](hardware-scaling-strategy.md)
@@ -223,7 +222,6 @@
 | **Cost Efficiency** | $4000+ hardware requirement | $600-1500 hardware sufficient | 60-75% lower entry barrier |
 
 #### **Laboratory Automation Multi-Model Framework**
-Based on GBGreg integration analysis:
 
 **Specialized Model Deployment Strategy**:
 - **Coordinator Model**: llama3.2:3b (30-60s response) - Real-time experiment planning
@@ -247,7 +245,6 @@ Based on GBGreg integration analysis:
 
 ### Strategic Priorities (Next 6 Months)  
 1. **Market Education**: Educate prospects on multi-model efficiency advantages over traditional approaches
-2. **Laboratory Integration Validation**: Complete GBGreg-style laboratory automation deployments for enterprise proof points
 2. **Enterprise Pipeline**: Initiate conversations with 3-5 mid-size enterprise prospects
 3. **Technology Development**: Optimize deployment automation and management tools
 4. **Financial Planning**: Establish funding strategy for Tier 2 hardware investments

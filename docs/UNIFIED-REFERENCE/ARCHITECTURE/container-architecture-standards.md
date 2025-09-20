@@ -128,7 +128,7 @@ docker run -d \
 ### Pattern 3: Hybrid Approach (Maximum Flexibility)
 ```bash
 # LXC for heavy services, Docker for lightweight services
-# LXC: qBittorrent, Deluge, Plex
+# LXC: qBittorrent, media services, databases
 # Docker: Grafana, Prometheus, Web UIs
 ```
 
@@ -204,7 +204,7 @@ curl -s -o /dev/null -w "%{http_code}" http://service:port
 prometheus_exporters:
   - node_exporter          # System metrics
   - cadvisor              # Container metrics  
-  - custom_exporter       # Service-specific metrics (Deluge, etc.)
+  - custom_exporter       # Service-specific metrics (qBittorrent, etc.)
 ```
 
 ### Automated Health Monitoring

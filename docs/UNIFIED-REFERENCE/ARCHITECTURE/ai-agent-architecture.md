@@ -1,14 +1,12 @@
 # AI Agent Architecture - DeepSeek Coder Integration Framework
 
 **Created**: 2025-08-26  
-**Thread Origin**: GBGreg Documentation Thread  
 **Purpose**: Comprehensive AI infrastructure architecture for laboratory automation code generation with RTX 5070 Ti optimization
 
 ## 🤖 **AI Stack Overview**
 
 ### **Core Architecture**
 ```
-GBGreg AI Development Platform
 ├── DeepSeek Coder 6.7B (Primary AI Model)
 ├── RTX 5070 Ti GPU (16GB VRAM - Hardware Acceleration)
 ├── Container Environment (CT 120 - 4 cores, 8GB RAM)
@@ -305,7 +303,6 @@ Performance_Targets:
 
 #### **ScriptDB Pattern Integration**
 ```sql
--- GBGreg knowledge base schema
 CREATE DATABASE gbgreg_db;
 
 -- Pattern storage from ScriptDB migration
@@ -348,7 +345,6 @@ CREATE TABLE suggestion_feedback (
 #### **Pattern Migration Strategy**
 ```python
 class ScriptDBMigration:
-    """Migrate 200+ patterns from ScriptDB to GBGreg format"""
     
     def migrate_patterns(self):
         """Convert Vue 3 + TypeScript patterns to C# 4.0"""

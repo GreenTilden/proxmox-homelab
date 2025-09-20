@@ -237,4 +237,3 @@ time curl -X POST http://localhost:3333/api/generate \
 
 ---
 
-**🚀 This fix transforms the GBGreg system from a frustrated user experience with wrong model routing to a high-performance GPU-accelerated coding assistant delivering professional-quality results in seconds rather than minutes.**

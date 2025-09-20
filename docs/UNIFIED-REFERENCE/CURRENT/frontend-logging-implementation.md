@@ -16,11 +16,6 @@
 ### **Logging Capabilities Deployed**
 ```javascript
 // Core logging methods available
-window.GBGregLogger.error(message, context)     // Error logging with stack traces
-window.GBGregLogger.info(message, context)      // Informational logging  
-window.GBGregLogger.apiCall(method, url, data)  // API communication monitoring
-window.GBGregLogger.interaction(action, element) // User interaction tracking
-window.GBGregLogger.corsError(url, error)       // Cross-origin issue detection
 ```
 
 ### **Automatic Monitoring Active**
@@ -87,12 +82,8 @@ window.GBGregLogger.corsError(url, error)       // Cross-origin issue detection
 ### **Browser Console Usage**
 ```javascript
 // Access logger in browser console
-console.log(window.GBGregLogger.exportLogs()); // Export all logs
-window.GBGregLogger.clearLogs(); // Clear all stored logs
 
 // Manual logging examples
-window.GBGregLogger.error('Custom error', { context: 'details' });
-window.GBGregLogger.info('Status update', { data: someVariable });
 ```
 
 ### **Session Storage Structure**

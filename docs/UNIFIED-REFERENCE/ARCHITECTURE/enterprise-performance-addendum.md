@@ -82,7 +82,6 @@ docker run -d --name gpu-metrics \
 This addendum integrates with:
 - [Enterprise AI Deployment Assessment](enterprise-ai-deployment-assessment.md) - Business case validation
 - [GPU Maximum Capacity Testing](../THREAD-CYCLES/cycle-history/gpu-maximum-capacity-testing-2025-08-28.md) - Complete performance data
-- [GBGreg Integration Roadmap](gbgreg-integration-roadmap.md) - Implementation planning with realistic expectations
 
 ### Implementation Priority Queue
 

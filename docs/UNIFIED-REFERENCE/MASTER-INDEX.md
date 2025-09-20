@@ -11,8 +11,6 @@
 - [5-Thread Execution Model](./FRAMEWORK/5-thread-execution-model.md) - **MANDATORY** execution protocol
 - [Post-Clear Context Packages](./OPERATIONS/post-clear-thread-context-packages.md) - **NEW** Complete context recovery for all threads
 - [Cycle 14 Transition Summary](./CURRENT/cycle-14-transition-summary.md) - **NEW** User guide generation and maintenance phase
-- [GBGreg Enterprise Integration](./ARCHITECTURE/gbgreg-enterprise-integration.md) - ✅ **OPERATIONAL** Complete enterprise AI laboratory platform
-- [GBGreg Operations Guide](./OPERATIONS/gbgreg-enterprise-procedures.md) - ✅ **OPERATIONAL** Comprehensive management and troubleshooting
 - [Enterprise AI Assessment](./ARCHITECTURE/enterprise-ai-deployment-assessment.md) - 3-tier scaling strategy & business case
 - [RTX 5070 Ti Guide](./ARCHITECTURE/rtx-5070-ti-acceleration-guide.md) - ✅ **ENTERPRISE VALIDATED** GPU acceleration
 
@@ -43,7 +41,6 @@
 | Document | Description | Primary Thread |
 |----------|-------------|---------------|
 | [post-clear-thread-context-packages.md](./OPERATIONS/post-clear-thread-context-packages.md) | **NEW** ✅ **COMPLETE** Context recovery packages for all thread types | Documentation |
-| [gbgreg-enterprise-procedures.md](./OPERATIONS/gbgreg-enterprise-procedures.md) | ✅ **OPERATIONAL** Complete GBGreg management & troubleshooting | Documentation |
 | [memory-optimization-procedures.md](./OPERATIONS/memory-optimization-procedures.md) | RAM allocation resolution & large model deployment | Documentation |
 | service-deployments.md | Service installation guides | Writer |
 | monitoring-grafana.md | Monitoring stack setup | Writer |
@@ -137,7 +134,6 @@
 - **Storage**: 9.9TB total ZFS pools
 - **Services**: Multi-container AI system operational
 
-### **GBGreg Multi-Model AI Laboratory** ✅ **CYCLE 14 MAINTENANCE PHASE**
 1. **4-Container AI Architecture**: ✅ **OPERATIONAL** - Coordinator, Technical, Documentation, Vision models deployed
 2. **Database Integration**: ✅ **OPERATIONAL** - PostgreSQL on port 5433 with sustained performance
 3. **Frontend Interface**: ✅ **AVAILABLE** - Vue.js responsive interface on port 5173 ready for user guide creation
@@ -171,9 +167,6 @@
 
 ## 🚀 **Quick Start Guides**
 
-### **For GBGreg Enterprise AI Laboratory Integration** ✅ **NEW**
-1. Review [GBGreg Enterprise Architecture](./ARCHITECTURE/gbgreg-enterprise-integration.md) - Complete technical specifications
-2. Check [GBGreg Operations Guide](./OPERATIONS/gbgreg-enterprise-procedures.md) - Management and troubleshooting procedures
 3. Access operational services: Frontend (http://192.168.0.99:5173), API gateway, monitoring (Port 9105)
 4. Follow [Integration Cycle Archive](./THREAD-CYCLES/cycle-history/gbgreg-integration-cycle-2025-08-29/) - Complete development knowledge
 
@@ -244,7 +237,6 @@
 ## 🔍 **Search Index**
 
 ### **By Topic**
-- **🎯 GBGreg Enterprise Integration** ✅ **OPERATIONAL**: [Technical Architecture](./ARCHITECTURE/gbgreg-enterprise-integration.md), [Operations Guide](./OPERATIONS/gbgreg-enterprise-procedures.md), [Complete Cycle Archive](./THREAD-CYCLES/cycle-history/gbgreg-integration-cycle-2025-08-29/)
 - **🚀 Enterprise AI Deployment**: [Business Assessment](./ARCHITECTURE/enterprise-ai-deployment-assessment.md), [Performance Validation](./ARCHITECTURE/enterprise-performance-addendum.md), [Testing Results](./THREAD-CYCLES/cycle-history/gpu-maximum-capacity-testing-2025-08-28.md)
 - **🔧 Hardware & Infrastructure**: [Inventory](./ARCHITECTURE/hardware-inventory.md), [RTX 5070 Ti Guide](./ARCHITECTURE/rtx-5070-ti-acceleration-guide.md) ✅ **ENTERPRISE VALIDATED**
 - **📊 Performance & Monitoring**: [Model Performance Matrix](./ARCHITECTURE/enterprise-performance-addendum.md), [Custom Prometheus Integration](./OPERATIONS/gbgreg-enterprise-procedures.md#monitoring-and-operations-integration)

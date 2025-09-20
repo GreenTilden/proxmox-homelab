@@ -217,7 +217,6 @@ echo "=== OLLAMA DEPENDENCY AUDIT ==="
 echo "Checking for remaining Ollama references..."
 
 # Search all relevant file types for Ollama references
-OLLAMA_REFS=$(grep -r -i "ollama" /home/darney/projects/GBGreg/ \
   --include="*.py" --include="*.js" --include="*.ts" --include="*.vue" \
   --include="*.json" --include="*.yml" --include="*.yaml" | wc -l)
 
@@ -227,7 +226,6 @@ if [ $OLLAMA_REFS -eq 0 ]; then
 else
     echo "❌ MIGRATION INCOMPLETE: $OLLAMA_REFS references require resolution"
     echo "Detailed reference locations:"
-    grep -r -i "ollama" /home/darney/projects/GBGreg/ \
       --include="*.py" --include="*.js" --include="*.ts" --include="*.vue" \
       --include="*.json" --include="*.yml" --include="*.yaml"
 fi

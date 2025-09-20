@@ -2,7 +2,6 @@
 
 **Status**: 📋 **READY FOR IMPLEMENTATION** - Technical specifications for frontend connectivity  
 **Created**: 2025-08-30 (Post GPU acceleration breakthrough)
-**Authority**: Frontend integration requirements for GBGreg GPU-accelerated system
 **Location**: `/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/OPERATIONS/`
 
 ---

@@ -11,7 +11,7 @@ This document describes the secure, containerized media acquisition workflow dep
 
 ### 📦 Container Stack (Current Implementation)
 - **Firefox Container**: Containerized web browser for secure browsing (Docker)
-- **Deluge**: Download client in LXC CT 110 (native Proxmox container)
+- **qBittorrent**: Download client in LXC CT 110 (native Proxmox container)
 - **WireGuard**: VPN server for remote homelab access
 - **Automated Processing**: Python-based media organization pipeline
 
@@ -51,7 +51,7 @@ This document describes the secure, containerized media acquisition workflow dep
 4. **Download Links**: Copy magnet links or .torrent files
 
 ### Step 2: Secure Downloading
-1. **Deluge Interface**: http://192.168.0.111:8112 (password: "deluge")
+1. **qBittorrent Interface**: http://192.168.0.111:8112 (username: "admin", password: "adminadmin")
 2. **LXC Container**: CT 110 running native Ubuntu 22.04
 3. **Direct Storage**: Downloads directly to `/staging-pool/downloads/`
 4. **Monitoring**: Real-time torrent progress via Grafana dashboard
@@ -94,7 +94,7 @@ This document describes the secure, containerized media acquisition workflow dep
 
 ### Local Network Access
 - **Plex Media Server**: http://192.168.0.99:32400
-- **Deluge Torrent Client**: http://192.168.0.111:8112 (password: deluge)
+- **qBittorrent Torrent Client**: http://192.168.0.111:8112 (username: admin, password: adminadmin)
 - **Firefox Browser**: http://192.168.0.99:3001 (VNC interface)
 - **FileBrowser**: http://192.168.0.99:8080 (file management)
 - **Grafana Dashboard**: http://192.168.0.99:3000 (admin/test123)

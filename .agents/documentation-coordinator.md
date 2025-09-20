@@ -19,7 +19,6 @@ Persistent SME Agents:
 
 Completed Project Agents:
 ├── 🎬 Plex GPU Setup Agent    - RTX 5070 Ti transcoding [COMPLETED - archived]
-├── 🧠 GBGreg AI Infrastructure - Documentation ingestion engine [COMPLETED - production ready]
 └── [Historical project agents archived]
 
 Agent Documentation Status:

@@ -6,7 +6,6 @@
 
 ## Core System Status Updates
 
-### GBGreg Enterprise System - OPERATIONAL (with performance limitations)
 **Location**: `192.168.0.99` - All containers running
 **Status**: 🟡 **Functional but performance-limited due to GPU acceleration failure**
 

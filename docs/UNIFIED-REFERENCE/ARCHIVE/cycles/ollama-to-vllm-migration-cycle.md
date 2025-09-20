@@ -315,7 +315,6 @@ echo "======================================"
 
 # Test 1: Zero Ollama Dependencies
 echo "📋 Test 1: Ollama Dependency Elimination"
-OLLAMA_REFS=$(grep -r -i "ollama" /home/darney/projects/GBGreg/ \
   --include="*.py" --include="*.js" --include="*.ts" --include="*.vue" \
   --include="*.json" --include="*.yml" --include="*.yaml" | wc -l)
 

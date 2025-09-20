@@ -371,10 +371,16 @@ pvesm list [storage]
 ## Project Structure
 ```
 proxmox-homelab/
-├── scripts/       # Automation scripts
-├── configs/       # Service configurations
-├── docs/          # Documentation
-└── inventory/     # Hardware/software inventory
+├── scripts/           # Automation scripts
+├── configs/           # Service configurations
+├── docs/              # Documentation
+├── inventory/         # Hardware/software inventory
+├── lcibot-dashboard/  # Vue.js dashboard with hot reload
+│   ├── src/           # Vue components and source code
+│   ├── dist/          # Built production files
+│   ├── package.json   # Dependencies and scripts
+│   └── vite.config.ts # Development server configuration
+└── .agents/           # Claude Code agent configurations
 ```
 
 ## Critical Reminders
@@ -519,13 +525,12 @@ Located in `.agents/` directory:
 - **⚡ Writer Thread**: Updates persistent agent configurations
 - **🚀 Feature Threads**: Create new disposable agents with inherited context
 
-## Current State (2025-08-25)
+## Current State (2025-09-20) - LCiBot Vue.js Dashboard Operational
 - ✅ Proxmox VE 9.0.3 installed and accessible (192.168.0.99)
-- ✅ SSH configured with key authentication  
+- ✅ SSH configured with key authentication
 - ✅ RTX 5070 Ti 16GB installed and detected
-- ✅ GTX 970 4GB installed (secondary GPU)
 - ✅ ICY DOCK MB024SP-B mobile rack installed
-- ✅ **Claude Code Agent System**: Hybrid persistent/disposable agent architecture operational
+- ✅ **LCiBot Vue.js Dashboard**: Running with hot reload at http://192.168.0.218:3000
 - ✅ ZFS Storage: 9.06TB media-pool + 232GB service-pool + 696GB staging-pool
 - ✅ Recovery Mission: Complete with 246MB personal content preserved
 - ✅ **ORCHESTRATED WORKTREE SYSTEM**: Full multi-threaded development operational
@@ -544,19 +549,17 @@ Located in `.agents/` directory:
   - **WireGuard Server**: Remote VPN access (51820/udp)
 - ✅ **Storage Workflow**: staging-pool → processing → media-pool → Plex
 - ✅ Data curation and preservation workflows complete
-- ✅ **External AI Services**: GBGreg laboratory automation platform operational (separate project)
-  - **AI Stack**: 4x Ollama containers on homelab GPU (ports 11436-11439)
-  - **Database**: PostgreSQL on port 5433
-  - **Integration**: GPU sharing and monitoring integration with homelab infrastructure
-- ⚠️ Repository mixing Bookworm/Trixie (needs fix - Writer thread)
+- ✅ **Repository Cleanup**: All GBGreg references properly moved to separate project
 - ⚠️ NVIDIA drivers (deferred for GPU transcoding implementation)
 - 🚀 Ready for next phase: GPU transcoding, advanced automation
 
-## Current Worktree Thread Status
-- **Main**: Coordination hub for multi-threaded development  
-- **Reader**: System monitoring and research operations
-- **Writer**: ✅ ACTIVE - Service restoration complete, documentation deployed
-- **Active Features**: doc-migration (complete), retro-gaming-dashboard (active)
+## Current Worktree Thread Status - Cycle 2
+- **🎯 Main**: Vue.js dashboard orchestration, 5-thread coordination complete
+- **🔍 Reader**: ✅ NEXT ACTIVE - greentilden.github.io template analysis and Mario theme requirements  
+- **⚡ Writer**: PENDING - Vue.js Mario dashboard implementation
+- **🔧 Debug**: PENDING - Performance optimization and mobile compatibility
+- **📚 Documentation**: PENDING - Pattern capture for cross-project reuse
+- **Active Features**: vue-mario-dashboard (Cycle 2 primary objective)
 
 ## Services Architecture
 
@@ -770,8 +773,8 @@ ssh root@192.168.0.99 "command"  # Direct command execution
 
 ## Next Phase Priority Queue (Multi-Threaded Assignments)
 1. **GPU Drivers** → **On Hold**: Awaiting NVIDIA 575+ driver release for RTX 5070 Ti
-2. **Repository Fix** → **✅ COMPLETED**: All repositories now using Bookworm  
-3. **AI Services** → **✅ EXTERNALIZED**: GBGreg AI platform operational (independent project)
+2. **Repository Fix** → **✅ COMPLETED**: All repositories now using Bookworm
+3. **AI Services** → **In Planning**: Ollama + Open WebUI deployment for local AI/LLM
 4. **Container Orchestration** → **Feature Branch**: Add Portainer with proper storage architecture (container-mgmt branch)
 5. **Advanced Monitoring** → **Reader Thread**: Custom alerting and performance thresholds
 6. **Automation Enhancement** → **Writer Thread**: Media processing pipeline automation

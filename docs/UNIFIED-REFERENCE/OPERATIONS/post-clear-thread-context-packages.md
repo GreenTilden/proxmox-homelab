@@ -29,7 +29,6 @@ cat /home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/THREAD-CYCLES/c
 - **Current Status**: Cycle 14 Ready - Maintenance & User Guide Generation Phase
 
 ### **System Architecture (Current State)**
-- **Multi-Model AI System**: 4-container GBGreg architecture operational
   - Coordinator: llama3.2:3b on port 11436
   - Technical: deepseek-coder:6.7b on port 11437
   - Documentation: llama3.1:8b on port 11438  
@@ -105,7 +104,6 @@ ssh root@192.168.0.99 "free -h && lscpu | grep 'Model name'"
 
 # Container management verification
 ssh root@192.168.0.99 "docker-compose --version && docker network ls"
-ssh root@192.168.0.99 "ls -la /opt/gbgreg/ 2>/dev/null || echo 'GBGreg directory check needed'"
 ```
 
 ### **Critical Context Foundation**
@@ -132,7 +130,6 @@ ssh root@192.168.0.99 "docker stats --no-stream | head -10"
 
 ### **Essential Documents for Writer Thread**
 - [Container Standards](/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/ARCHITECTURE/container-architecture-standards.md)
-- [GBGreg Enterprise Procedures](/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/OPERATIONS/gbgreg-enterprise-procedures.md)
 - [ZFS Storage Architecture](/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/ARCHITECTURE/storage-zfs-pools.md)
 
 ---
@@ -266,7 +263,6 @@ ssh root@192.168.0.99 "nvidia-smi && docker exec gbgreg-technical nvidia-smi"
 - [ ] **Documentation**: Can validate MASTER-INDEX.md structure and content
 
 ### **Performance Baseline Confirmation**
-- [ ] All GBGreg containers running with sustained uptime
 - [ ] API gateway health endpoint responding
 - [ ] Frontend interface accessible on port 5173
 - [ ] GPU hardware available (even if idle)

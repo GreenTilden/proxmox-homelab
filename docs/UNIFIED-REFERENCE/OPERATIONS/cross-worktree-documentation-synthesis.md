@@ -41,7 +41,6 @@
    - **Status**: **CONSOLIDATE** - Already partially in UNIFIED-REFERENCE, complete integration
    - **Target Location**: `ARCHITECTURE/container-storage-complete.md`
 
-2. **Multi-Model Integration**: GBGreg system architecture and deployment patterns
    - **Value**: Complete 4-model container system documentation  
    - **Status**: **PRESERVE** - Critical for system maintenance and scaling
    - **Target Location**: `ARCHITECTURE/gbgreg-multi-model-architecture.md`
@@ -86,7 +85,6 @@
 - **Integration**: Complete ZFS mounting patterns, proven deployment standards
 
 #### **Multi-Model System Documentation**:
-- **Sources**: GBGreg integration reports and architecture documentation
 - **Target**: `ARCHITECTURE/gbgreg-multi-model-architecture.md`
 - **Integration**: Complete 4-model system with port allocation and specialization
 

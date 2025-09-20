@@ -176,7 +176,6 @@ ssh root@192.168.0.99 "watch -n 2 'nvidia-smi --query-gpu=utilization.gpu --form
 - **Prometheus**: http://192.168.0.99:9090
 - **Existing Exporters**: Node Exporter (9100), ZFS Exporter (9101), Deluge Exporter (9102)
 
-### **GBGreg System Metrics - Ready for Integration**
 **Metrics to Add to Grafana**:
 ```bash
 # GPU utilization and memory usage
@@ -281,7 +280,6 @@ ssh root@192.168.0.99 "docker restart gbgreg-coordinator"
 1. **All Backend Models Operational**: 4/4 models showing "healthy" status with no "fetch failed" errors
 2. **Frontend Environment Professional**: Single dev server with complete Biosero styling integration
 3. **User Workflows Validated**: Upload/Database/Chat workflows tested and operational  
-4. **System Monitoring Complete**: GBGreg metrics integrated into existing Grafana dashboard
 5. **GPU Performance Preserved**: 77% utilization and 6-12s response times maintained throughout
 
 ### **Professional System Standards Achieved**
