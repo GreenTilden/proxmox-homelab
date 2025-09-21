@@ -53,9 +53,17 @@
       />
     </div>
 
-    <!-- ZFS Pool Status Section -->
-    <div class="zfs-section mt-6">
-      <ZFSPoolChart />
+    <!-- Storage & Download Monitoring Section -->
+    <div class="storage-download-section mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- ZFS Pool Status -->
+      <div class="zfs-section">
+        <ZFSPoolChart />
+      </div>
+
+      <!-- qBittorrent Status -->
+      <div class="torrent-section">
+        <TorrentStatus />
+      </div>
     </div>
 
     <div class="network-metrics mt-4 p-4 rounded-lg" style="background: var(--section-bg);">
@@ -128,6 +136,7 @@ import { useSystemMetrics } from '@/composables/useSystemMetrics'
 import MetricCard from './MetricCard.vue'
 import MiniChart from './MiniChart.vue'
 import ZFSPoolChart from './ZFSPoolChart.vue'
+import TorrentStatus from './TorrentStatus.vue'
 
 const showChart = ref(true)
 
@@ -270,13 +279,17 @@ onUnmounted(() => {
   .metrics-grid {
     @apply grid-cols-2 gap-3;
   }
-  
+
   .widget-header {
     @apply flex-col items-start space-y-2;
   }
-  
+
   .widget-actions {
     @apply flex-col items-stretch space-y-2;
+  }
+
+  .storage-download-section {
+    @apply grid-cols-1 gap-4;
   }
 }
 
