@@ -62,8 +62,8 @@
               <span class="metric-value">{{ formatUptime(service.metrics.uptime) }}</span>
             </div>
             
-            <!-- Deluge-specific metrics -->
-            <template v-if="service.id === 'deluge-exporter' && service.metrics?.customMetrics">
+            <!-- qBittorrent-specific metrics -->
+            <template v-if="service.id === 'qbittorrent-exporter' && service.metrics?.customMetrics">
               <div class="metric-item" v-if="service.metrics.customMetrics.activeDownloads !== undefined">
                 <span class="metric-label">Active Downloads:</span>
                 <span class="metric-value">{{ service.metrics.customMetrics.activeDownloads }}</span>
@@ -153,7 +153,7 @@ import {
   AlertTriangle,
   XCircle
 } from 'lucide-vue-next'
-import type { ServiceStatus } from '../../composables/useServiceMonitoring'
+import type { ServiceStatus } from '@/composables/useServiceMonitoring'
 
 interface Props {
   service: ServiceStatus
@@ -171,10 +171,10 @@ const serviceIcons = {
   'node-exporter': Server,
   'cadvisor': Activity,
   'zfs-exporter': Database,
-  'deluge-exporter': Download,
+  'qbittorrent-exporter': Download,
   'plex': Play,
   'grafana': TrendingUp,
-  'deluge': Download,
+  'qbittorrent': Download,
   'filebrowser': Folder,
   'proxmox': Server
 }

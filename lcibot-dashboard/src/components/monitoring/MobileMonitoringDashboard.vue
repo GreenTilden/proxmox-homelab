@@ -136,8 +136,8 @@ import {
   CheckCircle,
   Activity
 } from 'lucide-vue-next'
-import { useSystemMetrics } from '../../composables/useSystemMetrics'
-import { useServiceMonitoring } from '../../composables/useServiceMonitoring'
+import { useSystemMetrics } from '@/composables/useSystemMetrics'
+import { useServiceMonitoring } from '@/composables/useServiceMonitoring'
 import MiniChart from './MiniChart.vue'
 import MobileMetricCard from './MobileMetricCard.vue'
 import MobileServiceCard from './MobileServiceCard.vue'

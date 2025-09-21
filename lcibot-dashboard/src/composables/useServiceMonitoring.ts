@@ -78,13 +78,13 @@ export const useServiceMonitoring = () => {
       instance: 'zfs-pools'
     },
     {
-      id: 'deluge-exporter',
-      name: 'Deluge Exporter',
+      id: 'qbittorrent-exporter',
+      name: 'qBittorrent Exporter',
       description: 'Torrent Client Metrics',
       status: 'unknown',
       lastChecked: null,
       responseTime: null,
-      job: 'deluge-exporter',
+      job: 'qbittorrent-exporter',
       instance: 'torrent-client'
     },
     {
@@ -112,13 +112,13 @@ export const useServiceMonitoring = () => {
       healthEndpoint: 'http://192.168.0.99:3000/api/health'
     },
     {
-      id: 'deluge',
-      name: 'Deluge Web UI',
+      id: 'qbittorrent',
+      name: 'qBittorrent Web UI',
       description: 'Torrent Management Interface',
       status: 'unknown',
       lastChecked: null,
       responseTime: null,
-      job: 'deluge-web',
+      job: 'qbittorrent-web',
       instance: 'torrent-ui',
       url: 'http://192.168.0.111:8112',
       healthEndpoint: 'http://192.168.0.111:8112/'
@@ -255,11 +255,11 @@ export const useServiceMonitoring = () => {
       
       // Service-specific metrics
       switch (service.id) {
-        case 'deluge-exporter':
+        case 'qbittorrent-exporter':
           promises.push(
-            prometheusClient.query(SYSTEM_QUERIES.delugeActiveDownloads).catch(() => null),
-            prometheusClient.query(SYSTEM_QUERIES.delugeDownloadSpeed).catch(() => null),
-            prometheusClient.query(SYSTEM_QUERIES.delugeUploadSpeed).catch(() => null)
+            prometheusClient.query(SYSTEM_QUERIES.qbittorrentActiveDownloads).catch(() => null),
+            prometheusClient.query(SYSTEM_QUERIES.qbittorrentDownloadSpeed).catch(() => null),
+            prometheusClient.query(SYSTEM_QUERIES.qbittorrentUploadSpeed).catch(() => null)
           )
           break
           
@@ -292,7 +292,7 @@ export const useServiceMonitoring = () => {
               break
             default:
               // Service-specific metrics handling
-              if (service.id === 'deluge-exporter') {
+              if (service.id === 'qbittorrent-exporter') {
                 switch (index) {
                   case 1: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, activeDownloads: value }; break
                   case 2: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, downloadSpeed: value }; break

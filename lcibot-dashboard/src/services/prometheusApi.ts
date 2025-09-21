@@ -244,10 +244,10 @@ export const SYSTEM_QUERIES = {
   containerCpuUsage: 'sum(rate(container_cpu_usage_seconds_total{name!=""}[5m])) by (name)',
   containerMemoryUsage: 'sum(container_memory_usage_bytes{name!=""}) by (name)',
   
-  // Deluge Torrent Metrics (custom exporter)
-  delugeActiveDownloads: 'deluge_active_downloads',
-  delugeDownloadSpeed: 'deluge_download_speed_bytes',
-  delugeUploadSpeed: 'deluge_upload_speed_bytes'
+  // qBittorrent Torrent Metrics (custom exporter)
+  qbittorrentActiveDownloads: 'qbittorrent_active_downloads',
+  qbittorrentDownloadSpeed: 'qbittorrent_download_speed_bytes',
+  qbittorrentUploadSpeed: 'qbittorrent_upload_speed_bytes'
 }
 
 // Utility functions for metrics processing

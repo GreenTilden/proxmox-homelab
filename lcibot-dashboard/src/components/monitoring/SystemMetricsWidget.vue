@@ -52,7 +52,12 @@
         :subtitle="`${systemMetrics.cpuCores} cores`"
       />
     </div>
-    
+
+    <!-- ZFS Pool Status Section -->
+    <div class="zfs-section mt-6">
+      <ZFSPoolChart />
+    </div>
+
     <div class="network-metrics mt-4 p-4 rounded-lg" style="background: var(--section-bg);">
       <h4 class="text-sm font-medium mb-2 opacity-80" style="color: var(--text-color);">Network Activity</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,9 +124,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Server, Cpu, MemoryStick, HardDrive, Activity, RefreshCw, TrendingUp } from 'lucide-vue-next'
-import { useSystemMetrics } from '../../composables/useSystemMetrics'
+import { useSystemMetrics } from '@/composables/useSystemMetrics'
 import MetricCard from './MetricCard.vue'
 import MiniChart from './MiniChart.vue'
+import ZFSPoolChart from './ZFSPoolChart.vue'
 
 const showChart = ref(true)
 

@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue'
 import { Shield, RefreshCw, Clock, AlertTriangle, ExternalLink } from 'lucide-vue-next'
-import { useServiceMonitoring } from '../../composables/useServiceMonitoring'
+import { useServiceMonitoring } from '@/composables/useServiceMonitoring'
 import ServiceHealthCard from './ServiceHealthCard.vue'
 
 const {

@@ -24,8 +24,8 @@
               <span class="detail-value">{{ formatUptime(service.metrics.uptime) }}</span>
             </div>
             
-            <!-- Deluge-specific metrics -->
-            <div v-if="service.id === 'deluge-exporter' && service.metrics?.customMetrics">
+            <!-- qBittorrent-specific metrics -->
+            <div v-if="service.id === 'qbittorrent-exporter' && service.metrics?.customMetrics">
               <div class="detail-item" v-if="service.metrics.customMetrics.activeDownloads !== undefined">
                 <span class="detail-label">Downloads:</span>
                 <span class="detail-value">{{ service.metrics.customMetrics.activeDownloads }}</span>
@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RefreshCw, ExternalLink, Server, Database, Shield, Activity, Download, Folder, TrendingUp, Play } from 'lucide-vue-next'
-import type { ServiceStatus } from '../../composables/useServiceMonitoring'
+import type { ServiceStatus } from '@/composables/useServiceMonitoring'
 
 interface Props {
   service: ServiceStatus
@@ -87,10 +87,10 @@ const serviceIcons = {
   'node-exporter': Server,
   'cadvisor': Activity,
   'zfs-exporter': Database,
-  'deluge-exporter': Download,
+  'qbittorrent-exporter': Download,
   'plex': Play,
   'grafana': TrendingUp,
-  'deluge': Download,
+  'qbittorrent': Download,
   'filebrowser': Folder,
   'proxmox': Server
 }
