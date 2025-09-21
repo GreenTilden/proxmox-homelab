@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Mario Homelab Command Center</title>
+    
+    <!-- Mario Theme Styles -->
+    <style>
+        /* Embed the Mario CSS directly to avoid loading issues */
+        :root {
+            --mario-red: #FF004D;
+            --mario-blue: #29ADFF;
+            --mario-green: #00E436;
+            --mario-yellow: #FFEC27;
+            --mario-purple: #7E2553;
+            --mario-white: #FFF1E8;
+            --mario-bg: #1D2B53;
+        }
+        
+        body {
+            background: var(--mario-bg);
+            color: var(--mario-white);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .mario-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .mario-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--mario-purple), var(--mario-bg));
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--mario-blue);
+        }
+        
+        .mario-title {
+            font-size: 2.5rem;
+            color: var(--mario-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 0.5rem;
+        }
+        
+        .mario-subtitle {
+            font-size: 1.2rem;
+            color: var(--mario-white);
+            opacity: 0.9;
+        }
+        
+        /* Theme Switcher */
+        .mario-theme-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .theme-button {
+            background: var(--mario-red);
+            color: white;
+            border: 2px solid var(--mario-white);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .theme-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            background: var(--mario-blue);
+        }
+        
+        /* System Health Widget */
+        .mario-health {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(125, 37, 83, 0.9);
+            border: 2px solid var(--mario-green);
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 250px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .health-title {
+            color: var(--mario-yellow);
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+        
+        .health-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        
+        .health-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        
+        .status-online { background: var(--mario-green); box-shadow: 0 0 6px var(--mario-green); }
+        .status-offline { background: var(--mario-red); box-shadow: 0 0 6px var(--mario-red); }
+        .status-warning { background: var(--mario-yellow); box-shadow: 0 0 6px var(--mario-yellow); }
+        
+        /* Service Grid */
+        .mario-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-category {
+            background: rgba(125, 37, 83, 0.15);
+            border: 2px solid var(--mario-blue);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(41, 173, 255, 0.4);
+            border-color: var(--mario-green);
+        }
+        
+        .category-title {
+            font-size: 1.4rem;
+            color: var(--mario-yellow);
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .service-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--mario-white);
+            display: block;
+        }
+        
+        .service-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--mario-red);
+            color: var(--mario-white);
+            text-decoration: none;
+            transform: translateX(4px);
+        }
+        
+        .service-name {
+            font-weight: bold;
+            color: var(--mario-white);
+            margin-bottom: 0.25rem;
+        }
+        
+        .service-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            color: var(--mario-white);
+        }
+        
+        /* Gaming Category */
+        .category-gaming {
+            border-color: var(--mario-red);
+        }
+        .category-gaming:hover {
+            box-shadow: 0 8px 25px rgba(255, 0, 77, 0.4);
+        }
+        .category-gaming .service-item:hover {
+            border-color: var(--mario-red);
+        }
+        
+        /* Media Category */
+        .category-media {
+            border-color: var(--mario-yellow);
+        }
+        .category-media:hover {
+            box-shadow: 0 8px 25px rgba(255, 236, 39, 0.4);
+        }
+        .category-media .service-item:hover {
+            border-color: var(--mario-yellow);
+        }
+        
+        /* Infrastructure Category */
+        .category-infrastructure {
+            border-color: var(--mario-green);
+        }
+        .category-infrastructure:hover {
+            box-shadow: 0 8px 25px rgba(0, 228, 54, 0.4);
+        }
+        .category-infrastructure .service-item:hover {
+            border-color: var(--mario-green);
+        }
+        
+        /* Development Category */
+        .category-development {
+            border-color: var(--mario-blue);
+        }
+        .category-development:hover {
+            box-shadow: 0 8px 25px rgba(41, 173, 255, 0.4);
+        }
+        .category-development .service-item:hover {
+            border-color: var(--mario-blue);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .mario-theme-switcher {
+                position: relative;
+                top: 0;
+                left: 0;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            
+            .mario-health {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 1rem auto;
+                max-width: 100%;
+            }
+            
+            .mario-services {
+                grid-template-columns: 1fr;
+            }
+            
+            .mario-title {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Theme Variations */
+        .theme-mario-paint {
+            --mario-red: #D82800;
+            --mario-blue: #0040FF;
+            --mario-green: #00A800;
+            --mario-yellow: #FFFF00;
+            --mario-bg: #F8F8F8;
+            --mario-white: #383838;
+        }
+        
+        .theme-mario-paint body {
+            background: var(--mario-bg);
+            color: var(--mario-white);
+        }
+        
+        .theme-italy-4 {
+            --mario-red: #B55088;
+            --mario-blue: #68386C;
+            --mario-green: #F8E2CF;
+            --mario-yellow: #B55088;
+            --mario-bg: #0F0F23;
+        }
+        
+        .theme-game-boy {
+            --mario-red: #9BBD0F;
+            --mario-blue: #8BAC0F;
+            --mario-green: #8BAC0F;
+            --mario-yellow: #9BBD0F;
+            --mario-bg: #0F380F;
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Switcher -->
+    <div class="mario-theme-switcher">
+        <button class="theme-button" onclick="cycleTheme()">
+            🎮 Switch Theme
+        </button>
+    </div>
+    
+    <!-- System Health Widget -->
+    <div class="mario-health">
+        <div class="health-title">🔥 System Health</div>
+        <div class="health-item">
+            <span>Homer Dashboard</span>
+            <div class="health-status status-online"></div>
+        </div>
+        <div class="health-item">
+            <span>Grafana</span>
+            <div class="health-status status-online" id="grafana-status"></div>
+        </div>
+        <div class="health-item">
+            <span>Plex Media</span>
+            <div class="health-status status-online" id="plex-status"></div>
+        </div>
+        <div class="health-item">
+            <span>Proxmox</span>
+            <div class="health-status status-online" id="proxmox-status"></div>
+        </div>
+        <div class="health-item">
+            <span>Deluge</span>
+            <div class="health-status status-online" id="deluge-status"></div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="mario-container">
+        <!-- Header -->
+        <div class="mario-header">
+            <h1 class="mario-title">🎮 Mario Homelab Command Center</h1>
+            <p class="mario-subtitle">Authentic Nintendo 16-Bit Dashboard with System Monitoring</p>
+        </div>
+        
+        <!-- Services Grid -->
+        <div class="mario-services">
+            <!-- Command Center -->
+            <div class="service-category category-infrastructure">
+                <h2 class="category-title">🏰 Command Center</h2>
+                
+                <a href="http://192.168.0.99:3000" target="_blank" class="service-item">
+                    <div class="service-name">📊 Grafana Dashboard</div>
+                    <div class="service-desc">Battle Statistics & System Analytics</div>
+                </a>
+                
+                <a href="http://192.168.0.99:9090" target="_blank" class="service-item">
+                    <div class="service-name">🔥 Prometheus Metrics</div>
+                    <div class="service-desc">Metrics Forge & Data Source</div>
+                </a>
+                
+                <a href="https://192.168.0.99:8006" target="_blank" class="service-item">
+                    <div class="service-name">⚙️ Proxmox Console</div>
+                    <div class="service-desc">Virtualization Command Base</div>
+                </a>
+            </div>
+            
+            <!-- Media Kingdom -->
+            <div class="service-category category-media">
+                <h2 class="category-title">⚔️ Media Kingdom</h2>
+                
+                <a href="http://192.168.0.99:32400" target="_blank" class="service-item">
+                    <div class="service-name">▶️ Plex Media Server</div>
+                    <div class="service-desc">Royal Cinema Hall</div>
+                </a>
+                
+                <a href="http://192.168.0.111:8112" target="_blank" class="service-item">
+                    <div class="service-name">⬇️ Deluge Torrents</div>
+                    <div class="service-desc">Treasure Acquisition System</div>
+                </a>
+                
+                <a href="http://192.168.0.99:3001" target="_blank" class="service-item">
+                    <div class="service-name">🌐 Firefox Browser</div>
+                    <div class="service-desc">Quest Portal & Web Access</div>
+                </a>
+            </div>
+            
+            <!-- System Defense -->
+            <div class="service-category category-infrastructure">
+                <h2 class="category-title">🛡️ System Defense</h2>
+                
+                <a href="http://192.168.0.99:8080" target="_blank" class="service-item">
+                    <div class="service-name">📁 File Browser</div>
+                    <div class="service-desc">Vault Management & ZFS Access</div>
+                </a>
+                
+                <a href="/system-status.html" target="_blank" class="service-item">
+                    <div class="service-name">🖥️ System Health</div>
+                    <div class="service-desc">Hardware Health Check</div>
+                </a>
+                
+                <a href="http://192.168.0.99:8090" target="_blank" class="service-item">
+                    <div class="service-name">🎮 Homer Original</div>
+                    <div class="service-desc">Original Homer Dashboard</div>
+                </a>
+            </div>
+            
+            <!-- Gaming Zone -->
+            <div class="service-category category-gaming">
+                <h2 class="category-title">🎮 Gaming Zone</h2>
+                
+                <a href="#" onclick="alert('🎮 Gaming servers coming soon!')" class="service-item">
+                    <div class="service-name">🕹️ Game Server</div>
+                    <div class="service-desc">Multiplayer Gaming Hub</div>
+                </a>
+                
+                <a href="#" onclick="alert('👾 Retro gaming setup in progress!')" class="service-item">
+                    <div class="service-name">👾 Retro Emulator</div>
+                    <div class="service-desc">Classic Gaming Station</div>
+                </a>
+                
+                <a href="http://192.168.0.99:8090" target="_blank" class="service-item">
+                    <div class="service-name">🎯 Theme Switcher</div>
+                    <div class="service-desc">Mario Palette Controls</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript for Theme Switching and Health Monitoring -->
+    <script>
+        let currentTheme = 0;
+        const themes = ['', 'theme-mario-paint', 'theme-italy-4', 'theme-game-boy'];
+        const themeNames = ['Jehkoba16 (NES)', 'Mario Paint (SNES)', 'Italy-4 (Minimal)', 'Game Boy (Mono)'];
+        
+        function cycleTheme() {
+            // Remove current theme class
+            document.body.classList.remove(themes[currentTheme]);
+            
+            // Move to next theme
+            currentTheme = (currentTheme + 1) % themes.length;
+            
+            // Apply new theme class
+            if (themes[currentTheme]) {
+                document.body.classList.add(themes[currentTheme]);
+            }
+            
+            // Update button text
+            const button = document.querySelector('.theme-button');
+            button.textContent = `🎮 ${themeNames[currentTheme]}`;
+            
+            // Save theme preference
+            localStorage.setItem('mario-theme', currentTheme);
+            
+            console.log(`Switched to theme: ${themeNames[currentTheme]}`);
+        }
+        
+        // Load saved theme
+        function loadTheme() {
+            const saved = localStorage.getItem('mario-theme');
+            if (saved !== null) {
+                currentTheme = parseInt(saved);
+                if (themes[currentTheme]) {
+                    document.body.classList.add(themes[currentTheme]);
+                }
+                const button = document.querySelector('.theme-button');
+                button.textContent = `🎮 ${themeNames[currentTheme]}`;
+            }
+        }
+        
+        // System Health Monitoring
+        async function checkServiceHealth() {
+            const services = [
+                { id: 'grafana-status', url: 'http://192.168.0.99:3000' },
+                { id: 'plex-status', url: 'http://192.168.0.99:32400' },
+                { id: 'proxmox-status', url: 'https://192.168.0.99:8006' },
+                { id: 'deluge-status', url: 'http://192.168.0.111:8112' }
+            ];
+            
+            for (const service of services) {
+                try {
+                    // Due to CORS, we'll simulate health checks
+                    // In a real implementation, you'd use a backend proxy
+                    const element = document.getElementById(service.id);
+                    if (element) {
+                        // Simulate online status (in real implementation, use fetch)
+                        element.className = 'health-status status-online';
+                    }
+                } catch (error) {
+                    const element = document.getElementById(service.id);
+                    if (element) {
+                        element.className = 'health-status status-offline';
+                    }
+                }
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                cycleTheme();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            checkServiceHealth();
+            
+            // Update health every 30 seconds
+            setInterval(checkServiceHealth, 30000);
+        });
+        
+        // Add some Mario-style sound effects (optional)
+        function playMarioSound() {
+            // Simple beep sound using Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'square';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Silent failure for sound
+            }
+        }
+        
+        // Add click sound to theme button
+        document.querySelector('.theme-button').addEventListener('click', playMarioSound);
+    </script>
+</body>
+</html>

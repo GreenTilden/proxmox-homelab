@@ -1,0 +1,56 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="arcadeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF3366;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#00FF00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF3366;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="screenGlow" cx="50%" cy="40%">
+      <stop offset="0%" style="stop-color:#00FFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066FF;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Arcade cabinet base -->
+  <rect x="12" y="45" width="40" height="15" rx="2" fill="url(#arcadeGradient)"/>
+  
+  <!-- Main cabinet body -->
+  <path d="M 16 45 L 16 20 L 20 16 L 44 16 L 48 20 L 48 45 Z" fill="url(#arcadeGradient)"/>
+  
+  <!-- Screen -->
+  <rect x="20" y="20" width="24" height="18" rx="2" fill="url(#screenGlow)"/>
+  <rect x="22" y="22" width="20" height="14" rx="1" fill="rgba(0,0,0,0.8)"/>
+  
+  <!-- 16-bit game display -->
+  <rect x="24" y="24" width="4" height="4" fill="#FF3366"/>
+  <rect x="30" y="26" width="4" height="4" fill="#00FF00"/>
+  <rect x="36" y="24" width="4" height="4" fill="#FFD700"/>
+  <rect x="28" y="30" width="8" height="4" fill="#00FFFF"/>
+  
+  <!-- Control panel -->
+  <rect x="18" y="40" width="28" height="8" rx="2" fill="rgba(0,0,0,0.6)"/>
+  
+  <!-- Joystick -->
+  <circle cx="26" cy="44" r="3" fill="#FFD700" stroke="#FFFFFF" stroke-width="1"/>
+  <rect x="25" y="41" width="2" height="6" fill="#FFFFFF"/>
+  
+  <!-- Action buttons -->
+  <circle cx="34" cy="42" r="2" fill="#FF3366"/>
+  <circle cx="38" cy="44" r="2" fill="#00FF00"/>
+  <circle cx="42" cy="46" r="2" fill="#0066FF"/>
+  
+  <!-- 16-bit pixel details -->
+  <rect x="14" y="18" width="2" height="2" fill="#00FF00"/>
+  <rect x="48" y="18" width="2" height="2" fill="#FF3366"/>
+  <rect x="14" y="47" width="2" height="2" fill="#FFD700"/>
+  <rect x="48" y="47" width="2" height="2" fill="#00FFFF"/>
+  
+  <!-- Cabinet legs -->
+  <rect x="16" y="58" width="4" height="4" rx="1" fill="url(#arcadeGradient)"/>
+  <rect x="44" y="58" width="4" height="4" rx="1" fill="url(#arcadeGradient)"/>
+  
+  <!-- Retro lighting effects -->
+  <rect x="14" y="16" width="36" height="1" fill="rgba(255,255,255,0.6)"/>
+  <rect x="12" y="45" width="40" height="1" fill="rgba(255,255,255,0.6)"/>
+</svg>

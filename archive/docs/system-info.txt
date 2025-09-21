@@ -1,0 +1,89 @@
+=== PROXMOX VERSION INFO ===
+proxmox-ve: 9.0.0 (running kernel: 6.11.0-1-pve)
+pve-manager: 9.0.3 (running version: 9.0.3/025864202ebb6109)
+proxmox-kernel-helper: 9.0.3
+proxmox-kernel-6.14.8-2-pve-signed: 6.14.8-2
+proxmox-kernel-6.14: 6.14.8-2
+proxmox-kernel-6.11.0-1-pve: 6.11.0-1
+ceph-fuse: 19.2.3-pve1
+corosync: 3.1.9-pve2
+criu: 4.1.1-1
+frr-pythontools: 10.3.1-1+pve4
+ifupdown2: 3.3.0-1+pmx9
+intel-microcode: 3.20250512.1
+ksm-control-daemon: 1.5-1
+libjs-extjs: 7.0.0-5
+libknet1: not correctly installed
+libproxmox-acme-perl: 1.7.0
+libproxmox-backup-qemu0: 2.0.1
+libproxmox-rs-perl: 0.4.1
+libpve-access-control: 9.0.3
+libpve-apiclient-perl: 3.4.0
+libpve-cluster-api-perl: 9.0.6
+libpve-cluster-perl: 9.0.6
+libpve-common-perl: 9.0.9
+libpve-guest-common-perl: 6.0.2
+libpve-http-server-perl: 6.0.3
+libpve-network-perl: 1.1.6
+libpve-rs-perl: 0.10.7
+libpve-storage-perl: 9.0.13
+libspice-server1: 0.15.2-1+b1
+lvm2: 2.03.31-2
+lxc-pve: 6.0.4-2
+lxcfs: 6.0.4-pve1
+novnc-pve: 1.6.0-3
+proxmox-backup-client: 4.0.9-1
+proxmox-backup-file-restore: 4.0.9-1
+proxmox-backup-restore-image: 1.0.0
+proxmox-firewall: 1.1.1
+proxmox-kernel-helper: 9.0.3
+proxmox-mail-forward: 1.0.2
+proxmox-mini-journalreader: 1.6
+proxmox-offline-mirror-helper: 0.7.0
+proxmox-widget-toolkit: 5.0.4
+pve-cluster: 9.0.6
+pve-container: 6.0.9
+pve-docs: 9.0.7
+pve-edk2-firmware: 4.2025.02-4
+pve-esxi-import-tools: 1.0.1
+pve-firewall: 6.0.3
+pve-firmware: 3.16-3
+pve-ha-manager: 5.0.4
+pve-i18n: 3.5.2
+pve-qemu-kvm: 10.0.2-4
+pve-xtermjs: 5.5.0-2
+qemu-server: 9.0.16
+smartmontools: 7.4-pve1
+spiceterm: 3.4.0
+swtpm: 0.8.0+pve2
+vncterm: 1.9.0
+zfsutils-linux: 2.3.3-pve1
+
+=== VM LIST ===
+
+=== CONTAINER LIST ===
+VMID       Status     Lock         Name                
+110        running                 deluge-server       
+120        stopped                 gbgreg              
+
+=== STORAGE STATUS ===
+Name              Type     Status           Total            Used       Available        %
+local              dir     active       100586348        82508744        18077604   82.03%
+local-lvm      lvmthin     active       364797952        21851397       342946554    5.99%
+media-pool     zfspool     active      9596846252       579974704      9016871548    6.04%
+
+=== STORAGE CONFIGURATION ===
+dir: local
+	path /var/lib/vz
+	content backup,iso,vztmpl
+
+lvmthin: local-lvm
+	thinpool data
+	vgname pve
+	content images,rootdir
+
+zfspool: media-pool
+	pool media-pool
+	content rootdir,images
+	mountpoint /media-pool
+

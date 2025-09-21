@@ -1,0 +1,125 @@
+{
+  "manifest_version": "1.0",
+  "created": "2025-09-11",
+  "description": "Iconscout 16-bit themed icon selection criteria and target list for Proxmox Homelab Homer dashboard",
+  "theme_requirements": {
+    "style": "16-bit gaming aesthetic",
+    "colors": "multicolor with vibrant retro palette",
+    "format": "SVG preferred (scalable), PNG acceptable",
+    "size": "64x64 minimum, scalable preferred",
+    "consistency": "cohesive visual style across categories"
+  },
+  "existing_services": {
+    "description": "Current homelab services that need icons",
+    "services": [
+      {
+        "name": "Plex Media Server",
+        "url": "http://192.168.0.99:32400",
+        "category": "media",
+        "icon_keywords": ["streaming", "video", "media server", "entertainment"]
+      },
+      {
+        "name": "Grafana Monitoring",
+        "url": "http://192.168.0.99:3000",
+        "category": "infrastructure",
+        "icon_keywords": ["dashboard", "monitoring", "analytics", "charts"]
+      },
+      {
+        "name": "Prometheus Metrics",
+        "url": "http://192.168.0.99:9090",
+        "category": "infrastructure", 
+        "icon_keywords": ["metrics", "time series", "monitoring", "data"]
+      },
+      {
+        "name": "FileBrowser",
+        "url": "http://192.168.0.99:8080",
+        "category": "infrastructure",
+        "icon_keywords": ["file manager", "storage", "folder", "files"]
+      },
+      {
+        "name": "Deluge Torrent",
+        "url": "http://192.168.0.111:8112", 
+        "category": "media",
+        "icon_keywords": ["download", "torrent", "p2p", "transfer"]
+      },
+      {
+        "name": "Firefox Container",
+        "url": "http://192.168.0.99:3001",
+        "category": "development",
+        "icon_keywords": ["browser", "web", "firefox", "internet"]
+      },
+      {
+        "name": "Proxmox Console",
+        "url": "https://192.168.0.99:8006",
+        "category": "infrastructure",
+        "icon_keywords": ["virtualization", "server", "management", "proxmox"]
+      },
+      {
+        "name": "WireGuard VPN", 
+        "url": "udp://192.168.0.99:51820",
+        "category": "infrastructure",
+        "icon_keywords": ["vpn", "security", "tunnel", "network"]
+      }
+    ]
+  },
+  "target_categories": {
+    "gaming": {
+      "description": "16-bit gaming themed icons for entertainment services",
+      "target_count": 10,
+      "keywords": ["arcade", "console", "controller", "joystick", "pixel", "retro", "8-bit", "16-bit"],
+      "iconscout_search_terms": ["gaming multicolor", "arcade pixel", "retro gaming", "console gaming"],
+      "use_cases": ["Plex alternatives", "Game servers", "Entertainment hubs", "Streaming services"]
+    },
+    "media": {
+      "description": "Media and entertainment service icons with vibrant colors",
+      "target_count": 10, 
+      "keywords": ["video", "audio", "streaming", "media", "player", "music", "movie", "tv"],
+      "iconscout_search_terms": ["media multicolor", "streaming colorful", "video gaming", "entertainment pixel"],
+      "use_cases": ["Plex", "Jellyfin", "Sonarr", "Radarr", "Music servers"]
+    },
+    "science": {
+      "description": "Scientific and laboratory themed icons for data analysis",
+      "target_count": 10,
+      "keywords": ["lab", "microscope", "data", "analysis", "research", "experiment", "beaker", "molecule"],
+      "iconscout_search_terms": ["science multicolor", "lab equipment pixel", "research gaming", "data analysis retro"],
+      "use_cases": ["Data analysis", "Research tools", "AI/ML services", "Database management"]
+    },
+    "development": {
+      "description": "Development and coding tools with retro computing aesthetic", 
+      "target_count": 10,
+      "keywords": ["code", "terminal", "IDE", "git", "database", "API", "server", "computer"],
+      "iconscout_search_terms": ["coding multicolor", "development pixel", "programmer gaming", "terminal retro"],
+      "use_cases": ["Code-server", "Git services", "API endpoints", "Development tools"]
+    },
+    "infrastructure": {
+      "description": "Server and network infrastructure icons in gaming style",
+      "target_count": 10, 
+      "keywords": ["server", "network", "cloud", "storage", "monitor", "security", "firewall", "backup"],
+      "iconscout_search_terms": ["server gaming", "network pixel", "infrastructure multicolor", "monitoring retro"],
+      "use_cases": ["Proxmox", "Grafana", "Network tools", "Security services", "Storage systems"]
+    }
+  },
+  "download_strategy": {
+    "primary_method": "Manual curation with browser bookmarklet",
+    "search_approach": "Category-specific searches on Iconscout with filters",
+    "quality_criteria": [
+      "Visual consistency with 16-bit gaming theme",
+      "High contrast and readability at small sizes", 
+      "Multicolor design with vibrant palette",
+      "Professional quality suitable for dashboard",
+      "SVG format preferred for scalability"
+    ],
+    "backup_sources": [
+      "Dashboard-icons project on GitHub",
+      "NX211/homer-icons repository",
+      "SuperTinyIcons collection",
+      "Custom 16-bit icon packs"
+    ]
+  },
+  "integration_plan": {
+    "storage_location": "/service-pool/homer-assets/icons/",
+    "naming_convention": "{category}-{service-name}-{style}.svg",
+    "size_variants": ["64x64", "128x128", "256x256"],
+    "fallback_strategy": "FontAwesome icons with custom CSS styling"
+  }
+}

@@ -1,0 +1,176 @@
+title: "🎮 Homelab Retro Control Center"
+subtitle: "16-Bit Gaming Command Station with Iconscout Premium Icons"
+header: true
+footer: '<p>Created with <span class="has-text-danger">❤️</span> for retro gaming vibes | <a href="http://192.168.0.99:3000" target="_blank">📊 Grafana</a> | <a href="http://192.168.0.99:9090" target="_blank">🔥 Prometheus</a></p>'
+
+# Enhanced stylesheets for Iconscout integration
+stylesheet:
+  - "assets/css/retro-gaming-enhanced.css"
+  - "assets/css/iconscout-integration.css"
+
+# Add Feather Icons as fallback
+links:
+  - rel: "stylesheet"
+    href: "https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css"
+
+# Enhanced JavaScript for icon management
+customJs: "assets/js/homer-iconscout-enhanced.js"
+
+# Theme configuration optimized for custom icons
+colors:
+  light:
+    highlight-primary: "#0066FF"
+    highlight-secondary: "#FF3366"
+    highlight-hover: "#00CC44"
+    background: "#0F0F1A"
+    card-background: "rgba(22, 33, 62, 0.85)"
+    text: "#FFFFFF"
+    text-header: "#00FFFF"
+    text-title: "#FFFFFF"
+    text-subtitle: "#AAAADD"
+    card-shadow: "rgba(0, 102, 255, 0.3)"
+    link: "#00FFFF"
+    link-hover: "#FF3366"
+
+# Enhanced message banner
+message:
+  style: "is-info"
+  title: "🎯 16-Bit Icon System Active"
+  content: "Premium Iconscout icons with retro gaming aesthetic. Bookmarklet ready for expansion."
+
+# Services with Iconscout integration paths
+services:
+  - name: "🏰 Command Center"
+    icon: "fas fa-crown"
+    items:
+      - name: "Grafana Dashboard"
+        logo: "assets/iconscout-icons/infrastructure/infrastructure-grafana-dashboard.svg"
+        subtitle: "📊 Battle Statistics & System Analytics"
+        url: "http://192.168.0.99:3000"
+        target: "_blank"
+        tag: "monitoring"
+        tagstyle: "is-info"
+        
+      - name: "Prometheus Metrics"
+        logo: "assets/iconscout-icons/infrastructure/infrastructure-prometheus-metrics.svg"
+        subtitle: "🔥 Metrics Forge & Data Source"
+        url: "http://192.168.0.99:9090"
+        target: "_blank"
+        tag: "monitoring"
+        tagstyle: "is-danger"
+        
+      - name: "Proxmox Console"
+        logo: "assets/iconscout-icons/infrastructure/infrastructure-proxmox-server.svg"
+        subtitle: "⚙️ Virtualization Command Base"
+        url: "https://192.168.0.99:8006"
+        target: "_blank"
+        tag: "management"
+        tagstyle: "is-primary"
+
+  - name: "⚔️ Media Kingdom"
+    icon: "fas fa-gamepad"
+    items:
+      - name: "Plex Media Server"
+        logo: "assets/iconscout-icons/media/media-plex-streaming.svg"
+        subtitle: "🎬 Royal Cinema Hall"
+        url: "http://192.168.0.99:32400"
+        target: "_blank"
+        tag: "media"
+        tagstyle: "is-warning"
+        
+      - name: "Firefox Browser"
+        logo: "assets/iconscout-icons/development/development-firefox-browser.svg"
+        subtitle: "🌐 Quest Portal & Web Access"
+        url: "http://192.168.0.99:3001"
+        target: "_blank"
+        tag: "browser"
+        tagstyle: "is-link"
+        
+      - name: "Deluge Torrents"
+        logo: "assets/iconscout-icons/media/media-deluge-download.svg"
+        subtitle: "⬇️ Treasure Acquisition System"
+        url: "http://192.168.0.111:8112"
+        target: "_blank"
+        tag: "torrents"
+        tagstyle: "is-success"
+
+  - name: "🛡️ System Defense"
+    icon: "fas fa-shield-alt"
+    items:
+      - name: "File Browser"
+        logo: "assets/iconscout-icons/infrastructure/infrastructure-storage-files.svg"
+        subtitle: "📁 Vault Management & ZFS Access"
+        url: "http://192.168.0.99:8080"
+        target: "_blank"
+        tag: "storage"
+        tagstyle: "is-dark"
+        
+      - name: "WireGuard VPN"
+        logo: "assets/iconscout-icons/infrastructure/infrastructure-vpn-security.svg"
+        subtitle: "🔒 Secure Tunnel Network"
+        url: "http://192.168.0.99:51820"
+        target: "_blank"
+        tag: "security"
+        tagstyle: "is-info"
+        
+      - name: "System Health"
+        logo: "assets/iconscout-icons/science/science-monitoring-analysis.svg"
+        subtitle: "🖥️ Hardware Health Check"
+        url: "/system-status.html"
+        target: "_blank"
+        tag: "system"
+        tagstyle: "is-light"
+
+  - name: "🔬 Development Lab"
+    icon: "fas fa-code"
+    items:
+      - name: "Code Server"
+        logo: "assets/iconscout-icons/development/development-terminal-ide.svg"
+        subtitle: "💻 Remote Development Environment"
+        url: "http://192.168.0.99:8443"
+        target: "_blank"
+        tag: "development"
+        tagstyle: "is-primary"
+        
+      - name: "Database Admin"
+        logo: "assets/iconscout-icons/development/development-database-server.svg"
+        subtitle: "🗄️ Data Management Console"
+        url: "http://192.168.0.99:8081"
+        target: "_blank"
+        tag: "database"
+        tagstyle: "is-info"
+
+  - name: "🎮 Gaming Zone"
+    icon: "fas fa-gamepad"
+    items:
+      - name: "Game Server"
+        logo: "assets/iconscout-icons/gaming/gaming-arcade-cabinet.svg"
+        subtitle: "🕹️ Multiplayer Gaming Hub"
+        url: "http://192.168.0.99:27015"
+        target: "_blank"
+        tag: "gaming"
+        tagstyle: "is-success"
+        
+      - name: "Retro Emulator"
+        logo: "assets/iconscout-icons/gaming/gaming-console-retro.svg"
+        subtitle: "🎮 Classic Gaming Station"
+        url: "http://192.168.0.99:8088"
+        target: "_blank"
+        tag: "retro"
+        tagstyle: "is-warning"
+
+# Enhanced connectivity check with icon validation
+connectivityCheck: true
+
+# Custom icon configuration
+iconConfig:
+  defaultSize: "48px"
+  hoverSize: "56px"
+  fallbackIcon: "fas fa-cube"
+  iconPath: "assets/iconscout-icons/"
+  categories:
+    - gaming
+    - media
+    - science
+    - development
+    - infrastructure

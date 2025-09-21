@@ -1,0 +1,396 @@
+/* Mario Dashboard - TailwindCSS with Mario Themes */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Jehkoba8 Refined Dark Theme - Professional & Comfortable */
+:root {
+  /* Refined Jehkoba8 8-Color Palette - Better contrast for readability */
+  --j8-1: #2d1f26;  /* Much deeper warm gray - main backgrounds */
+  --j8-2: #7a3e3b;  /* Muted warm brown-red - secondary surfaces */
+  --j8-3: #a6634a;  /* Deeper warm tan - card backgrounds */
+  --j8-4: #e8c070;  /* Brighter warm yellow - better contrast for highlights */
+  --j8-5: #5c668a;  /* Deeper muted blue-gray - muted elements */
+  --j8-6: #5a8c92;  /* Slightly brighter soft teal - better visibility */
+  --j8-7: #7bc96b;  /* Brighter warm green - better contrast for selected states */
+  --j8-8: #f0f8c4;  /* Brighter cream for better text readability */
+
+  /* Strategic Color Assignment for Homelab Dashboard */
+  --bg-color: var(--j8-1);        /* Deep warm gray background */
+  --primary-color: #58979d;       /* Soft teal for primary actions (instead of bright green) */
+  --secondary-color: var(--j8-6); /* Soft teal for secondary elements */
+  --accent-color: var(--j8-4);    /* Warm yellow for highlights */
+  --text-color: var(--j8-8);      /* Warm cream for text */
+  --text-muted: var(--j8-5);      /* Muted blue for secondary text */
+  --card-bg: var(--j8-2);         /* Warm brown-red for cards */
+  --section-bg: var(--j8-3);      /* Warm tan for sections */
+
+  /* Monitoring Status Colors */
+  --monitoring-success: var(--j8-7);  /* Warm green for online/success */
+  --monitoring-warning: var(--j8-4);  /* Warm yellow for warnings */
+  --monitoring-critical: var(--j8-2); /* Warm brown-red for critical */
+  --monitoring-info: var(--j8-6);     /* Soft teal for info */
+
+  transition: all 0.3s ease;
+}
+
+/* Jehkoba8 Single Theme Class */
+.theme-jehkoba8,
+.theme-classic,
+.theme-paint,
+.theme-italy,
+.theme-gameboy,
+.theme-purple {
+  /* Force all theme classes to use Jehkoba8 palette */
+  --bg-color: var(--j8-1);        /* Deep warm gray background */
+  --primary-color: var(--j8-7);   /* Warm green for primary actions */
+  --secondary-color: var(--j8-6); /* Soft teal for secondary elements */
+  --accent-color: var(--j8-4);    /* Warm yellow for highlights */
+  --text-color: var(--j8-8);      /* Warm cream for text */
+  --text-muted: var(--j8-5);      /* Muted blue for secondary text */
+  --card-bg: var(--j8-2);         /* Warm brown-red for cards */
+  --section-bg: var(--j8-3);      /* Warm tan for sections */
+
+  /* Monitoring Status Colors */
+  --monitoring-success: var(--j8-7);  /* Warm green for online/success */
+  --monitoring-warning: var(--j8-4);  /* Warm yellow for warnings */
+  --monitoring-critical: var(--j8-2); /* Warm brown-red for critical */
+  --monitoring-info: var(--j8-6);     /* Soft teal for info */
+}
+
+@layer base {
+  body {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .mario-card {
+    @apply rounded-lg shadow-lg border-2 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    background: linear-gradient(135deg, var(--card-bg), var(--section-bg));
+    border-color: var(--secondary-color);
+    color: var(--text-color);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mario-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #58979d, var(--j8-5));
+    border-radius: 10px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .mario-card:hover::before {
+    opacity: 1;
+  }
+  
+  .mario-card:hover {
+    border-color: transparent;
+    box-shadow: 0 8px 32px rgba(88, 151, 157, 0.4);
+  }
+  
+  .mario-button {
+    @apply px-4 py-2 rounded font-medium transition-all duration-200 hover:opacity-90;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  
+  .mario-button:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color, var(--primary-color)));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  
+  .mario-select {
+    @apply rounded border-2 px-3 py-2 transition-all duration-200;
+    background: linear-gradient(135deg, var(--card-bg), var(--section-bg));
+    border-color: var(--secondary-color);
+    color: var(--text-color);
+  }
+  
+  .mario-select:focus {
+    border-color: var(--accent-color, var(--primary-color));
+    box-shadow: 0 0 0 2px rgba(220, 100, 180, 0.3);
+  }
+  
+  .mario-tag {
+    @apply px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .mario-tag-success {
+    @apply mario-tag;
+    background: var(--monitoring-success);
+    background-opacity: 0.2;
+    color: var(--monitoring-success);
+  }
+  
+  .mario-tag-danger {
+    @apply mario-tag;
+    background: var(--monitoring-critical);
+    background-opacity: 0.2;
+    color: var(--monitoring-critical);
+  }
+  
+  .mario-tag-warning {
+    @apply mario-tag;
+    background: var(--monitoring-warning);
+    background-opacity: 0.2;
+    color: var(--monitoring-warning);
+  }
+  
+  /* Monitoring-specific component styles */
+  .monitoring-success {
+    color: var(--monitoring-success);
+    background: var(--monitoring-success);
+    background-opacity: 0.15;
+  }
+  
+  .monitoring-warning {
+    color: var(--monitoring-warning);
+    background: var(--monitoring-warning);
+    background-opacity: 0.15;
+  }
+  
+  .monitoring-critical {
+    color: var(--monitoring-critical);
+    background: var(--monitoring-critical);
+    background-opacity: 0.15;
+  }
+  
+  .monitoring-info {
+    color: var(--monitoring-info);
+    background: var(--monitoring-info);
+    background-opacity: 0.15;
+  }
+  
+  /* Chart and monitoring widget styles */
+  .monitoring-widget {
+    @apply rounded-lg border transition-all duration-300;
+    background: linear-gradient(135deg, var(--j8-1), var(--j8-2));
+    border-color: var(--j8-3);
+    border-opacity: 0.3;
+  }
+  
+  .monitoring-widget:hover {
+    background: linear-gradient(135deg, var(--j8-2), var(--j8-3));
+    border-color: var(--j8-5);
+    border-opacity: 0.4;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(45, 31, 38, 0.2) !important;
+  }
+
+  /* Override mario-card effects for monitoring widgets */
+  .monitoring-widget::before {
+    display: none !important;
+  }
+  
+  .chart-container {
+    background: var(--section-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--primary-color);
+    border-opacity: 0.2;
+  }
+  
+  .metric-status-normal { 
+    color: var(--monitoring-success);
+    background: var(--monitoring-success);
+    background-opacity: 0.1;
+  }
+  
+  .metric-status-warning { 
+    color: var(--monitoring-warning);
+    background: var(--monitoring-warning);
+    background-opacity: 0.1;
+  }
+  
+  .metric-status-critical { 
+    color: var(--monitoring-critical);
+    background: var(--monitoring-critical);
+    background-opacity: 0.1;
+  }
+  
+  /* Mobile optimizations for monitoring components */
+  @media (max-width: 768px) {
+    .monitoring-grid {
+      @apply grid-cols-1 gap-3;
+    }
+    
+    .monitoring-widget {
+      @apply p-3;
+    }
+    
+    .metric-card {
+      @apply text-sm;
+    }
+    
+    .service-health-card {
+      @apply p-2;
+    }
+  }
+  
+  /* Touch-friendly controls for mobile */
+  @media (max-width: 480px) {
+    .mario-button {
+      @apply py-3 px-4 text-base;
+      min-height: 44px;
+    }
+
+    .action-button {
+      @apply py-2 px-3;
+      min-height: 40px;
+    }
+  }
+
+  /* Jehkoba8 Refined Visual Enhancements - Darker & More Comfortable */
+  .mario-card {
+    background: linear-gradient(135deg,
+      rgba(122, 62, 59, 0.15) 0%,
+      rgba(166, 99, 74, 0.12) 100%) !important;
+    border: 1px solid rgba(205, 135, 105, 0.08) !important;
+    box-shadow: 0 2px 6px rgba(45, 31, 38, 0.3) !important;
+  }
+
+  .mario-card:hover {
+    background: rgba(122, 62, 59, 0.25) !important;
+    border-color: rgba(234, 195, 120, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(45, 31, 38, 0.5), 0 0 0 1px rgba(88, 151, 157, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* Enhanced gradient backgrounds */
+  body {
+    background: linear-gradient(135deg, var(--j8-1) 0%, var(--j8-2) 100%) !important;
+  }
+
+  /* Refined button styling with darker Jehkoba8 colors */
+  .mario-button {
+    background: linear-gradient(135deg, var(--j8-7), var(--j8-6)) !important;
+    border: 1px solid var(--j8-7) !important;
+    color: var(--j8-1) !important;
+    font-weight: 500 !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .mario-button:hover {
+    background: linear-gradient(135deg, var(--j8-6), var(--j8-4)) !important;
+    border-color: var(--j8-4) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 8px rgba(74, 123, 128, 0.3) !important;
+  }
+
+  /* Refined header enhancement */
+  header {
+    background: linear-gradient(90deg,
+      var(--j8-2) 0%,
+      var(--j8-1) 100%) !important;
+    border-bottom: 1px solid rgba(234, 195, 120, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(45, 31, 38, 0.3) !important;
+  }
+
+  /* Enhanced tab and navigation contrast */
+  .tab-selected,
+  .nav-selected,
+  [aria-selected="true"],
+  .active {
+    background-color: #58979d !important;
+    color: var(--j8-8) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+
+  /* Tab and navigation text improvements */
+  .tab,
+  .nav-item,
+  nav a,
+  [role="tab"] {
+    color: var(--j8-8) !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .tab:hover,
+  .nav-item:hover,
+  nav a:hover {
+    color: var(--j8-4) !important;
+    background-color: rgba(166, 99, 74, 0.2) !important;
+  }
+
+  /* Better contrast for form elements and interactive components */
+  input,
+  select,
+  textarea,
+  .form-control {
+    background-color: rgba(45, 31, 38, 0.8) !important;
+    color: var(--j8-8) !important;
+    border: 1px solid var(--j8-6) !important;
+  }
+
+  /* Status text improvements */
+  .status-text,
+  .metric-label,
+  .detail-label {
+    color: var(--j8-8) !important;
+    opacity: 0.9 !important;
+  }
+
+  /* Status badge text contrast fixes */
+  .status-online,
+  .mario-tag-success,
+  .monitoring-success,
+  .badge.success,
+  .tag.is-success,
+  .service-count.online {
+    background-color: #58979d !important;
+    color: var(--j8-8) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+
+  .status-offline,
+  .mario-tag-danger,
+  .monitoring-critical,
+  .badge.error,
+  .tag.is-danger,
+  .service-count.offline {
+    background-color: var(--j8-2) !important;
+    color: var(--j8-8) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+
+  .status-warning,
+  .mario-tag-warning,
+  .monitoring-warning,
+  .badge.warning,
+  .tag.is-warning,
+  .service-count.checking {
+    background-color: var(--j8-4) !important;
+    color: var(--j8-1) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+
+  .status-info,
+  .monitoring-info,
+  .badge.info,
+  .tag.is-info {
+    background-color: var(--j8-6) !important;
+    color: var(--j8-1) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+}

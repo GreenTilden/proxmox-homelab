@@ -1,0 +1,294 @@
+/* Mario CSS-Only Theme Switcher for Homer Dashboard */
+/* No JavaScript required - uses CSS checkboxes and :checked pseudo-class */
+
+/* Theme Switcher UI - Pure CSS */
+.mario-theme-selector {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10000;
+  font-family: 'Courier New', monospace;
+}
+
+/* Toggle Button */
+.mario-theme-toggle {
+  width: 48px;
+  height: 48px;
+  background: var(--card-background, rgba(22, 33, 62, 0.85));
+  border: 2px solid var(--highlight-primary, #0066FF);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.mario-theme-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 0 20px var(--highlight-primary, #0066FF);
+}
+
+/* Hidden Checkbox for State Management */
+.mario-theme-checkbox {
+  display: none;
+}
+
+/* Theme Panel */
+.mario-theme-panel {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 280px;
+  background: var(--card-background, rgba(22, 33, 62, 0.85));
+  border: 2px solid var(--highlight-primary, #0066FF);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Show panel when checkbox is checked */
+.mario-theme-checkbox:checked + .mario-theme-toggle + .mario-theme-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Theme Options */
+.mario-theme-option {
+  display: block;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+  border: 2px solid transparent;
+  text-decoration: none;
+  color: var(--text, #FFFFFF);
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+}
+
+.mario-theme-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--highlight-secondary, #FF3366);
+  color: var(--text, #FFFFFF);
+  text-decoration: none;
+}
+
+/* Theme Preview Dots */
+.mario-theme-preview {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.mario-theme-preview .color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Theme Specific Colors */
+.mario-theme-option[data-theme="jehkoba16"] .color-dot:nth-child(1) { background: #FF004D; }
+.mario-theme-option[data-theme="jehkoba16"] .color-dot:nth-child(2) { background: #29ADFF; }
+.mario-theme-option[data-theme="jehkoba16"] .color-dot:nth-child(3) { background: #00E436; }
+.mario-theme-option[data-theme="jehkoba16"] .color-dot:nth-child(4) { background: #FFEC27; }
+
+.mario-theme-option[data-theme="mario-paint"] .color-dot:nth-child(1) { background: #D82800; }
+.mario-theme-option[data-theme="mario-paint"] .color-dot:nth-child(2) { background: #0040FF; }
+.mario-theme-option[data-theme="mario-paint"] .color-dot:nth-child(3) { background: #00A800; }
+.mario-theme-option[data-theme="mario-paint"] .color-dot:nth-child(4) { background: #FFFF00; }
+
+.mario-theme-option[data-theme="italy-4"] .color-dot:nth-child(1) { background: #B55088; }
+.mario-theme-option[data-theme="italy-4"] .color-dot:nth-child(2) { background: #68386C; }
+.mario-theme-option[data-theme="italy-4"] .color-dot:nth-child(3) { background: #F8E2CF; }
+.mario-theme-option[data-theme="italy-4"] .color-dot:nth-child(4) { background: #0F0F23; }
+
+.mario-theme-option[data-theme="game-boy"] .color-dot:nth-child(1) { background: #9BBD0F; }
+.mario-theme-option[data-theme="game-boy"] .color-dot:nth-child(2) { background: #8BAC0F; }
+.mario-theme-option[data-theme="game-boy"] .color-dot:nth-child(3) { background: #306230; }
+.mario-theme-option[data-theme="game-boy"] .color-dot:nth-child(4) { background: #0F380F; }
+
+/* Theme Names */
+.mario-theme-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: block;
+}
+
+.mario-theme-desc {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* System Health Widget */
+.mario-health-widget {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card-background, rgba(22, 33, 62, 0.85));
+  border: 2px solid var(--highlight-secondary, #FF3366);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+}
+
+.mario-health-title {
+  color: var(--text-header, #00FFFF);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mario-health-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  color: var(--text, #FFFFFF);
+}
+
+.mario-health-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+}
+
+.mario-health-status.online { background: var(--highlight-hover, #00CC44); }
+.mario-health-status.warning { background: #FFEC27; }
+.mario-health-status.offline { background: var(--highlight-secondary, #FF3366); }
+
+/* Service Category Enhancement */
+.service-gaming .card:hover {
+  border-color: #FF004D !important;
+  box-shadow: 0 0 15px rgba(255, 0, 77, 0.4) !important;
+}
+
+.service-media .card:hover {
+  border-color: #FFEC27 !important;
+  box-shadow: 0 0 15px rgba(255, 236, 39, 0.4) !important;
+}
+
+.service-infrastructure .card:hover {
+  border-color: #00E436 !important;
+  box-shadow: 0 0 15px rgba(0, 228, 54, 0.4) !important;
+}
+
+.service-development .card:hover {
+  border-color: #29ADFF !important;
+  box-shadow: 0 0 15px rgba(41, 173, 255, 0.4) !important;
+}
+
+.service-science .card:hover {
+  border-color: #FF77A8 !important;
+  box-shadow: 0 0 15px rgba(255, 119, 168, 0.4) !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .mario-theme-selector {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .mario-theme-panel {
+    width: calc(100vw - 40px);
+    left: -10px;
+  }
+  
+  .mario-health-widget {
+    top: 80px;
+    right: 10px;
+    left: 10px;
+    min-width: unset;
+  }
+}
+
+/* Theme Quick Switch Buttons */
+.mario-quick-themes {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.mario-quick-theme {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mario-quick-theme:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Quick Theme Colors */
+.mario-quick-theme.jehkoba16 {
+  background: linear-gradient(45deg, #FF004D 25%, #29ADFF 25%, #29ADFF 50%, #00E436 50%, #00E436 75%, #FFEC27 75%);
+}
+
+.mario-quick-theme.mario-paint {
+  background: linear-gradient(45deg, #D82800 25%, #0040FF 25%, #0040FF 50%, #00A800 50%, #00A800 75%, #FFFF00 75%);
+}
+
+.mario-quick-theme.italy-4 {
+  background: linear-gradient(45deg, #B55088 50%, #68386C 50%);
+}
+
+.mario-quick-theme.game-boy {
+  background: linear-gradient(45deg, #9BBD0F 25%, #8BAC0F 25%, #8BAC0F 50%, #306230 50%, #306230 75%, #0F380F 75%);
+}
+
+/* Accessibility */
+.mario-theme-toggle:focus,
+.mario-theme-option:focus,
+.mario-quick-theme:focus {
+  outline: 2px solid var(--highlight-primary, #0066FF);
+  outline-offset: 2px;
+}
+
+/* Animation Keyframes */
+@keyframes marioPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.mario-health-status.warning {
+  animation: marioPulse 2s infinite;
+}
+
+/* Print Styles */
+@media print {
+  .mario-theme-selector,
+  .mario-health-widget,
+  .mario-quick-themes {
+    display: none !important;
+  }
+}

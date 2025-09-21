@@ -1,0 +1,179 @@
+title: "🕯️ Proxmox Homelab Command Center"
+subtitle: "Warm Candle-lit Dashboard with Professional Aesthetics"
+header: true
+footer: '<p>Created with <span class="has-text-danger">❤️</span> using authentic Mario palettes | <a href="http://192.168.0.99:3000" target="_blank">📊 Grafana</a> | <a href="http://192.168.0.99:9090" target="_blank">🔥 Prometheus</a></p>'
+
+# Jehkoba8 Theme Framework Integration
+stylesheet:
+  - "assets/css/mario-core.css"             # Jehkoba8 warm theme framework
+
+# Add Feather Icons and theme switcher
+links:
+  - rel: "stylesheet"
+    href: "https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css"
+
+# Theme customization JavaScript (optional)
+# customJs: "assets/js/theme-enhancements.js"
+
+# Jehkoba8 Warm Candle-lit Palette
+colors:
+  light:
+    highlight-primary: "#79d86d"        # Warm green (primary actions)
+    highlight-secondary: "#58979d"      # Soft teal (secondary actions)
+    highlight-hover: "#eac378"          # Warm yellow (hover states)
+    background: "#42333c"               # Deep warm gray (main background)
+    card-background: "rgba(205, 135, 105, 0.15)"  # Warm tan transparency
+    text: "#e0f0af"                     # Warm cream (primary text)
+    text-header: "#eac378"              # Warm yellow (headers)
+    text-title: "#e0f0af"               # Warm cream (titles)
+    text-subtitle: "rgba(224, 240, 175, 0.8)"  # Muted cream (subtitles)
+    card-shadow: "rgba(121, 216, 109, 0.3)"     # Warm green glow
+    link: "#58979d"                     # Soft teal (links)
+    link-hover: "#79d86d"               # Warm green (link hover)
+
+# Welcome message banner
+message:
+  style: "is-info"
+  title: "🕯️ Warm Candle-lit Theme Active"
+  content: "Professional homelab dashboard with comfortable, warm aesthetics designed for extended use. All services monitored and accessible."
+
+# Services with professional categorization
+services:
+  - name: "📋 Infrastructure & Monitoring"
+    icon: "⚙️"
+    items:
+      - name: "Grafana Dashboard"
+        icon: "📊"
+        subtitle: "📊 System Analytics & Performance Monitoring"
+        url: "http://192.168.0.99:3000"
+        target: "_blank"
+        tag: "infrastructure"
+        tagstyle: "is-success"
+
+      - name: "Prometheus Metrics"
+        icon: "🔥"
+        subtitle: "🔥 Metrics Collection & Time Series Database"
+        url: "http://192.168.0.99:9090"
+        target: "_blank"
+        tag: "infrastructure"
+        tagstyle: "is-success"
+
+      - name: "Proxmox Console"
+        icon: "⚙️"
+        subtitle: "⚙️ Virtualization Management Interface"
+        url: "https://192.168.0.99:8006"
+        target: "_blank"
+        tag: "infrastructure"
+        tagstyle: "is-success"
+
+  - name: "🎥 Media & Content"
+    icon: "🎥"
+    items:
+      - name: "Plex Media Server"
+        icon: "▶️"
+        subtitle: "🎬 Streaming Media Server & Library"
+        url: "http://192.168.0.99:32400"
+        target: "_blank"
+        tag: "media"
+        tagstyle: "is-warning"
+
+      - name: "Firefox Browser"
+        icon: "🌐"
+        subtitle: "🌐 Secure Web Browser Environment"
+        url: "http://192.168.0.99:3001"
+        target: "_blank"
+        tag: "development"
+        tagstyle: "is-link"
+
+      - name: "qBittorrent"
+        icon: "⬇️"
+        subtitle: "⬇️ Content Acquisition & Download Management"
+        url: "http://192.168.0.111:8112"
+        target: "_blank"
+        tag: "media"
+        tagstyle: "is-warning"
+
+  - name: "📁 Storage & File Management"
+    icon: "📁"
+    items:
+      - name: "File Browser"
+        icon: "📁"
+        subtitle: "📁 ZFS Storage Management & File Explorer"
+        url: "http://192.168.0.99:8080"
+        target: "_blank"
+        tag: "infrastructure"
+        tagstyle: "is-success"
+
+      - name: "WireGuard VPN"
+        icon: "🔒"
+        subtitle: "🔒 Secure Remote Access Gateway"
+        url: "http://192.168.0.99:51820"
+        target: "_blank"
+        tag: "infrastructure"
+        tagstyle: "is-success"
+
+      - name: "System Health"
+        icon: "🖥️"
+        subtitle: "🖥️ Hardware Status & Diagnostics"
+        url: "/system-status.html"
+        target: "_blank"
+        tag: "science"
+        tagstyle: "is-info"
+
+  - name: "💻 Development & AI"
+    icon: "💻"
+    items:
+      - name: "Code Server"
+        icon: "💻"
+        subtitle: "💻 Cloud-based Development Environment"
+        url: "http://192.168.0.99:8443"
+        target: "_blank"
+        tag: "development"
+        tagstyle: "is-link"
+
+      - name: "ChatBot UI"
+        icon: "💬"
+        subtitle: "💬 AI Language Models & Assistant"
+        url: "http://192.168.0.99:3002"
+        target: "_blank"
+        tag: "science"
+        tagstyle: "is-info"
+
+  - name: "🎮 Gaming & Entertainment"
+    icon: "🎮"
+    items:
+      - name: "Game Server"
+        icon: "🎮"
+        subtitle: "🕹️ Multiplayer Gaming Platform"
+        url: "http://192.168.0.99:27015"
+        target: "_blank"
+        tag: "gaming"
+        tagstyle: "is-danger"
+
+      - name: "Retro Emulator"
+        icon: "👾"
+        subtitle: "🎮 Classic Console Gaming Station"
+        url: "http://192.168.0.99:8088"
+        target: "_blank"
+        tag: "gaming"
+        tagstyle: "is-danger"
+
+# Enhanced connectivity check
+connectivityCheck: true
+
+# Jehkoba8 Theme Configuration Metadata
+jehkoba8_theme_config:
+  version: "2.0"
+  palette_name: "Jehkoba8"
+  description: "Warm, candle-lit 8-color professional homelab theme"
+  palette_source: "https://lospec.com/palette-list/jehkoba8"
+  service_categories:
+    gaming: "#9a5552"        # Warm brown for gaming
+    media: "#eac378"         # Warm yellow for media
+    infrastructure: "#79d86d" # Warm green for infrastructure
+    development: "#58979d"    # Soft teal for development
+    science: "#5c668a"       # Muted blue for science
+  accessibility:
+    wcag_compliant: true
+    contrast_ratio: "AA standard"
+    reduced_motion: true

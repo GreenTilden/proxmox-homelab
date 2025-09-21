@@ -63,3 +63,12 @@ ansible.cfg
 credentials/
 secrets/
 *.secret
+
+# Development and debug files
+debug.html
+test.html
+*.debug.*
+index-vue.html
+
+# Archive working directories
+archive/temp-work/

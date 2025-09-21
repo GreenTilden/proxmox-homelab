@@ -1,0 +1,206 @@
+/* Iconscout 16-Bit Gaming Integration CSS */
+/* Enhances Homer dashboard with premium Iconscout icons */
+
+/* Icon styling for 16-bit aesthetic */
+.card .media .media-left img,
+.card .logo {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 6px;
+  background: rgba(0, 102, 255, 0.1);
+  padding: 4px;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+}
+
+/* Hover effects for premium feel */
+.card:hover .media-left img,
+.card:hover .logo {
+  width: 56px !important;
+  height: 56px !important;
+  border-color: rgba(255, 51, 102, 0.8);
+  filter: drop-shadow(0 0 16px rgba(255, 51, 102, 0.6));
+  transform: scale(1.05) rotate(2deg);
+}
+
+/* Gaming glow effect */
+.card .media .media-left::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #0066FF, #FF3366, #00CC44, #0066FF);
+  border-radius: 8px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .media .media-left::before {
+  opacity: 0.3;
+  animation: borderPulse 2s infinite;
+}
+
+/* 16-bit border pulse animation */
+@keyframes borderPulse {
+  0%, 100% { 
+    background: linear-gradient(45deg, #0066FF, #FF3366, #00CC44, #0066FF);
+  }
+  25% { 
+    background: linear-gradient(45deg, #FF3366, #00CC44, #0066FF, #FF3366);
+  }
+  50% { 
+    background: linear-gradient(45deg, #00CC44, #0066FF, #FF3366, #00CC44);
+  }
+  75% { 
+    background: linear-gradient(45deg, #0066FF, #FF3366, #00CC44, #0066FF);
+  }
+}
+
+/* Category-specific icon styling */
+.card[data-category="gaming"] .media-left img,
+.card[data-category="gaming"] .logo {
+  border-color: rgba(255, 51, 102, 0.6);
+  background: rgba(255, 51, 102, 0.1);
+}
+
+.card[data-category="media"] .media-left img,
+.card[data-category="media"] .logo {
+  border-color: rgba(255, 204, 0, 0.6);
+  background: rgba(255, 204, 0, 0.1);
+}
+
+.card[data-category="science"] .media-left img,
+.card[data-category="science"] .logo {
+  border-color: rgba(0, 204, 68, 0.6);
+  background: rgba(0, 204, 68, 0.1);
+}
+
+.card[data-category="development"] .media-left img,
+.card[data-category="development"] .logo {
+  border-color: rgba(102, 0, 255, 0.6);
+  background: rgba(102, 0, 255, 0.1);
+}
+
+.card[data-category="infrastructure"] .media-left img,
+.card[data-category="infrastructure"] .logo {
+  border-color: rgba(0, 255, 255, 0.6);
+  background: rgba(0, 255, 255, 0.1);
+}
+
+/* Icon fallback styling */
+.icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6px;
+  color: white;
+  font-size: 24px;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+/* Pixelated effect for true 16-bit aesthetic */
+.pixelated-icon {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Loading animation for icons */
+.icon-loading {
+  background: linear-gradient(90deg, 
+    rgba(0, 102, 255, 0.1) 0%, 
+    rgba(0, 102, 255, 0.3) 50%, 
+    rgba(0, 102, 255, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: iconShimmer 2s infinite;
+}
+
+@keyframes iconShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Enhanced mobile responsiveness for icons */
+@media (max-width: 768px) {
+  .card .media .media-left img,
+  .card .logo {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .card:hover .media-left img,
+  .card:hover .logo {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+/* Service group styling with enhanced visual hierarchy */
+.services-group {
+  margin-bottom: 2rem;
+}
+
+.services-group .group-title {
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(22, 33, 62, 0.2));
+  border-left: 4px solid #0066FF;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Icon validation and error handling */
+.icon-error {
+  background: linear-gradient(135deg, #ff4757, #c44569);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.icon-error::after {
+  content: "⚠️";
+}
+
+/* Performance optimizations */
+.card .media .media-left img[src*=".svg"] {
+  will-change: transform, filter;
+}
+
+/* Accessibility enhancements */
+.card .media .media-left img:focus,
+.card .logo:focus {
+  outline: 2px solid #0066FF;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card .media .media-left img,
+  .card .logo {
+    border-width: 3px;
+    filter: contrast(1.2);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card .media .media-left img,
+  .card .logo,
+  .card .media .media-left::before {
+    transition: none;
+    animation: none;
+  }
+  
+  .card:hover .media-left img,
+  .card:hover .logo {
+    transform: none;
+  }
+}
