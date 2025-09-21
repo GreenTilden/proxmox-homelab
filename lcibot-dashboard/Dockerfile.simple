@@ -1,0 +1,106 @@
+# Simple HTTP Server Dockerfile for Mario Homelab Dashboard
+# Fixes nginx permission issues by using Python's built-in server
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --silent
+COPY . .
+RUN npm run build
+
+FROM python:3.11-alpine AS production
+WORKDIR /app
+COPY --from=builder /app/dist .
+
+# Create simple health endpoint
+RUN echo '{"status":"healthy","timestamp":"'$(date -Iseconds)'"}' > health
+
+# Vue.js-optimized HTTP server script with SPA support
+RUN cat > server.py << 'EOF'
+import http.server
+import socketserver
+import os
+import json
+from urllib.parse import urlparse
+from datetime import datetime
+
+class VueJSRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        # Allow cross-origin requests for development
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        
+        # Proper caching for static assets
+        if self.path.startswith('/assets/'):
+            self.send_header('Cache-Control', 'public, max-age=31536000, immutable')
+        elif self.path.endswith('.js') or self.path.endswith('.css'):
+            self.send_header('Cache-Control', 'public, max-age=3600')
+        else:
+            self.send_header('Cache-Control', 'no-cache')
+        
+        super().end_headers()
+
+    def guess_type(self, path):
+        # Ensure proper MIME types for Vue.js assets
+        mime_type, encoding = super().guess_type(path)
+        
+        if path.endswith('.js'):
+            return 'application/javascript', encoding
+        elif path.endswith('.mjs'):
+            return 'application/javascript', encoding
+        elif path.endswith('.css'):
+            return 'text/css', encoding
+        elif path.endswith('.json'):
+            return 'application/json', encoding
+        
+        return mime_type, encoding
+
+    def do_GET(self):
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        
+        # Health endpoint
+        if path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            health_data = {
+                "status": "healthy",
+                "timestamp": datetime.now().isoformat(),
+                "service": "LCiBot Dashboard"
+            }
+            self.wfile.write(json.dumps(health_data).encode())
+            return
+        
+        # Check if file exists
+        file_path = self.translate_path(self.path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return super().do_GET()
+        
+        # SPA fallback to index.html for Vue Router
+        self.path = '/index.html'
+        return super().do_GET()
+
+    def do_OPTIONS(self):
+        # Handle preflight requests for CORS
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+PORT = 80
+Handler = VueJSRequestHandler
+
+with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    print(f"LCiBot Dashboard server running on port {PORT}")
+    print(f"Access dashboard at http://localhost:{PORT}")
+    httpd.serve_forever()
+EOF
+
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost/health')" || exit 1
+
+CMD ["python3", "server.py"]

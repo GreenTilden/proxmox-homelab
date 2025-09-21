@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mario-dashboard:
+    build: .
+    container_name: mario-homelab-dashboard
+    ports:
+      - "8091:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service.name=Mario Dashboard"
+      - "homelab.service.type=dashboard"
+      - "homelab.service.port=8090"

@@ -1,0 +1,19 @@
+# Simple production deployment with pre-built files
+FROM nginx:alpine
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy pre-built dist files
+COPY dist/ /usr/share/nginx/html/
+
+# Copy mario favicon
+COPY dist/mario-favicon.png /usr/share/nginx/html/mario-favicon.png
+
+# Health check for monitoring
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:80/ || exit 1
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -90,7 +90,7 @@ class LCiBotRequestHandler(http.server.SimpleHTTPRequestHandler):
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}")
 
 if __name__ == "__main__":
-    PORT = 8091
+    PORT = 80
     Handler = LCiBotRequestHandler
     
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
