@@ -13,7 +13,14 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    strictPort: true,
+    hmr: {
+      port: 3000,
+      host: '192.168.0.218'
+    },
+    cors: true,
     watch: {
+      usePolling: true,
       // Ignore problematic directories
       ignored: [
         '**/node_modules/**',

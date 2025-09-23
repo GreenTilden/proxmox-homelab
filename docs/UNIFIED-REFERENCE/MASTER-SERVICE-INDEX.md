@@ -2,32 +2,22 @@
 
 ## 🎯 LCiBot Homelab Service Directory
 
-**Last Updated**: 2025-09-12  
-**Total Services**: 16/17 operational  
-**Primary Interface**: LCiBot Dashboard at http://192.168.0.99:8091  
+**Last Updated**: 2025-09-22
+**Total Services**: 16/17 operational
+**Primary Interface**: LCiBot Dashboard at http://192.168.0.218:3000 (Development)
 **Monitoring Stack**: Grafana, Prometheus, Node Exporter, cAdvisor
 
-## 🎮 Primary Dashboard Interfaces
+## 🎮 Primary Dashboard Interface
 
-### 🎯 LCiBot Dashboard - Modern Vue.js Interface
+### 🎯 LCiBot Dashboard - Vue.js Development Interface
 | **Service** | **LCiBot Dashboard** |
 |-------------|----------------------|
-| **URL** | http://192.168.0.99:8091 |
-| **Status** | ✅ **OPERATIONAL** |
-| **Purpose** | Modern Vue.js dashboard with real-time monitoring and Mario-inspired themes |
-| **Features** | • 5 theme options with real-time switching<br>• Service health monitoring for 16+ services<br>• Mobile-responsive with touch optimization<br>• 87% bundle size reduction (84KB total) |
+| **URL** | http://192.168.0.218:3000 |
+| **Status** | 🔄 **DEVELOPMENT** |
+| **Purpose** | Vue.js dashboard with NES.css styling and seasonal theming |
+| **Features** | • Seasonal theme system (Forest/Christmas)<br>• Service health monitoring<br>• Mobile-responsive design<br>• Hot reload development server |
 | **Authentication** | None required |
-| **Mobile Support** | ✅ Optimized with 44px touch targets |
-
-### 🎮 Homer Dashboard - Static Service Directory  
-| **Service** | **Homer Dashboard** |
-|-------------|---------------------|
-| **URL** | http://192.168.0.99:8090 |
-| **Status** | ✅ **OPERATIONAL** |
-| **Purpose** | Static service directory with 16-bit gaming theme |
-| **Features** | • Comprehensive service catalog<br>• Gaming-themed interface<br>• Quick access to all services<br>• Categorized service organization |
-| **Authentication** | None required |
-| **Use Case** | Service discovery and quick navigation |
+| **Mobile Support** | 🔄 In development |
 
 ## 📊 Monitoring & Analytics Stack
 

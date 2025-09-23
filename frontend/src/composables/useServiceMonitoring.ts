@@ -48,14 +48,16 @@ export const useServiceMonitoring = () => {
       url: 'http://192.168.0.99:9090'
     },
     {
-      id: 'node-exporter', 
+      id: 'node-exporter',
       name: 'Node Exporter',
       description: 'System Metrics Exporter',
       status: 'unknown',
       lastChecked: null,
       responseTime: null,
       job: 'node-exporter',
-      instance: 'proxmox-host'
+      instance: 'proxmox-host',
+      url: 'http://192.168.0.99:9100',
+      healthEndpoint: 'http://192.168.0.99:9100'
     },
     {
       id: 'cadvisor',
@@ -65,7 +67,9 @@ export const useServiceMonitoring = () => {
       lastChecked: null,
       responseTime: null,
       job: 'cadvisor',
-      instance: 'container-metrics'
+      instance: 'container-metrics',
+      url: 'http://192.168.0.99:8082/containers/',
+      healthEndpoint: 'http://192.168.0.99:8082'
     },
     {
       id: 'zfs-exporter',
@@ -75,17 +79,21 @@ export const useServiceMonitoring = () => {
       lastChecked: null,
       responseTime: null,
       job: 'zfs-exporter',
-      instance: 'zfs-pools'
+      instance: 'zfs-pools',
+      url: 'http://192.168.0.99:9101/metrics',
+      healthEndpoint: 'http://192.168.0.99:9101'
     },
     {
-      id: 'qbittorrent-exporter',
-      name: 'qBittorrent Exporter',
-      description: 'Torrent Client Metrics',
+      id: 'qbittorrent',
+      name: 'qBittorrent',
+      description: 'Torrent Client Web Interface',
       status: 'unknown',
       lastChecked: null,
       responseTime: null,
-      job: 'qbittorrent-exporter',
-      instance: 'torrent-client'
+      job: 'qbittorrent',
+      instance: 'torrent-client',
+      url: 'http://192.168.0.111:8112/',
+      healthEndpoint: 'http://192.168.0.111:8112'
     },
     {
       id: 'plex',
@@ -98,30 +106,6 @@ export const useServiceMonitoring = () => {
       instance: 'media-server',
       url: 'http://192.168.0.99:32400',
       healthEndpoint: 'http://192.168.0.99:32400/identity'
-    },
-    {
-      id: 'grafana',
-      name: 'Grafana Dashboard',
-      description: 'Metrics Visualization',
-      status: 'unknown',
-      lastChecked: null,
-      responseTime: null,
-      job: 'grafana',
-      instance: 'dashboard',
-      url: 'http://192.168.0.99:3000',
-      healthEndpoint: 'http://192.168.0.99:3000/api/health'
-    },
-    {
-      id: 'qbittorrent',
-      name: 'qBittorrent Web UI',
-      description: 'Torrent Management Interface',
-      status: 'unknown',
-      lastChecked: null,
-      responseTime: null,
-      job: 'qbittorrent-web',
-      instance: 'torrent-ui',
-      url: 'http://192.168.0.111:8112',
-      healthEndpoint: 'http://192.168.0.111:8112/'
     },
     {
       id: 'filebrowser',
