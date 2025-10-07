@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>qBittorrent Access</title>
+    <style>
+        body {
+            font-family: 'Press Start 2P', monospace, Arial, sans-serif;
+            background: #1a1a2e;
+            color: #00ff00;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ff00;
+            padding: 30px;
+            border-radius: 0px;
+        }
+        h2 {
+            color: #00ff00;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .url-display {
+            background: #000;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .button {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+        .instructions {
+            margin: 20px 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔗 qBittorrent Access</h2>
+        <p class="instructions">Copy the URL below and paste it in a new tab address bar:</p>
+
+        <div class="url-display" id="urlDisplay">http://192.168.0.111:8112/</div>
+
+        <button class="button" onclick="copyUrl()">📋 Copy URL</button>
+        <a href="http://192.168.0.111:8112/" class="button" rel="noreferrer">🔗 Try Direct Link</a>
+
+        <p class="instructions">
+            💡 Tip: Paste the URL in your address bar for best compatibility.<br>
+            This avoids referrer header issues with qBittorrent.
+        </p>
+    </div>
+
+    <script>
+        function copyUrl() {
+            const url = 'http://192.168.0.111:8112/';
+            navigator.clipboard.writeText(url).then(() => {
+                const button = document.querySelector('button');
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.style.background = '#00ff00';
+                button.style.color = '#000';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#000';
+                    button.style.color = '#00ff00';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('URL copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

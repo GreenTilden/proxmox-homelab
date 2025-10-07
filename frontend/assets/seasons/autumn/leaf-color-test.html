@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Color Masking Test - Interactive</title>
+    <style>
+        body {
+            padding: 20px;
+            background: #2a2a2a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .controls {
+            background: #3a3a3a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #666;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .color-btn:hover, .color-btn.active {
+            border-color: white;
+        }
+
+        .test-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .method-section {
+            background: #3a3a3a;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .leaf {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: all 0.3s ease;
+        }
+
+        .method-1 .leaf {
+            background-image: url('leaf_1.png');
+            filter: hue-rotate(var(--hue, 0deg)) brightness(1.0) saturate(0.9);
+        }
+
+        .method-1-muted .leaf {
+            background-image: url('leaf_1.png');
+            filter: hue-rotate(var(--hue, 0deg)) brightness(0.95) saturate(0.7);
+        }
+
+        .method-1-subtle .leaf {
+            background-image: url('leaf_1.png');
+            filter: hue-rotate(var(--hue, 0deg)) brightness(1.05) saturate(0.8) contrast(0.95);
+        }
+
+        .method-2 .leaf {
+            background-image: url('leaf_1.png');
+            position: relative;
+        }
+
+        .method-2 .leaf::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--color, #ff0000);
+            mix-blend-mode: color;
+            pointer-events: none;
+            /* Mask the color overlay to only show within the leaf shape */
+            -webkit-mask-image: url('leaf_1.png');
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-image: url('leaf_1.png');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+
+        /* Method 2 Debug: No mask version */
+        .method-2-debug .leaf {
+            background-image: url('leaf_1.png');
+            position: relative;
+        }
+
+        .method-2-debug .leaf::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--color, #ff0000);
+            mix-blend-mode: color;
+            pointer-events: none;
+            /* NO MASK - to see the full overlay */
+        }
+
+        /* Method 4: Alternative approach - multiply blend instead of mask */
+        .method-4 .leaf {
+            background-image: url('leaf_1.png');
+            position: relative;
+        }
+
+        .method-4 .leaf::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--color, #ff0000);
+            mix-blend-mode: multiply;
+            pointer-events: none;
+        }
+
+        .method-3 .leaf {
+            background: var(--color, #ff0000);
+            -webkit-mask-image: url('leaf_1.png');
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-image: url('leaf_1.png');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+
+        h3 {
+            margin: 0 0 15px 0;
+            color: #fff;
+        }
+
+        .description {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .current-color {
+            margin: 15px 0;
+            padding: 10px;
+            background: #4a4a4a;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Leaf Color Masking Test</h1>
+
+    <div class="controls">
+        <h3>Jekyll64 Color Palette</h3>
+        <p>Click a color to test it on all three methods:</p>
+        <div class="color-palette">
+            <div class="color-btn" style="background-color: #d9214f" data-color="#d9214f" data-hue="340" data-name="Red Maple"></div>
+            <div class="color-btn" style="background-color: #f25565" data-color="#f25565" data-hue="350" data-name="Bright Red"></div>
+            <div class="color-btn" style="background-color: #f09c60" data-color="#f09c60" data-hue="25" data-name="Orange Autumn"></div>
+            <div class="color-btn" style="background-color: #f7c93e" data-color="#f7c93e" data-hue="45" data-name="Golden Yellow"></div>
+            <div class="color-btn" style="background-color: #b3b324" data-color="#b3b324" data-hue="55" data-name="Yellow-Green"></div>
+            <div class="color-btn" style="background-color: #993649" data-color="#993649" data-hue="330" data-name="Dark Brown"></div>
+            <div class="color-btn" style="background-color: #b36159" data-color="#b36159" data-hue="15" data-name="Medium Brown"></div>
+            <div class="color-btn" style="background-color: #faa032" data-color="#faa032" data-hue="35" data-name="Sunset Orange"></div>
+        </div>
+        <div class="current-color">
+            <strong>Current Color: </strong><span id="current-color-name">Red Maple</span>
+            (<span id="current-color-value">#d9214f</span>)
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="method-section method-1">
+            <h3>Method 1: Hue Rotation Filter</h3>
+            <p class="description">Uses CSS filter: hue-rotate() to shift the grayscale leaf to different colors. Best performance, natural gradients.</p>
+            <div class="leaf"></div>
+        </div>
+
+        <div class="method-section method-2">
+            <h3>Method 2: Mix-Blend-Mode (Fixed)</h3>
+            <p class="description">Color overlay with leaf-shaped mask</p>
+            <div class="leaf"></div>
+        </div>
+
+        <div class="method-section method-2-debug">
+            <h3>Method 2: Debug (No Mask)</h3>
+            <p class="description">Same as Method 2 but without the mask to see the overlay</p>
+            <div class="leaf"></div>
+        </div>
+
+        <div class="method-section method-3">
+            <h3>Method 3: CSS Mask</h3>
+            <p class="description">Uses CSS mask to create a solid colored leaf. Clean solid colors, good browser support.</p>
+            <div class="leaf"></div>
+        </div>
+
+        <div class="method-section method-4">
+            <h3>Method 4: Multiply Blend</h3>
+            <p class="description">Uses mix-blend-mode: multiply (darker colors)</p>
+            <div class="leaf"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <h3>GIMP Testing Instructions</h3>
+        <p>To test the same colors in GIMP:</p>
+        <ol>
+            <li>Open <code>leaf_gs.png</code></li>
+            <li>Colors → Hue-Saturation</li>
+            <li>Check "Colorize"</li>
+            <li>Use these hue values: <span id="gimp-hue">340°</span></li>
+            <li>Set Saturation: 60-80</li>
+            <li>Set Lightness: 0 to +10</li>
+        </ol>
+    </div>
+
+    <script>
+        const colorButtons = document.querySelectorAll('.color-btn');
+        const currentColorName = document.getElementById('current-color-name');
+        const currentColorValue = document.getElementById('current-color-value');
+        const gimpHue = document.getElementById('gimp-hue');
+        const method1 = document.querySelector('.method-1');
+        const method2 = document.querySelector('.method-2');
+        const method2Debug = document.querySelector('.method-2-debug');
+        const method3 = document.querySelector('.method-3');
+        const method4 = document.querySelector('.method-4');
+
+        function updateColors(color, hue, name) {
+            // Update CSS custom properties
+            method1.style.setProperty('--hue', hue + 'deg');
+            method2.style.setProperty('--color', color);
+            method2Debug.style.setProperty('--color', color);
+            method3.style.setProperty('--color', color);
+            method4.style.setProperty('--color', color);
+
+            // Update UI
+            currentColorName.textContent = name;
+            currentColorValue.textContent = color;
+            gimpHue.textContent = hue + '°';
+        }
+
+        colorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                colorButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                // Get color data
+                const color = button.dataset.color;
+                const hue = button.dataset.hue;
+                const name = button.dataset.name;
+
+                updateColors(color, hue, name);
+            });
+        });
+
+        // Initialize with first color
+        colorButtons[0].classList.add('active');
+        updateColors('#d9214f', '340', 'Red Maple');
+    </script>
+</body>
+</html>

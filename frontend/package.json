@@ -4,22 +4,31 @@
   "description": "LCiBot Vue.js dashboard for Proxmox homelab services and monitoring",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 3000",
+    "dev": "vite --host 0.0.0.0 --port 5000",
+    "dev:retro": "VITE_THEME=retro vite --host 0.0.0.0 --port 5000",
+    "dev:naive": "VITE_THEME=naive vite --host 0.0.0.0 --port 5001",
+    "dev:element": "VITE_THEME=element vite --host 0.0.0.0 --port 5002",
     "build": "vite build",
+    "build:retro": "VITE_THEME=retro vite build",
+    "build:naive": "VITE_THEME=naive vite build --outDir dist-naive",
+    "build:element": "VITE_THEME=element vite build --outDir dist-element",
     "build:docker": "vite build --mode production",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@types/chart.js": "^2.9.41",
     "axios": "^1.6.0",
     "chart.js": "^4.5.0",
+    "element-plus": "^2.11.4",
     "lucide-vue-next": "^0.525.0",
+    "naive-ui": "^2.43.1",
     "nes.css": "^2.2.1",
     "node-fetch": "^3.3.2",
     "vue": "^3.4.0",
     "vue-chartjs": "^5.3.2",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",

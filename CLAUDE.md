@@ -375,9 +375,15 @@ proxmox-homelab/
 ├── configs/           # Service configurations
 ├── docs/              # Documentation
 ├── inventory/         # Hardware/software inventory
-├── lcibot-dashboard/  # Vue.js dashboard with hot reload
+├── frontend/          # Dual-theme Vue.js dashboard
 │   ├── src/           # Vue components and source code
-│   ├── dist/          # Built production files
+│   │   ├── components/themes/retro/  # Gaming theme components
+│   │   ├── components/themes/naive/  # Professional theme components
+│   │   └── themes/    # Main theme entry points
+│   ├── dist/          # Built production files (retro)
+│   ├── dist-naive/    # Built production files (naive)
+│   ├── DEPLOYMENT-STRATEGY.md  # Dual-theme deployment docs
+│   ├── nginx-dual-theme.conf   # Production nginx config
 │   ├── package.json   # Dependencies and scripts
 │   └── vite.config.ts # Development server configuration
 └── .agents/           # Claude Code agent configurations
@@ -525,12 +531,15 @@ Located in `.agents/` directory:
 - **⚡ Writer Thread**: Updates persistent agent configurations
 - **🚀 Feature Threads**: Create new disposable agents with inherited context
 
-## Current State (2025-09-20) - LCiBot Vue.js Dashboard Operational
+## Current State (2025-09-26) - Dual-Theme Dashboard Operational
 - ✅ Proxmox VE 9.0.3 installed and accessible (192.168.0.99)
 - ✅ SSH configured with key authentication
 - ✅ RTX 5070 Ti 16GB installed and detected
 - ✅ ICY DOCK MB024SP-B mobile rack installed
-- ✅ **LCiBot Vue.js Dashboard**: Running with hot reload at http://192.168.0.218:3000
+- ✅ **Dual-Theme Dashboard**:
+  - **Retro Theme (EllBot)**: http://192.168.0.218:3000/ - Gaming aesthetic with seasonal themes
+  - **Naive Theme (Alissa)**: http://192.168.0.218:3000/naive.html - Professional, clean interface
+  - **Production Goal**: `ellabot.lcibot.local` and `alissa.lcibot.local` subdomains
 - ✅ ZFS Storage: 9.06TB media-pool + 232GB service-pool + 696GB staging-pool
 - ✅ Recovery Mission: Complete with 246MB personal content preserved
 - ✅ **ORCHESTRATED WORKTREE SYSTEM**: Full multi-threaded development operational

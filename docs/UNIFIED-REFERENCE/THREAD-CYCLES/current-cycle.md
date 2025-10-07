@@ -1,8 +1,8 @@
 # Current Thread Execution Cycle
 
-## Cycle ID: 2025-09-13-CYCLE-4-FIREFOX-CONTAINER-WORKFLOW-RESTORATION
-## Status: ✅ **CYCLE 3 COMPLETE** → **CYCLE 4 READY**
-## Cycle Objective: Firefox Container Restoration & Plex Workflow Enhancement with Improvement Identification
+## Cycle ID: 2025-09-26-CYCLE-6-HOME-CALENDAR-FRAMEWORK
+## Status: ✅ **CYCLE 5 COMPLETE** → **CYCLE 6 ACTIVE**
+## Cycle Objective: Home Calendar Framework with Carbon Design System Integration & Service Integration Hooks
 
 ---
 

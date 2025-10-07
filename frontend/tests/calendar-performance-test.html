@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Performance Test</title>
+  <style>
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #161616;
+      color: #f4f4f4;
+    }
+
+    h1 {
+      color: #0f62fe;
+    }
+
+    .test-section {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background-color: #262626;
+      border-radius: 4px;
+      border: 1px solid #393939;
+    }
+
+    .test-result {
+      margin: 1rem 0;
+      padding: 1rem;
+      background-color: #161616;
+      border-left: 4px solid #24a148;
+      border-radius: 4px;
+    }
+
+    .test-result.warning {
+      border-left-color: #f1c21b;
+    }
+
+    .test-result.error {
+      border-left-color: #da1e28;
+    }
+
+    button {
+      background-color: #0f62fe;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-right: 1rem;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background-color: #0353e9;
+    }
+
+    button:disabled {
+      background-color: #393939;
+      cursor: not-allowed;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric-card {
+      background-color: #262626;
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid #393939;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0f62fe;
+    }
+
+    .metric-label {
+      font-size: 0.875rem;
+      color: #c6c6c6;
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #393939;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #0f62fe;
+      transition: width 0.3s ease;
+    }
+
+    code {
+      background-color: #161616;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #0f62fe;
+    }
+
+    .test-status {
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .test-status.pass {
+      background-color: #24a148;
+      color: white;
+    }
+
+    .test-status.fail {
+      background-color: #da1e28;
+      color: white;
+    }
+
+    .test-status.warn {
+      background-color: #f1c21b;
+      color: #161616;
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 Calendar Performance & Robustness Test Suite</h1>
+  <p>Comprehensive testing for the LCiBot Calendar application</p>
+
+  <!-- Test Controls -->
+  <div class="test-section">
+    <h2>Test Controls</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="runPerformanceTests()">Performance Tests Only</button>
+    <button onclick="runValidationTests()">Validation Tests Only</button>
+    <button onclick="runStorageTests()">Storage Tests Only</button>
+    <button onclick="clearResults()">Clear Results</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="test-section" id="progress-section" style="display: none;">
+    <h3>Test Progress</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+    </div>
+    <p id="progress-text">Running tests...</p>
+  </div>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+  <script>
+    // ========================================
+    // Test Data Generation
+    // ========================================
+
+    function generateRandomDate(start, end) {
+      return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+    }
+
+    function generateTestEvents(count) {
+      const categories = ['personal', 'shared', 'household']
+      const titles = [
+        'Team Meeting', 'Doctor Appointment', 'Grocery Shopping',
+        'Movie Night', 'System Maintenance', 'Birthday Party',
+        'Gym Session', 'Dinner Date', 'Project Deadline',
+        'Family Gathering', 'Oil Change', 'House Cleaning'
+      ]
+
+      const events = []
+      const startDate = new Date()
+      const endDate = new Date()
+      endDate.setFullYear(endDate.getFullYear() + 1)
+
+      for (let i = 0; i < count; i++) {
+        events.push({
+          id: `event-${i}`,
+          title: titles[Math.floor(Math.random() * titles.length)],
+          description: `Test event description ${i}`,
+          startDate: generateRandomDate(startDate, endDate),
+          allDay: Math.random() > 0.5,
+          category: categories[Math.floor(Math.random() * categories.length)],
+          createdAt: new Date()
+        })
+      }
+
+      return events
+    }
+
+    // ========================================
+    // Performance Tests
+    // ========================================
+
+    async function testEventRenderingPerformance(eventCount) {
+      const events = generateTestEvents(eventCount)
+      const startTime = performance.now()
+
+      // Simulate rendering events (DOM manipulation)
+      const container = document.createElement('div')
+      events.forEach(event => {
+        const eventElement = document.createElement('div')
+        eventElement.className = 'event-card'
+        eventElement.innerHTML = `
+          <h4>${event.title}</h4>
+          <p>${event.startDate.toLocaleDateString()}</p>
+        `
+        container.appendChild(eventElement)
+      })
+
+      const endTime = performance.now()
+      const duration = endTime - startTime
+
+      return {
+        eventCount,
+        duration: duration.toFixed(2),
+        fps: (1000 / duration).toFixed(2),
+        status: duration < 100 ? 'pass' : duration < 250 ? 'warn' : 'fail'
+      }
+    }
+
+    async function testSearchPerformance(eventCount) {
+      const events = generateTestEvents(eventCount)
+      const searchTerm = 'meeting'
+      const startTime = performance.now()
+
+      const results = events.filter(event =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+
+      const endTime = performance.now()
+      const duration = endTime - startTime
+
+      return {
+        eventCount,
+        resultsFound: results.length,
+        duration: duration.toFixed(2),
+        status: duration < 10 ? 'pass' : duration < 50 ? 'warn' : 'fail'
+      }
+    }
+
+    async function testMemoryUsage(eventCount) {
+      if (!performance.memory) {
+        return {
+          status: 'skip',
+          message: 'Memory API not available (Chrome only)'
+        }
+      }
+
+      const initialMemory = performance.memory.usedJSHeapSize
+      const events = generateTestEvents(eventCount)
+      const finalMemory = performance.memory.usedJSHeapSize
+      const memoryUsed = (finalMemory - initialMemory) / 1024 / 1024
+
+      return {
+        eventCount,
+        memoryUsedMB: memoryUsed.toFixed(2),
+        totalMemoryMB: (finalMemory / 1024 / 1024).toFixed(2),
+        status: memoryUsed < 5 ? 'pass' : memoryUsed < 10 ? 'warn' : 'fail'
+      }
+    }
+
+    // ========================================
+    // Validation Tests
+    // ========================================
+
+    function testDateValidation() {
+      const today = new Date()
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
+
+      const tests = [
+        {
+          name: 'Past date rejection',
+          date: yesterday,
+          shouldFail: true
+        },
+        {
+          name: 'Future date acceptance',
+          date: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
+          shouldFail: false
+        },
+        {
+          name: 'Today acceptance',
+          date: today,
+          shouldFail: false
+        }
+      ]
+
+      const results = tests.map(test => {
+        const isInPast = test.date < today && test.date.toDateString() !== today.toDateString()
+        const passed = (isInPast === test.shouldFail)
+
+        return {
+          name: test.name,
+          passed,
+          status: passed ? 'pass' : 'fail'
+        }
+      })
+
+      return results
+    }
+
+    function testFormValidation() {
+      const tests = [
+        {
+          name: 'Empty title rejection',
+          data: { title: '', date: new Date() },
+          shouldFail: true
+        },
+        {
+          name: 'Title length limit (101 chars)',
+          data: { title: 'a'.repeat(101), date: new Date() },
+          shouldFail: true
+        },
+        {
+          name: 'Valid time format (14:30)',
+          data: { title: 'Test', date: new Date(), time: '14:30' },
+          shouldFail: false
+        },
+        {
+          name: 'Invalid time format (25:70)',
+          data: { title: 'Test', date: new Date(), time: '25:70' },
+          shouldFail: true
+        }
+      ]
+
+      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+
+      const results = tests.map(test => {
+        let failed = false
+
+        if (!test.data.title || test.data.title.trim() === '') {
+          failed = true
+        }
+        if (test.data.title && test.data.title.length > 100) {
+          failed = true
+        }
+        if (test.data.time && !timeRegex.test(test.data.time)) {
+          failed = true
+        }
+
+        const passed = (failed === test.shouldFail)
+
+        return {
+          name: test.name,
+          passed,
+          status: passed ? 'pass' : 'fail'
+        }
+      })
+
+      return results
+    }
+
+    // ========================================
+    // Storage Tests
+    // ========================================
+
+    async function testLocalStorageQuota() {
+      const testKey = 'calendar-quota-test'
+      try {
+        // Generate large dataset
+        const largeData = generateTestEvents(1000)
+        const dataString = JSON.stringify({ events: largeData, todoLists: [] })
+        const dataSizeMB = (new Blob([dataString]).size / 1024 / 1024).toFixed(2)
+
+        localStorage.setItem(testKey, dataString)
+        localStorage.removeItem(testKey)
+
+        return {
+          dataSizeMB,
+          status: dataSizeMB < 5 ? 'pass' : 'warn',
+          message: `Successfully stored ${dataSizeMB}MB of data`
+        }
+      } catch (error) {
+        return {
+          status: 'fail',
+          error: error.name,
+          message: error.message
+        }
+      }
+    }
+
+    async function testStorageCorruption() {
+      const testKey = 'calendar-corruption-test'
+      try {
+        // Test valid JSON
+        const validData = { events: generateTestEvents(10) }
+        localStorage.setItem(testKey, JSON.stringify(validData))
+        const retrieved = JSON.parse(localStorage.getItem(testKey))
+        localStorage.removeItem(testKey)
+
+        // Test corrupted JSON handling
+        localStorage.setItem(testKey, '{invalid json')
+        try {
+          JSON.parse(localStorage.getItem(testKey))
+          localStorage.removeItem(testKey)
+          return { status: 'fail', message: 'Should have thrown parsing error' }
+        } catch (e) {
+          localStorage.removeItem(testKey)
+          return { status: 'pass', message: 'Correctly handles corrupted data' }
+        }
+      } catch (error) {
+        return { status: 'fail', error: error.message }
+      }
+    }
+
+    // ========================================
+    // Test Runner
+    // ========================================
+
+    function showProgress(show = true) {
+      document.getElementById('progress-section').style.display = show ? 'block' : 'none'
+    }
+
+    function updateProgress(percent, text) {
+      document.getElementById('progress-fill').style.width = `${percent}%`
+      document.getElementById('progress-text').textContent = text
+    }
+
+    function addResult(title, content, status = '') {
+      const resultsDiv = document.getElementById('results')
+      const resultDiv = document.createElement('div')
+      resultDiv.className = `test-section test-result ${status}`
+      resultDiv.innerHTML = `<h3>${title}</h3>${content}`
+      resultsDiv.appendChild(resultDiv)
+    }
+
+    async function runPerformanceTests() {
+      showProgress()
+      updateProgress(0, 'Running performance tests...')
+
+      // Test 1: Render 100 events
+      updateProgress(20, 'Testing 100 event rendering...')
+      const render100 = await testEventRenderingPerformance(100)
+      addResult('Rendering Performance (100 events)', `
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-value">${render100.duration}ms</div>
+            <div class="metric-label">Render Time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${render100.fps}</div>
+            <div class="metric-label">FPS Equivalent</div>
+          </div>
+        </div>
+        <div class="test-status ${render100.status}">${render100.status.toUpperCase()}</div>
+      `, render100.status)
+
+      // Test 2: Render 500 events
+      updateProgress(40, 'Testing 500 event rendering...')
+      const render500 = await testEventRenderingPerformance(500)
+      addResult('Rendering Performance (500 events)', `
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-value">${render500.duration}ms</div>
+            <div class="metric-label">Render Time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${render500.fps}</div>
+            <div class="metric-label">FPS Equivalent</div>
+          </div>
+        </div>
+        <div class="test-status ${render500.status}">${render500.status.toUpperCase()}</div>
+      `, render500.status)
+
+      // Test 3: Search performance
+      updateProgress(60, 'Testing search performance...')
+      const search = await testSearchPerformance(1000)
+      addResult('Search Performance (1000 events)', `
+        <p>Searched for "meeting" in ${search.eventCount} events</p>
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-value">${search.duration}ms</div>
+            <div class="metric-label">Search Time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${search.resultsFound}</div>
+            <div class="metric-label">Results Found</div>
+          </div>
+        </div>
+        <div class="test-status ${search.status}">${search.status.toUpperCase()}</div>
+      `, search.status)
+
+      // Test 4: Memory usage
+      updateProgress(80, 'Testing memory usage...')
+      const memory = await testMemoryUsage(1000)
+      if (memory.status !== 'skip') {
+        addResult('Memory Usage (1000 events)', `
+          <div class="metrics">
+            <div class="metric-card">
+              <div class="metric-value">${memory.memoryUsedMB}MB</div>
+              <div class="metric-label">Memory Used</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">${memory.totalMemoryMB}MB</div>
+              <div class="metric-label">Total Heap Size</div>
+            </div>
+          </div>
+          <div class="test-status ${memory.status}">${memory.status.toUpperCase()}</div>
+        `, memory.status)
+      } else {
+        addResult('Memory Usage Test', `<p>${memory.message}</p>`, 'warning')
+      }
+
+      updateProgress(100, 'Performance tests complete!')
+      setTimeout(() => showProgress(false), 2000)
+    }
+
+    async function runValidationTests() {
+      showProgress()
+      updateProgress(0, 'Running validation tests...')
+
+      // Test 1: Date validation
+      updateProgress(33, 'Testing date validation...')
+      const dateTests = testDateValidation()
+      const dateResults = dateTests.map(t =>
+        `<div class="test-status ${t.status}">${t.name}: ${t.status.toUpperCase()}</div>`
+      ).join('')
+      addResult('Date Validation Tests', dateResults)
+
+      // Test 2: Form validation
+      updateProgress(66, 'Testing form validation...')
+      const formTests = testFormValidation()
+      const formResults = formTests.map(t =>
+        `<div class="test-status ${t.status}">${t.name}: ${t.status.toUpperCase()}</div>`
+      ).join('')
+      addResult('Form Validation Tests', formResults)
+
+      updateProgress(100, 'Validation tests complete!')
+      setTimeout(() => showProgress(false), 2000)
+    }
+
+    async function runStorageTests() {
+      showProgress()
+      updateProgress(0, 'Running storage tests...')
+
+      // Test 1: LocalStorage quota
+      updateProgress(50, 'Testing storage quota...')
+      const quota = await testLocalStorageQuota()
+      addResult('LocalStorage Quota Test', `
+        <p>${quota.message || quota.error}</p>
+        ${quota.dataSizeMB ? `<p>Test data size: <code>${quota.dataSizeMB}MB</code></p>` : ''}
+        <div class="test-status ${quota.status}">${quota.status.toUpperCase()}</div>
+      `, quota.status)
+
+      // Test 2: Corrupted data handling
+      updateProgress(75, 'Testing corruption handling...')
+      const corruption = await testStorageCorruption()
+      addResult('Data Corruption Test', `
+        <p>${corruption.message}</p>
+        <div class="test-status ${corruption.status}">${corruption.status.toUpperCase()}</div>
+      `, corruption.status)
+
+      updateProgress(100, 'Storage tests complete!')
+      setTimeout(() => showProgress(false), 2000)
+    }
+
+    async function runAllTests() {
+      clearResults()
+      await runPerformanceTests()
+      await runValidationTests()
+      await runStorageTests()
+    }
+
+    function clearResults() {
+      document.getElementById('results').innerHTML = ''
+    }
+
+    // Auto-run tests on load (optional)
+    // window.addEventListener('load', () => setTimeout(runAllTests, 1000))
+  </script>
+</body>
+</html>

@@ -1,44 +1,6 @@
-/* Import Press Start 2P font for NES.css */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
 /* Clean Base Styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
-}
-
-/* NES.css integration with Seasonal Theming */
-.nes-container {
-  background-color: var(--bg-card) !important;
-  border-color: var(--color-primary-3) !important;
-}
-
-.nes-btn {
-  font-family: "Press Start 2P", monospace !important;
-  font-size: 8px !important;
-  line-height: 1.5 !important;
-}
-
-.nes-btn.is-primary {
-  background-color: var(--color-primary-4) !important;
-  border-color: var(--color-primary-3) !important;
-  color: var(--text-primary) !important;
-}
-
-.nes-btn.is-success {
-  background-color: var(--color-secondary-4) !important;
-  border-color: var(--color-secondary-3) !important;
-  color: var(--text-primary) !important;
-}
-
-.nes-btn.is-warning {
-  background-color: var(--color-accent-4) !important;
-  border-color: var(--color-accent-3) !important;
-  color: var(--color-neutral-1) !important;
-}
-
-.nes-text {
-  font-family: "Press Start 2P", monospace !important;
-  color: var(--text-bright) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
