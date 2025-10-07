@@ -144,28 +144,55 @@ Building a comprehensive home server on Proxmox VE 9.x with focus on media servi
 ## Git Worktree Threading Strategy
 
 ### Overview
-We use Git worktrees to create isolated working directories for different types of work, allowing parallel Claude sessions without conflicts.
+We use Git worktrees with a **workspace model** to create isolated working directories for different thread types, ensuring parallel Claude sessions without conflicts.
 
-### Directory Structure
+### Workspace Structure
 ```
 ~/projects/
-├── proxmox-homelab/          (main branch - planning/documentation)
-├── proxmox-homelab-reader/   (reader branch - research/status)
-├── proxmox-homelab-writer/   (writer branch - implementation)
-└── proxmox-homelab-features/ (feature branches)
-    ├── plex-setup/
-    └── storage-config/
+├── proxmox-homelab/              ← Main repo (stable production)
+│   ├── docs/UNIFIED-REFERENCE/   ← Single source of truth
+│   ├── .claude_mcp_config.json   ← Shared MCP config
+│   ├── .env.notion               ← Notion database IDs
+│   └── .agents/                  ← Shared agent definitions
+│
+└── proxmox-homelab-threads/      ← Thread workspace (all threads)
+    ├── reader/                   ← reader branch (Sonnet)
+    ├── writer/                   ← writer branch (Opus)
+    ├── debug/                    ← debug branch (Opus)
+    └── doc/                      ← doc branch (Sonnet)
 ```
 
-### Quick Setup
+**Result**: Only 2 folders instead of 5+ for clean organization!
+
+### ⚠️ CRITICAL: Launch Claude from Correct Directory
+
+**Always launch Claude from the workspace directory for your thread type:**
+
 ```bash
-# Initial setup (creates all worktrees)
-./scripts/claude_threads.sh setup
+# Reader thread (Sonnet):
+cd ~/projects/proxmox-homelab-threads/reader && claude
 
-# Open specific worktree
-./scripts/claude_threads.sh reader   # Opens reader directory
-./scripts/claude_threads.sh writer   # Opens writer directory
+# Writer thread (Opus):
+cd ~/projects/proxmox-homelab-threads/writer && claude
+
+# Debug thread (Opus):
+cd ~/projects/proxmox-homelab-threads/debug && claude
+
+# Documentation thread (Sonnet):
+cd ~/projects/proxmox-homelab-threads/doc && claude
+
+# Main coordination (Opus):
+cd ~/projects/proxmox-homelab && claude
 ```
+
+### Shared Resources
+
+All threads access shared configs via symlinks:
+- `.claude_mcp_config.json` → main repo
+- `.env.notion` → main repo
+- `docs/UNIFIED-REFERENCE/` → auto-synced via git
+
+**See**: [Workspace Usage Guide](/docs/UNIFIED-REFERENCE/OPERATIONS/workspace-usage-guide.md)
 
 ### Thread Types & Emoji Identifiers
 
@@ -228,6 +255,56 @@ We use Git worktrees to create isolated working directories for different types 
 # List all worktrees
 ./scripts/claude_threads.sh list
 ```
+
+## Notion Integration (MCP-Only)
+
+### ⚠️ CRITICAL: No Batch Scripts - MCP Tools Only
+
+This project uses **pure MCP tool integration** with Notion's remote MCP server.
+
+**❌ DO NOT CREATE:**
+- Node.js sync scripts with `@notionhq/client`
+- Hardcoded API tokens in files
+- Batch sync utilities
+- Direct Notion API calls
+
+**✅ ONLY USE:**
+- MCP tools via Claude during development (`mcp__notion__API-*`)
+- Remote Notion MCP server: `https://mcp.notion.com/mcp`
+- OAuth authentication (no hardcoded tokens)
+- Real-time updates as you work
+
+### Configuration
+
+**MCP Server** (`.claude_mcp_config.json`):
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "url": "https://mcp.notion.com/mcp"
+    }
+  }
+}
+```
+
+**Database IDs** (`.env.notion`):
+```bash
+NOTION_CYCLES_DB=        # Development cycles
+NOTION_TASKS_DB=         # Task management
+NOTION_INFRASTRUCTURE_DB=  # Services/hardware
+NOTION_DOCS_DB=          # Documentation links
+NOTION_MONITORING_DB=    # System health
+```
+
+### Thread-Specific Notion Workflows
+
+- **🎯 Main**: Creates cycles, assigns tasks, coordinates handoffs
+- **🔍 Reader**: Queries infrastructure (read-only via MCP)
+- **⚡ Writer**: Updates infrastructure DB, links documentation
+- **🔧 Debug**: Documents issues and resolutions in tasks DB
+- **📚 Documentation**: Enriches cycle metadata, syncs at completion
+
+**See**: [Notion MCP Workflow](/docs/UNIFIED-REFERENCE/OPERATIONS/notion-mcp-workflow.md) for complete guide.
 
 ### Best Practices
 1. **Always update CLAUDE.md** in any worktree when project state changes

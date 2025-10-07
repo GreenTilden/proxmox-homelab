@@ -29,6 +29,10 @@ id_ed25519*
 .env
 .env.local
 .env.*.local
+.env.notion
+
+# MCP Configuration (may contain sensitive info)
+.claude_mcp_config.json
 
 # IDE files
 .vscode/
