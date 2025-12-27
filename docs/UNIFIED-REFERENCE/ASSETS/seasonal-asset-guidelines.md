@@ -1,94 +1,69 @@
-# Seasonal Asset Guidelines for Retro Theme
+# Retro Theme Particle Asset Guidelines
 
 ## Overview
-This document provides comprehensive guidelines for creating, integrating, and managing seasonal particle assets specifically for the 'retro' theme of the LCiBot dashboard. The system is built upon the **Jehkoba64** 64-color palette and offers automatic month-based theme switching with sophisticated particle effects.
+This document provides comprehensive guidelines for creating, integrating, and managing particle assets specifically for the 'retro' theme of the LCiBot dashboard. The system is built upon a curated color palette and offers dynamic particle effects that align with the retro aesthetic.
 
 ## Architecture & Core Components
-*   **Jehkoba64 Palette**: Centralized 64-color palette with seasonal groupings (defined in `jehkoba64-palette.ts`).
-*   **Theme Composable**: `useTheme.ts` provides universal theme management and automatic season detection.
-*   **Theme Provider**: `SeasonalThemeProvider.vue` handles CSS variable injection for dynamic theming.
-*   **Particle System**: `AtmosphericBackground.vue` integrates seasonal particle effects with Jehkoba64 color mapping.
+*   **Retro Palette**: Centralized color palette (e.g., from `retro-palette.ts` or defined in CSS variables).
+*   **Theme Composable**: `useTheme.ts` provides universal theme management.
+*   **Particle System**: `AtmosphericBackground.vue` integrates particle effects with retro color mapping.
 
 ## Asset Specifications
 
 ### Technical Requirements
 *   **Format**: PNG with transparent background.
 *   **Size**: 16x16 to 48x48 pixels (optimal for particle system).
-*   **Color Mode**: RGB (will be recolored via CSS filters).
+*   **Color Mode**: RGB (will be recolored via CSS filters or custom logic).
 *   **Compression**: Optimize for web delivery (keep under 1KB per asset).
 *   **Transparency**: Clean alpha channel with no semi-transparent edges.
 
 ### File Naming Convention
 ```
-{season}/{type}_{variant}.png
+retro/{type}_{variant}.png
 
 Examples:
-- autumn/leaf_1.png, autumn/leaf_2.png
-- halloween/spooky_1.png, halloween/spooky_2.png
-- winter/snowflake_1.png, winter/snowflake_2.png
-- spring/petal_1.png, spring/petal_2.png
+- retro/pixel_star_1.png, retro/pixel_star_2.png
+- retro/8bit_cloud_1.png, retro/8bit_cloud_2.png
 ```
 
 ## Directory Structure
 ```
-frontend/assets/seasons/
-├── autumn/                 # Fall assets
-├── halloween/              # Halloween assets
-├── winter/                 # Future winter assets
-└── spring/                 # Future spring assets
+frontend/assets/retro/        # Retro-themed assets
 ```
 
-## Season-Specific Guidelines
+## Retro Theme Asset Guidelines
 
-### 🍂 Autumn Assets (September)
-*   **Primary Palette**: Reflects autumn colors (e.g., maple, oak leaves, golden yellows, deep reds).
-*   **Assets**: `leaf_1.png`, `leaf_2.png`.
-*   **Physics**: Gentle falling (speed: 0.8), with sway and light wind.
+### 🌟 Retro Particle Assets
+*   **Primary Palette**: Reflects the overall retro theme colors (e.g., desaturated blues, greens, browns, and muted neons).
+*   **Assets**: Examples include pixelated stars, 8-bit clouds, geometric shapes, or simplified icons.
+*   **Physics**: Consistent movement patterns (e.g., slow upward drift, gentle falling, or static background elements) designed to complement the retro aesthetic.
 
-### 🎃 Halloween Assets (October)
-*   **Primary Palette**: Focus on pumpkin orange, dark violet, deep purple, and black.
-*   **Assets**: `spooky_1.png`, `spooky_2.png` (user-provided). Suggested types include bats, ghosts, pumpkins, spider webs, witch hats.
-*   **Physics**: Mysterious floating (speed: 0.6), with supernatural sway and limited rotation.
-*   **Visual Effects**: Enhanced transparency for spooky atmosphere, glow effects, and pixelated borders.
+## Color Integration System (Retro Palette)
 
-### ❄️ Winter Assets (November-February)
-*   **Primary Palette**: Ice blues, bright blues, creams, and grays.
-*   **Assets**: Future snowflake assets.
-*   **Physics**: Fast falling snow (speed: 1.2), minimal sway.
-
-### 🌸 Spring Assets (March-May)
-*   **Primary Palette**: Light greens, bright limes, mint, light pinks, yellows.
-*   **Assets**: Future petal assets.
-*   **Physics**: Gentle upward drift (speed: 0.5), playful movement.
-
-## Color Integration System (Jehkoba64 Palette)
-
-Assets are automatically recolored using CSS filters to match seasonal Jehkoba64 palettes.
+Assets can be recolored using CSS filters or custom logic to match the retro palette.
 
 ### Asset Color Guidelines
-*   **Base Color**: Use neutral/warm colors as starting point.
-*   **Avoid**: Extreme saturation or brightness (will be adjusted by filters).
-*   **Details**: High contrast details preserve well through the filter system.
-*   **Testing**: Use reference tools for color transformation.
+*   **Base Color**: Use neutral colors as a starting point.
+*   **Avoid**: Overly complex color schemes within the asset itself.
+*   **Details**: High contrast details preserve well through color transformation.
+*   **Testing**: Use reference tools for color transformation and theme compatibility.
 
 ## Physics Configuration
 
-### Movement Patterns by Season
-*   **AUTUMN**: Gentle falling, wind effect, natural tumbling.
-*   **HALLOWEEN**: Mysterious floating, supernatural sway, limited spooky sway rotation.
-*   **WINTER**: Fast falling snow, no sway.
-*   **SPRING**: Gentle upward drift, playful movement.
+### Movement Patterns
+*   **Default**: Gentle falling or slow upward drift with minimal sway to maintain a calm retro backdrop.
+*   **Variations**: Can be configured for specific asset types (e.g., faster movement for "glitch" effects, static for background elements).
 
 ### Asset-Specific Physics Multipliers
-Physics adjust automatically based on asset naming conventions (e.g., `_1`, `_2`, `spooky_`, `snowflake_`).
+Physics can be adjusted based on asset naming conventions (e.g., `_fast`, `_static`) or component props.
 
 ## Integration Workflow
 
 ### Adding New Assets
 1.  **Create Assets**: Follow technical specifications.
-2.  **Place Files**: In appropriate `/frontend/assets/seasons/{season}/` directory.
+2.  **Place Files**: In the `frontend/assets/retro/` directory.
 3.  **Update Asset Lists**: In `AtmosphericBackground.vue` `getParticleAssets()` if needed.
-4.  **Test Integration**: Use `npm run dev` and theme switch button to preview.
+4.  **Test Integration**: Use `npm run dev` to preview.
 
 ## Quality Assurance
 
@@ -97,12 +72,12 @@ Physics adjust automatically based on asset naming conventions (e.g., `_1`, `_2`
 *   **Transparency**: Clean alpha channel.
 *   **Dimensions**: 16-48px range.
 *   **Format**: PNG format.
-*   **Naming**: Follows `{season}/{type}_{variant}.png` convention.
-*   **Location**: Correct seasonal directory.
+*   **Naming**: Follows `retro/{type}_{variant}.png` convention.
+*   **Location**: Correct `retro` directory.
 
 ### Integration Testing
-*   **Color Transform**: Jehkoba64 colors apply correctly.
-*   **Physics**: Movement matches seasonal expectations.
+*   **Color Transform**: Retro palette colors apply correctly.
+*   **Physics**: Movement matches retro aesthetic expectations.
 *   **Performance**: Maintains 60fps with particle system.
 *   **Transparency**: Visible through card backgrounds.
 *   **Mobile**: Responsive on touch devices.
@@ -110,7 +85,7 @@ Physics adjust automatically based on asset naming conventions (e.g., `_1`, `_2`
 ## Performance Guidelines
 
 ### Optimization Techniques
-*   **Asset Preloading**: System preloads seasonal assets.
+*   **Asset Preloading**: System preloads assets.
 *   **Memory Management**: Particle recycling system.
 *   **GPU Acceleration**: CSS transforms for smooth animation.
-*   **Efficient Filters**: Optimized hue rotation and effects.
+*   **Efficient Filters**: Optimized color effects.
