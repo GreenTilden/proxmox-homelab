@@ -1756,7 +1756,8 @@ const systemMetrics = {
 
 const services = [
   { name: 'Grafana', url: 'http://localhost:3000', status: 'operational' },
-  { name: 'Prometheus', url: 'http://localhost:9090', status: 'operational' }
+  { name: 'Prometheus', url: 'http://localhost:9090', status: 'operational' },
+  { name: 'qBittorrent', url: 'http://localhost:8080', status: 'operational' }
 ];
 
 const handleAlert = (metric: string, value: number) => {
