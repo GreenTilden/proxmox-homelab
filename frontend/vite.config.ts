@@ -4,15 +4,6 @@ import { resolve } from 'path'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig(({ command, mode }) => {
-  // Determine port based on environment theme
-  const theme = process.env.VITE_THEME || 'retro'
-  const portMap: Record<string, number> = {
-    'retro': 5000,
-    'naive': 5001,
-    'element': 5002
-  }
-  const port = portMap[theme] || 5000
-
   return {
     plugins: [vue()],
     resolve: {
@@ -21,19 +12,19 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     define: {
-      'process.env.VITE_THEME': JSON.stringify(theme)
+      'process.env.VITE_THEME': JSON.stringify('retro')
     },
-    cacheDir: `node_modules/.vite-${theme}`,
+    cacheDir: `node_modules/.vite`,
     build: {
-      outDir: `dist-${theme}`,
+      outDir: `dist`,
       emptyOutDir: true
     },
     server: {
       host: '0.0.0.0',
-      port: port,
+      port: 5000,
       strictPort: true,
       hmr: {
-        port: port
+        port: 5000
       },
       cors: {
         origin: true,
@@ -45,11 +36,6 @@ export default defineConfig(({ command, mode }) => {
           target: 'http://192.168.0.99:9090',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/prometheus/, '/api/v1')
-        },
-        '/api/grafana': {
-          target: 'http://192.168.0.99:3000',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/grafana/, '/api')
         },
         '/api/zfs': {
           target: 'http://192.168.0.99:9101',
@@ -66,7 +52,6 @@ export default defineConfig(({ command, mode }) => {
           '**/.cache/**',
           '**/cache2/**',
           '**/.mozilla/**',
-          '**/firefox/**'
         ]
       }
     }
