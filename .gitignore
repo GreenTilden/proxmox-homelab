@@ -75,4 +75,4 @@ test.html
 index-vue.html
 
 # Archive working directories
-archive/temp-work/
+archive/temp-work/.env

@@ -16,6 +16,14 @@
 
 ## 📂 **Documentation Structure**
 
+### **PROJECT_MANAGEMENT/** - Core Principles & Workflow
+| Document | Description |
+|----------|-------------|
+| [README.md](./PROJECT_MANAGEMENT/README.md) | Overview of the project management section. |
+| [CORE_PRINCIPLES.md](./PROJECT_MANAGEMENT/CORE_PRINCIPLES.md) | Core rules and principles of the project. |
+| [5_THREAD_WORKFLOW.md](./PROJECT_MANAGEMENT/5_THREAD_WORKFLOW.md) | The 5-Thread execution model. |
+| [AGENT_SYSTEM.md](./PROJECT_MANAGEMENT/AGENT_SYSTEM.md) | The AI agent architecture. |
+
 ### **FRAMEWORK/** - Core Execution Models
 | Document | Description | Primary Thread |
 |----------|-------------|---------------|
@@ -34,6 +42,9 @@
 | [enterprise-ai-deployment-assessment.md](./ARCHITECTURE/enterprise-ai-deployment-assessment.md) | 3-tier scaling strategy & ROI analysis | Documentation |
 | [enterprise-performance-addendum.md](./ARCHITECTURE/enterprise-performance-addendum.md) | Performance validation supplement | Documentation |
 | [gbgreg-integration-roadmap.md](./ARCHITECTURE/gbgreg-integration-roadmap.md) | ✅ Multi-cycle roadmap with validated capabilities | Documentation |
+| [HARDWARE_OVERVIEW.md](./ARCHITECTURE/HARDWARE_OVERVIEW.md) | System configuration and shopping list. | Writer |
+| [SERVICES_OVERVIEW.md](./ARCHITECTURE/SERVICES_OVERVIEW.md) | Deployed services and their architecture. | Writer |
+| [DEPLOYMENT_PATTERNS.md](./ARCHITECTURE/DEPLOYMENT_PATTERNS.md) | Standardized deployment patterns. | Writer |
 | container-standards.md | Docker/LXC patterns | Writer |
 | network-services.md | Network architecture | Writer |
 
@@ -42,6 +53,10 @@
 |----------|-------------|---------------|
 | [post-clear-thread-context-packages.md](./OPERATIONS/post-clear-thread-context-packages.md) | **NEW** ✅ **COMPLETE** Context recovery packages for all thread types | Documentation |
 | [memory-optimization-procedures.md](./OPERATIONS/memory-optimization-procedures.md) | RAM allocation resolution & large model deployment | Documentation |
+| [GIT_WORKTREE_STRATEGY.md](./OPERATIONS/GIT_WORKTREE_STRATEGY.md) | Details on the Git worktree setup. | All threads |
+| [NOTION_INTEGRATION.md](./OPERATIONS/NOTION_INTEGRATION.md) | How the project integrates with Notion. | All threads |
+| [KEY_COMMANDS.md](./OPERATIONS/KEY_COMMANDS.md) | A reference for key shell commands. | All threads |
+| [MONITORING_AND_SAFETY.md](./OPERATIONS/MONITORING_AND_SAFETY.md) | System health check protocols. | All threads |
 | service-deployments.md | Service installation guides | Writer |
 | monitoring-grafana.md | Monitoring stack setup | Writer |
 | troubleshooting-guide.md | Debug procedures | Debug |

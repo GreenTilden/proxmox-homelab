@@ -1,0 +1,125 @@
+# Claude Code Ignore File
+# Optimized to prevent EMFILE (too many open files) errors
+# Last updated: 2025-11-17
+
+# ========================================
+# CRITICAL: High file-count directories
+# ========================================
+
+# Node.js dependencies (416MB, thousands of files)
+**/node_modules/
+node_modules/
+
+# Build artifacts
+**/dist/
+**/dist-naive/
+**/.vite/
+**/coverage/
+**/build/
+**/.next/
+**/.nuxt/
+
+# Git internals (100MB, many objects)
+.git/objects/
+.git/logs/
+.git/refs/
+
+# ========================================
+# Project-specific exclusions
+# ========================================
+
+# Git worktree directories (watched in their own Claude sessions)
+proxmox-homelab-threads/
+../proxmox-homelab-reader/
+../proxmox-homelab-writer/
+../proxmox-homelab-debug/
+../proxmox-homelab-doc/
+
+# Worktree branches in this repo (if they exist)
+reader/
+writer/
+debug/
+doc/
+
+# Large data and pool mounts (never needed for coding)
+/service-pool/
+/media-pool/
+/staging-pool/
+/mnt/
+
+# Other projects (GBGreg has its own workspace)
+../GBGreg/
+../*/
+
+# ========================================
+# Archive and historical data
+# ========================================
+
+archive/
+**/ARCHIVE/
+workspace-migration-*/
+**/backup/
+**/backups/
+**/*.backup
+**/*.bak
+**/*.old
+
+# ========================================
+# Temporary and generated files
+# ========================================
+
+# Logs
+**/*.log
+**/*.log.*
+**/logs/
+
+# Temporary directories
+**/tmp/
+**/temp/
+**/.cache/
+**/.temp/
+
+# ========================================
+# IDE and editor files
+# ========================================
+
+**/.idea/
+**/.vscode/
+**/*.swp
+**/*.swo
+**/*.swn
+**/*~
+
+# ========================================
+# System files
+# ========================================
+
+**/.DS_Store
+**/Thumbs.db
+**/*.pid
+**/*.lock
+
+# ========================================
+# Media and binary files (not needed for code context)
+# ========================================
+
+**/*.mp4
+**/*.mkv
+**/*.avi
+**/*.mov
+**/*.iso
+**/*.img
+**/*.dmg
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+
+# ========================================
+# Documentation builds (read source instead)
+# ========================================
+
+**/site/
+**/_site/
+**/public/
+**/out/

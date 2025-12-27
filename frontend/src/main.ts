@@ -14,17 +14,8 @@ async function initializeApp() {
   // Add router
   app.use(router)
 
-  // Configure based on theme environment
-  if (currentEnv === 'retro') {
-    // Import NES.css for retro gaming theme
-    await import('nes.css/css/nes.min.css')
-  } else if (currentEnv === 'naive') {
-    // Naive UI is configured in NaiveApp.vue via NConfigProvider
-    // No global configuration needed here
-  } else if (currentEnv === 'element') {
-    // Import Element Plus CSS
-    await import('element-plus/dist/index.css')
-  }
+  // Import NES.css for retro gaming theme
+  await import('nes.css/css/nes.min.css')
 
   // Set document title based on environment
   document.title = currentConfig.title

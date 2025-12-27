@@ -1,0 +1,1 @@
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.index.v1+json","manifests":[{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:47873e9c4a85c617493513c22b4ec7266af9f992a0f2e968956a53528b699af3","size":1460,"annotations":{"io.containerd.image.name":"docker.io/library/lcibot-dashboard:latest","org.opencontainers.image.ref.name":"latest"}}]}
