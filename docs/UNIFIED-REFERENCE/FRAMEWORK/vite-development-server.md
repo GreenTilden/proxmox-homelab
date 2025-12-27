@@ -4,67 +4,94 @@
 
 ```bash
 # Start dev server with external network access
-npm run dev -- --host 0.0.0.0 --port 3000
-
+npm run dev
 # Access from external network
-# http://192.168.0.218:3000/
+# http://192.168.0.218:5000/
 ```
 
 ## Configuration Details
 
-### Working vite.config.ts
+### Current vite.config.ts
 ```typescript
-export default defineConfig({
-  plugins: [vue()],
-  server: {
-    host: '0.0.0.0',           // Bind to all interfaces
-    port: 3000,                // Use port 3000 (avoids conflicts)
-    strictPort: true,          // Fail if port unavailable
-    hmr: {
-      port: 24678,             // Separate HMR port
-      host: 'localhost'        // HMR on localhost
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { resolve } from 'path'
+import { fileURLToPath, URL } from 'node:url'
+
+export default defineConfig(({ command, mode }) => {
+  return {
+    plugins: [vue()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
     },
-    cors: true,                // Enable CORS explicitly
-    watch: {
-      usePolling: true,        // Better file watching in network environments
-      ignored: [
-        '**/node_modules/**',
-        '**/.git/**',
-        '**/.cache/**',
-        '**/cache2/**',
-        '**/.mozilla/**',
-        '**/firefox/**'
-      ]
+    define: {
+      'process.env.VITE_THEME': JSON.stringify('retro')
+    },
+    cacheDir: `node_modules/.vite`,
+    build: {
+      outDir: `dist`,
+      emptyOutDir: true
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 5000,
+      strictPort: true,
+      hmr: {
+        port: 5000
+      },
+      cors: {
+        origin: true,
+        credentials: true
+      },
+      proxy: {
+        // Proxy API requests to Proxmox services
+        '/api/prometheus': {
+          target: 'http://192.168.0.99:9090',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/prometheus/, '/api/v1')
+        },
+        '/api/zfs': {
+          target: 'http://192.168.0.99:9101',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/zfs/, '')
+        }
+      },
+      watch: {
+        usePolling: true,
+        // Ignore problematic directories
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/.cache/**',
+          '**/cache2/**',
+          '**/.mozilla/**',
+        ]
+      }
     }
   }
 })
 ```
 
 ### Critical Settings
-- **Separate HMR Port**: Prevents websocket conflicts
-- **CORS Enabled**: Required for external access
-- **Command-line Override**: Ensures proper network binding
-- **Port 3000**: Avoids common conflicts with other services
+- **Hardcoded Port 5000**: The development server now runs exclusively on port 5000.
+- **CORS Enabled**: Required for external access.
+- **Proxy Configuration**:
+    - `/api/prometheus`: Targets `http://192.168.0.99:9090` (Prometheus).
+    - `/api/zfs`: Targets `http://192.168.0.99:9101` (ZFS Exporter).
+- **File Watching**: Configured for better performance in network environments, with problematic directories ignored.
 
 ### Verification Steps
-1. **Check Network Binding**: `netstat -tlnp | grep :3000`
-2. **Test External Access**: `curl -I http://192.168.0.218:3000`
-3. **Verify Hot Reload**: Make changes and verify browser updates
-
-## Integration with 5-Thread Model
-
-This configuration supports the multi-threaded development workflow by ensuring:
-- **Main Thread**: Can coordinate development across worktrees
-- **Writer Thread**: Hot reload works for live Vue.js development
-- **Reader Thread**: Can access running dashboard for verification
-- **External Access**: SSH sessions maintain proper development environment
+1. **Check Network Binding**: `netstat -tlnp | grep :5000`
+2. **Test External Access**: `curl -I http://192.168.0.218:5000`
+3. **Verify Hot Reload**: Make changes and verify browser updates.
 
 ## Related Files
 - `/frontend/vite.config.ts` - Main configuration
 - `/frontend/package.json` - Development scripts
-- `/docs/vite-network-configuration.md` - Detailed troubleshooting guide
 
 ## Status
-✅ **Working**: External network access confirmed at http://192.168.0.218:3000/
+✅ **Working**: External network access confirmed at http://192.168.0.218:5000/
 ✅ **Hot Reload**: Live development workflow operational
-✅ **Documented**: Troubleshooting patterns captured for reuse
+✅ **Documented**: Current configuration accurately reflected.

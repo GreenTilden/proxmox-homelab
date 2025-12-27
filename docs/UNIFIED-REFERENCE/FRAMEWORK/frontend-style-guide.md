@@ -1,270 +1,69 @@
-# Frontend Style Guide - LCiBot Seasonal Dashboard
+# Frontend Style Guide - LCiBot Retro Dashboard
 
-## 🎯 Current Implementation Status
-
-**Dashboard URL**: http://192.168.0.218:3000/
-**Framework**: Vue 3 + TypeScript + NES.css + Seasonal Theming
-**Status**: ✅ **ACTIVE DEVELOPMENT** with hot reload working
+This document outlines the core design philosophy, component library, and development standards for the LCiBot Vue.js dashboard, which is now standardized on the 'retro' theme.
 
 ## 🎨 Core Design Philosophy
 
 ### 1. **NES.css 8-bit Aesthetic**
-- Authentic retro gaming visual style using NES.css library
-- Pixelated fonts (Press Start 2P) for authentic feel
-- Chunky borders and classic button styling
-- Props-driven components without CSS class pollution
+- Authentic retro gaming visual style using NES.css library.
+- Pixelated fonts (Press Start 2P) for an authentic feel.
+- Chunky borders and classic button styling.
+- Props-driven components without CSS class pollution.
 
 ### 2. **Seasonal Theming System**
-- **Forest Theme** (active until Thanksgiving): Green color ramps with leaf particles
-- **Christmas Theme** (after Thanksgiving): Red/green festive colors with snow particles
-- **Jehkoba64 Color Palette**: 64-color retro gaming palette as base
-- **Automatic Switching**: Date-based theme transitions
+- **Jehkoba64 Color Palette**: A 64-color retro gaming palette forms the base.
+- **Automatic Switching**: Themes can transition based on date (details for seasonal asset management are in `ASSETS/seasonal-asset-guidelines.md`).
 
 ### 3. **Component-Driven Architecture**
-- Zero CSS classes in templates - all styling via computed properties
-- Props control all visual aspects (colors, borders, effects)
-- Self-contained components with seasonal theme awareness
+- Zero CSS classes in templates - all styling via computed properties.
+- Props control all visual aspects (colors, borders, effects).
+- Self-contained components with seasonal theme awareness.
 
-## 🧩 Component Library
+## 🧩 Component Library (NES.css Integration)
 
 ### Core NES.css Components
+*   **ServiceCard Component**: A container for displaying service information. Styling is props-driven for border style, compact mode, and service status.
+*   **NES.css Buttons**: Standard button variants (`is-primary`, `is-success`, `is-warning`) with seasonal color integration.
+*   **Typography**: Uses Press Start 2P pixelated font with seasonal color integration and text shadows.
 
-#### **ServiceCard Component**
-```vue
-<template>
-  <div
-    class="nes-container is-rounded"
-    :class="{ 'is-dark': currentSeason === 'forest' }"
-    :style="cardStyles"
-  >
-    <!-- Content with seasonal theming -->
-  </div>
-</template>
-```
+### Integration Patterns
+*   **Font Loading**: `Press Start 2P` font loaded from Google Fonts.
+*   **Color Override Pattern**: NES.css defaults are overridden with seasonal colors using CSS variables.
 
-**Props-driven styling:**
-- `borderStyle`: 'solid' | 'gradient'
-- `compactMode`: boolean
-- `service`: Service object with status
+## 🌈 Color System & Atmospheric Effects
 
-**Visual Features:**
-- Seasonal background gradients
-- Status-aware border colors
-- Hover effects with transform
-- Pixelated rendering
-
-#### **NES.css Buttons**
-```vue
-<button class="nes-btn is-primary">Primary Action</button>
-<button class="nes-btn is-success">Success Action</button>
-<button class="nes-btn is-warning">Warning Action</button>
-```
-
-**Button Variants:**
-- `is-primary`: Seasonal primary colors (forest green/Christmas red)
-- `is-success`: Secondary color ramp
-- `is-warning`: Accent colors for controls
-
-**Integration with Theme:**
-```css
-.nes-btn.is-primary {
-  background-color: var(--color-primary-4) !important;
-  border-color: var(--color-primary-3) !important;
-  color: var(--text-primary) !important;
-}
-```
-
-#### **Typography**
-```vue
-<h1 class="nes-text is-primary">Dashboard Title</h1>
-```
-
-**Features:**
-- Press Start 2P pixelated font
-- Seasonal color integration
-- Text shadows for depth
-
-## 🌲 Seasonal Theming System
-
-### Theme Structure
-```typescript
-interface SeasonalTheme {
-  name: 'forest' | 'christmas'
-  primary: ColorRamp     // 5-step color progression
-  secondary: ColorRamp   // Supporting colors
-  accent: ColorRamp      // Highlight colors
-  neutral: ColorRamp     // Grays and backgrounds
-  text: TextColors       // Typography colors
-  backgrounds: Backgrounds // Surface colors
-  effects: Effects       // Shadows and glows
-}
-```
-
-### Color Ramps (Jehkoba64 Palette)
-```typescript
-// Forest Theme
-const forestTheme = {
-  primary: {
-    ramp1: '#116061',  // Dark teal
-    ramp2: '#068051',  // Forest green
-    ramp3: '#179c43',  // Medium green
-    ramp4: '#55b33b',  // Bright green
-    ramp5: '#94bf30'   // Lime green
-  }
-  // ... complete theme definition
-}
-```
-
-### Theme Integration
-```typescript
-// Components access theme via injection
-const themeContext = inject('seasonalTheme')
-const { theme, currentSeason } = themeContext
-
-// CSS variables populated automatically
-const cardStyles = computed(() => ({
-  background: `linear-gradient(135deg, ${theme.value.backgrounds.card}dd, ${theme.value.backgrounds.surface}dd)`,
-  borderColor: statusColors.value.border
-}))
-```
-
-## 🌈 Color System
-
-### CSS Variables (Auto-populated)
-```css
-:root {
-  /* Primary color progression */
-  --color-primary-1: #116061;
-  --color-primary-2: #068051;
-  --color-primary-3: #179c43;
-  --color-primary-4: #55b33b;
-  --color-primary-5: #94bf30;
-
-  /* Background system */
-  --bg-primary: #0a0f0c;
-  --bg-surface: #1a2b1e;
-  --bg-card: #2d4a32;
-
-  /* Text colors */
-  --text-primary: #e8f5e8;
-  --text-bright: #ffffff;
-  --text-muted: #94a3b8;
-}
-```
+### CSS Variables
+- Primary, secondary, accent, and neutral color ramps based on the Jehkoba64 palette.
+- Background system (`bg-primary`, `bg-surface`, `bg-card`) and text colors (`text-primary`, `text-bright`, `text-muted`) are defined.
 
 ### Status Color Mapping
-```typescript
-const statusColors = {
-  online: theme.value.secondary.ramp4,    // Bright indicator
-  offline: theme.value.neutral.ramp2,     // Muted gray
-  checking: theme.value.accent.ramp3,     // Warning yellow
-  error: theme.value.accent.ramp1         // Alert color
-}
-```
+- Visual indicators for `online`, `offline`, `checking`, and `error` states are mapped to theme colors.
 
-## 🎭 Atmospheric Effects
-
-### Particle Systems
-```vue
-<AtmosphericBackground
-  :particle-type="currentSeason === 'forest' ? 'leaves' : 'snowflakes'"
-  :particle-count="50"
-  :enable-physics="true"
-/>
-```
-
-**Particle Types:**
-- **Leaves** (Forest): Green leaf shapes with gravity
-- **Snowflakes** (Christmas): White crystalline shapes with wind
-
-### Scanline Overlay
-```vue
-<ScanlineOverlay
-  :opacity="0.03"
-  :line-height="4"
-  :enable="enableScanlines"
-/>
-```
-
-**Features:**
-- CRT-style horizontal scanlines
-- Subtle flicker animation
-- Respects `prefers-reduced-motion`
+### Atmospheric Effects
+*   **Particle Systems**: Uses `AtmosphericBackground` component for effects like leaves (Forest) or snowflakes (Christmas).
+*   **Scanline Overlay**: `ScanlineOverlay` component provides CRT-style horizontal scanlines with subtle flicker and respects `prefers-reduced-motion`.
 
 ## 🔧 Development Standards
 
-### Props-Driven Styling
-```vue
-<!-- ❌ Avoid CSS classes -->
-<div class="card success-border large-padding">
+### General Principles
+*   **Props-Driven Styling**: Prioritize using component props for styling over direct CSS classes to maintain consistency and theme integration.
+*   **Component Self-Containment**: Components manage their own styling and logic, computed from props and injected theme context.
+*   **Type Safety**: Utilizes TypeScript interfaces for strict type checking of props and theme context.
 
-<!-- ✅ Use props for everything -->
-<ServiceCard
-  :border-style="'gradient'"
-  :compact-mode="false"
-  :service="serviceData"
-/>
-```
+<h2>Mobile-First Interface Standards</h2>
 
-### Component Self-Containment
-```vue
-<script setup lang="ts">
-// All styling computed from props + theme
-const cardStyles = computed(() => ({
-  background: props.background || defaultBackground.value,
-  borderColor: props.borderColor || themeBorder.value,
-  padding: props.compactMode ? 'var(--space-md)' : 'var(--space-lg)'
-}))
-</script>
-```
+<h3>Cross-Device UX Architecture</h3>
+<ul>
+<li><strong>Desktop</strong>: Full-featured interfaces (e.g., qBittorrent web UI).</li>
+<li><strong>Mobile</strong>: Responsive web interfaces for key services.</li>
+<li><strong>Tablet</strong>: Hybrid interfaces with touch-optimized controls.</li>
+<li><strong>API Integration</strong>: Consistent backend for all interface types.</li>
+</ul>
 
-### Type Safety
-```typescript
-interface ServiceCardProps {
-  service: Service
-  borderStyle?: 'solid' | 'gradient' | 'none'
-  compactMode?: boolean
-  showActions?: boolean
-}
+<h2><a href="#responsive-design" id="responsive-design">Responsive Design</a></h2>
 
-const props = withDefaults(defineProps<ServiceCardProps>(), {
-  borderStyle: 'solid',
-  compactMode: false,
-  showActions: true
-})
-```
-
-## 🎮 NES.css Integration Patterns
-
-### Font Loading
-```css
-/* Required Google Fonts import */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-```
-
-### Component Mapping
-| Purpose | NES.css Class | Our Usage |
-|---------|---------------|-----------|
-| Cards | `.nes-container` | ServiceCard wrapper |
-| Buttons | `.nes-btn.is-{variant}` | Action buttons |
-| Text | `.nes-text` | Headers and labels |
-| Input | `.nes-input` | Form controls |
-
-### Color Override Pattern
-```css
-/* Override NES.css defaults with seasonal colors */
-.nes-btn.is-primary {
-  background-color: var(--color-primary-4) !important;
-  border-color: var(--color-primary-3) !important;
-  color: var(--text-primary) !important;
-}
-```
-
-## 📱 Responsive Design
-
-### Breakpoint Strategy
-```typescript
-// Mobile-first responsive design
+<h3>Breakpoint Strategy</h3>
+<pre><code class="language-typescript">// Mobile-first responsive design
 const gridClasses = computed(() => ({
   base: 'grid gap-6',
   mobile: 'grid-cols-1',
@@ -272,11 +71,10 @@ const gridClasses = computed(() => ({
   desktop: 'lg:grid-cols-3',
   large: 'xl:grid-cols-4'
 }))
-```
+</code></pre>
 
-### Touch Optimization
-```css
-/* Touch targets minimum 44px */
+<h3>Touch Optimization</h3>
+<pre><code class="language-css">/* Touch targets minimum 44px */
 .nes-btn {
   min-height: 44px;
   min-width: 44px;
@@ -288,18 +86,19 @@ const gridClasses = computed(() => ({
     transform: scale(0.95);
   }
 }
-```
+</code></pre>
 
-## 🔄 Animation Standards
+<h2><a href="#animation-standards" id="animation-standards">Animation Standards</a></h2>
 
-### Transition Philosophy
-- **Fast interactions**: 150ms for button presses
-- **Normal state changes**: 300ms for hover effects
-- **Slow layout changes**: 500ms for major transitions
+<h3>Transition Philosophy</h3>
+<ul>
+<li><strong>Fast interactions</strong>: 150ms for button presses</li>
+<li><strong>Normal state changes</strong>: 300ms for hover effects</li>
+<li><strong>Slow layout changes</strong>: 500ms for major transitions</li>
+</ul>
 
-### Particle Animation
-```typescript
-// 60fps particle system
+<h3>Particle Animation</h3>
+<pre><code class="language-typescript">// 60fps particle system
 const animateParticles = () => {
   particles.forEach(particle => {
     particle.y += particle.speed
@@ -313,18 +112,19 @@ const animateParticles = () => {
 
   requestAnimationFrame(animateParticles)
 }
-```
+</code></pre>
 
-## 🚀 Performance Guidelines
+<h2><a href="#performance-guidelines" id="performance-guidelines">Performance Guidelines</a></h2>
 
-### Bundle Optimization
-- **NES.css**: Only `nes.min.css` (includes fonts)
-- **Tree Shaking**: Import only needed Lucide icons
-- **Code Splitting**: Components lazy-loaded where appropriate
+<h3>Optimization Strategies</h3>
+<ul>
+<li><strong>NES.css</strong>: Only <code class="language-text">nes.min.css</code> (includes fonts)</li>
+<li><strong>Tree Shaking</strong>: Import only needed Lucide icons</li>
+<li><strong>Code Splitting</strong>: Components lazy-loaded where appropriate</li>
+</ul>
 
-### Runtime Performance
-```typescript
-// Computed properties for reactive styling
+<h3>Runtime Performance</h3>
+<pre><code class="language-typescript">// Computed properties for reactive styling
 const cardStyles = computed(() => ({
   // Efficient style computation
   background: `linear-gradient(${angle.value}deg, ${color1.value}, ${color2.value})`
@@ -334,33 +134,30 @@ const cardStyles = computed(() => ({
 const handleClick = (event: Event) => {
   // Event handler logic
 }
-```
+</code></pre>
 
-## 📐 Layout Standards
+<h2><a href="#layout-standards" id="layout-standards">Layout Standards</a></h2>
 
-### Grid System
-```vue
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-  <ServiceCard v-for="service in services" :key="service.id" :service="service" />
-</div>
-```
+<h3>Grid System</h3>
+<pre><code class="language-vue">&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"&gt;
+  &lt;ServiceCard v-for="service in services" :key="service.id" :service="service" /&gt;
+&lt;/div&gt;
+</code></pre>
 
-### Spacing Scale
-```css
-:root {
+<h3>Spacing Scale</h3>
+<pre><code class="language-css">:root {
   --space-xs: 0.25rem;   /* 4px */
   --space-sm: 0.5rem;    /* 8px */
   --space-md: 1rem;      /* 16px */
   --space-lg: 1.5rem;    /* 24px */
   --space-xl: 2rem;      /* 32px */
 }
-```
+</code></pre>
 
-## 🔧 Development Tools
+<h2><a href="#development-tools" id="development-tools">Development Tools</a></h2>
 
-### Vite Configuration
-```typescript
-// Hot reload with external network access
+<h3>Vite Configuration</h3>
+<pre><code class="language-typescript">// Hot reload with external network access
 server: {
   host: '0.0.0.0',
   port: 3000,
@@ -369,62 +166,36 @@ server: {
     host: '192.168.0.218'
   }
 }
-```
+</code></pre>
 
-### TypeScript Integration
-```typescript
-// Strict type checking for props
+<h3>TypeScript Integration</h3>
+<pre><code class="language-typescript">// Strict type checking for props
 interface ComponentProps {
   required: string
   optional?: number
 }
 
 // Theme type safety
-const theme = inject<SeasonalThemeContext>('seasonalTheme')
-```
+const theme = inject&lt;SeasonalThemeContext&gt;('seasonalTheme')
+</code></pre>
 
-## 📋 Component Checklist
+<h2><a href="#component-checklist" id="component-checklist">Component Checklist</a></h2>
 
-When creating new components:
+<h3>✅ Required Elements</h3>
+<ul>
+<li>[ ] Props-driven styling (no CSS classes)</li>
+<li>[ ] Seasonal theme integration</li>
+<li>[ ] TypeScript interfaces</li>
+<li>[ ] Responsive design</li>
+<li>[ ] NES.css class usage where appropriate</li>
+<li>[ ] Accessibility considerations</li>
+</ul>
 
-### ✅ Required Elements
-- [ ] Props-driven styling (no CSS classes)
-- [ ] Seasonal theme integration
-- [ ] TypeScript interfaces
-- [ ] Responsive design
-- [ ] NES.css class usage where appropriate
-- [ ] Accessibility considerations
-
-### ✅ Optional Enhancements
-- [ ] Atmospheric effects integration
-- [ ] Custom animations
-- [ ] Touch optimizations
-- [ ] Loading states
-- [ ] Error boundaries
-
-## 🎯 Current Implementation Status
-
-✅ **Completed:**
-- NES.css integration with Press Start 2P font
-- Seasonal theming system (Forest/Christmas)
-- Props-driven ServiceCard component
-- Hot reload development environment
-- Atmospheric particle effects
-- Scanline CRT overlay
-
-🔄 **In Progress:**
-- Comprehensive style guide documentation
-- Component library expansion
-- Mobile optimization testing
-
-📋 **Next Steps:**
-- Additional NES.css component integration
-- Theme persistence across sessions
-- Performance optimization
-- Accessibility improvements
-
----
-
-**Style Guide Status**: ✅ **ACTIVE DEVELOPMENT**
-**Last Updated**: 2025-09-22
-**Framework Version**: Vue 3.4.0 + NES.css 2.2.1 + Seasonal Theming
+<h3>✅ Optional Enhancements</h3>
+<ul>
+<li>[ ] Atmospheric effects integration</li>
+<li>[ ] Custom animations</li>
+<li>[ ] Touch optimizations</li>
+<li>[ ] Loading states</li>
+<li>[ ] Error boundaries</li>
+</ul>
