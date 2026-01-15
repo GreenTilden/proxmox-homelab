@@ -79,6 +79,24 @@
                 <span class="metric-value">{{ formatBytes(service.metrics.customMetrics.uploadSpeed) }}/s</span>
               </div>
             </template>
+
+            <!-- cAdvisor-specific metrics -->
+            <template v-if="service.id === 'cadvisor' && service.metrics?.customMetrics">
+              <div class="metric-item" v-if="service.metrics.customMetrics.containerCount !== undefined">
+                <span class="metric-label">Containers:</span>
+                <span class="metric-value">{{ service.metrics.customMetrics.containerCount }}</span>
+              </div>
+              
+              <div class="metric-item" v-if="service.metrics.customMetrics.cpuUsage !== undefined">
+                <span class="metric-label">CPU Usage:</span>
+                <span class="metric-value">{{ service.metrics.customMetrics.cpuUsage.toFixed(1) }}%</span>
+              </div>
+              
+              <div class="metric-item" v-if="service.metrics.customMetrics.memoryUsage !== undefined">
+                <span class="metric-label">Memory:</span>
+                <span class="metric-value">{{ formatBytes(service.metrics.customMetrics.memoryUsage) }}</span>
+              </div>
+            </template>
           </div>
         </div>
         
@@ -144,11 +162,12 @@ import {
   Activity,
   Server, 
   Database, 
-  Shield, 
-  Download, 
-  Folder, 
-  TrendingUp, 
+  Shield,
+  Download,
+  Folder,
+  TrendingUp,
   Play,
+  Code,
   CheckCircle,
   AlertTriangle,
   XCircle
@@ -176,7 +195,8 @@ const serviceIcons = {
   'grafana': TrendingUp,
   'qbittorrent': Download,
   'filebrowser': Folder,
-  'proxmox': Server
+  'proxmox': Server,
+  'code-server': Code
 }
 
 const serviceIcon = computed(() => {

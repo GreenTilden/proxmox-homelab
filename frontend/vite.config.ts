@@ -31,6 +31,11 @@ export default defineConfig(({ command, mode }) => {
         credentials: true
       },
       proxy: {
+        '/api/glances': {
+          target: 'http://192.168.0.99:8082',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/glances/, '')
+        },
         // Proxy API requests to Proxmox services
         '/api/prometheus': {
           target: 'http://192.168.0.99:9090',

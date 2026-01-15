@@ -171,15 +171,36 @@ const fetchZfsMetrics = async () => {
 const fetchContainerMetrics = async () => {
   try {
     // Container count
-    const countResponse = await fetch('http://192.168.0.99:9090/api/v1/query?query=count(container_last_seen)')
+    const countResponse = await fetch('http://192.168.0.99:9090/api/v1/query?query=count(container_last_seen{name!=""})')
     const countData = await countResponse.json()
     if (countData.status === 'success' && countData.data.result.length > 0) {
       containerCount.value = parseInt(countData.data.result[0].value[1])
     }
 
-    // Container CPU (placeholder - would need proper aggregation)
-    containerCpu.value = Math.random() * 30 + 10
-    containerMemory.value = Math.random() * 40 + 20
+    // Container CPU Usage (Total % across all cores)
+    const cpuResponse = await fetch('http://192.168.0.99:9090/api/v1/query?query=sum(rate(container_cpu_usage_seconds_total{name!=""}[5m])) * 100')
+    const cpuData = await cpuResponse.json()
+    if (cpuData.status === 'success' && cpuData.data.result.length > 0) {
+      containerCpu.value = parseFloat(cpuData.data.result[0].value[1])
+    }
+
+    // Container Memory Usage (Bytes)
+    const memResponse = await fetch('http://192.168.0.99:9090/api/v1/query?query=sum(container_memory_usage_bytes{name!=""})')
+    const memData = await memResponse.json()
+    let memBytes = 0
+    if (memData.status === 'success' && memData.data.result.length > 0) {
+      memBytes = parseFloat(memData.data.result[0].value[1])
+    }
+
+    // Total System Memory (for percentage calculation)
+    const totalMemResponse = await fetch('http://192.168.0.99:9090/api/v1/query?query=node_memory_MemTotal_bytes')
+    const totalMemData = await totalMemResponse.json()
+    if (totalMemData.status === 'success' && totalMemData.data.result.length > 0) {
+      const totalBytes = parseFloat(totalMemData.data.result[0].value[1])
+      if (totalBytes > 0) {
+        containerMemory.value = (memBytes / totalBytes) * 100
+      }
+    }
   } catch (error) {
     console.warn('Failed to fetch container metrics:', error)
   }

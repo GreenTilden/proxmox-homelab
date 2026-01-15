@@ -108,16 +108,28 @@ export const useServiceMonitoring = () => {
       healthEndpoint: 'http://192.168.0.99:32400/identity'
     },
     {
-      id: 'filebrowser',
-      name: 'File Browser',
-      description: 'File Management Interface',
+      id: 'mc-file-manager',
+      name: 'File Manager (mc)',
+      description: 'Midnight Commander in a web terminal',
+      status: 'online', // This is a static link, so it's always "online"
+      lastChecked: new Date(),
+      responseTime: 0,
+      job: 'local',
+      instance: 'local',
+      url: '/file-manager', // Internal Vue route
+      healthEndpoint: undefined
+    },
+    {
+      id: 'code-server',
+      name: 'Code Server',
+      description: 'VS Code in the Browser',
       status: 'unknown',
       lastChecked: null,
       responseTime: null,
-      job: 'filebrowser',
-      instance: 'file-manager',
-      url: 'http://192.168.0.99:8080',
-      healthEndpoint: 'http://192.168.0.99:8080/health'
+      job: 'code-server',
+      instance: 'code-server',
+      url: 'http://192.168.0.250:8081',
+      healthEndpoint: 'http://192.168.0.250:8081'
     },
     {
       id: 'proxmox',
@@ -130,6 +142,18 @@ export const useServiceMonitoring = () => {
       instance: 'hypervisor',
       url: 'https://192.168.0.99:8006',
       healthEndpoint: 'https://192.168.0.99:8006/api2/json/version'
+    },
+    {
+      id: 'homeassistant',
+      name: 'Home Assistant',
+      description: 'Smart Home Automation',
+      status: 'unknown',
+      lastChecked: null,
+      responseTime: null,
+      job: 'homeassistant',
+      instance: 'smart-home',
+      url: 'http://192.168.0.99:8123',
+      healthEndpoint: 'http://192.168.0.99:8123'
     }
   ])
   
@@ -256,7 +280,9 @@ export const useServiceMonitoring = () => {
           
         case 'cadvisor':
           promises.push(
-            prometheusClient.query(SYSTEM_QUERIES.containerCount).catch(() => null)
+            prometheusClient.query(SYSTEM_QUERIES.containerCount).catch(() => null),
+            prometheusClient.query(SYSTEM_QUERIES.containerTotalCpu).catch(() => null),
+            prometheusClient.query(SYSTEM_QUERIES.containerTotalMemory).catch(() => null)
           )
           break
       }
@@ -281,6 +307,12 @@ export const useServiceMonitoring = () => {
                   case 1: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, activeDownloads: value }; break
                   case 2: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, downloadSpeed: value }; break
                   case 3: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, uploadSpeed: value }; break
+                }
+              } else if (service.id === 'cadvisor') {
+                switch (index) {
+                  case 1: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, containerCount: value }; break
+                  case 2: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, cpuUsage: value }; break
+                  case 3: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, memoryUsage: value }; break
                 }
               }
               break

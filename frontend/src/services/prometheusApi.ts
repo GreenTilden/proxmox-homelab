@@ -241,6 +241,8 @@ export const SYSTEM_QUERIES = {
   
   // Container/Docker Metrics
   containerCount: 'count(container_last_seen{name!=""})',
+  containerTotalCpu: 'sum(rate(container_cpu_usage_seconds_total{name!=""}[5m])) * 100',
+  containerTotalMemory: 'sum(container_memory_usage_bytes{name!=""})',
   containerCpuUsage: 'sum(rate(container_cpu_usage_seconds_total{name!=""}[5m])) by (name)',
   containerMemoryUsage: 'sum(container_memory_usage_bytes{name!=""}) by (name)',
   

@@ -1,7 +1,7 @@
 <template>
   <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
     <!-- Dark Veil Background with Era Colors -->
-    <DarkVeil />
+    <!-- <DarkVeil /> -->
 
     <!-- Atmospheric Background with Era Particles -->
     <AtmosphericBackground
@@ -50,6 +50,33 @@
           >
             <template #icon>
               <span style="font-size: 20px;">📅</span>
+            </template>
+          </n-button>
+          <n-button
+            quaternary
+            circle
+            @click="$router.push('/toolbox')"
+          >
+            <template #icon>
+              <span style="font-size: 20px;">🛠️</span>
+            </template>
+          </n-button>
+          <n-button
+            quaternary
+            circle
+            @click="$router.push('/file-manager')"
+          >
+            <template #icon>
+              <span style="font-size: 20px;">📁</span>
+            </template>
+          </n-button>
+          <n-button
+            quaternary
+            circle
+            @click="$router.push('/ellabot')"
+          >
+            <template #icon>
+              <span style="font-size: 20px;">🤖</span>
             </template>
           </n-button>
         </div>
@@ -111,6 +138,9 @@
       </n-layout-footer>
     </n-layout>
   </n-config-provider>
+
+  <!-- EllaBot Chat Widget - Outside config provider for proper fixed positioning -->
+  <EllaBotChat />
 </template>
 
 <script setup lang="ts">
@@ -133,10 +163,11 @@ import {
   NTag,
   darkTheme
 } from 'naive-ui'
-import ServiceCard from '../components/themes/naive/ServiceCard.vue'
+import ServiceCard from '../components/themes/retro/ServiceCard.vue'
 import CalendarWidget from '../components/core/CalendarWidget.vue'
 import AtmosphericBackground from '../components/themes/retro/AtmosphericBackground.vue'
-import DarkVeil from '../components/themes/naive/DarkVeil.vue'
+import EllaBotChat from '../components/ellabot/EllaBotChat.vue'
+// import DarkVeil from '../components/themes/naive/DarkVeil.vue'
 import { useServiceMonitoring } from '../composables/useServiceMonitoring'
 import { useTheme } from '../composables/useTheme'
 import { getCurrentConfig } from '../config/environments'

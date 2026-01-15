@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RefreshCw, ExternalLink, Server, Database, Shield, Activity, Download, Folder, TrendingUp, Play } from 'lucide-vue-next'
+import { RefreshCw, ExternalLink, Server, Database, Shield, Activity, Download, Folder, TrendingUp, Play, Code } from 'lucide-vue-next'
 import type { ServiceStatus } from '@/composables/useServiceMonitoring'
 
 interface Props {
@@ -94,7 +94,8 @@ const serviceIcons = {
   'grafana': TrendingUp,
   'qbittorrent': Download,
   'filebrowser': Folder,
-  'proxmox': Server
+  'proxmox': Server,
+  'code-server': Code
 }
 
 const serviceIcon = computed(() => {

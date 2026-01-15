@@ -1,0 +1,211 @@
+/**
+ * Obama White House Theme
+ * Formal, institutional, accessible design
+ * Based on whitehouse.gov 2009-2016 aesthetic
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+:root {
+  /* Color Palette - Deep blues, whites, light grays */
+  --wh-navy-dark: #00264d;
+  --wh-navy: #003366;
+  --wh-navy-light: #004080;
+  --wh-blue-muted: #1a5276;
+
+  --wh-white: #ffffff;
+  --wh-off-white: #f8f9fa;
+  --wh-gray-lightest: #f1f3f5;
+  --wh-gray-light: #dee2e6;
+  --wh-gray: #868e96;
+  --wh-gray-dark: #495057;
+  --wh-black: #212529;
+
+  --wh-gold: #b8860b;
+  --wh-gold-light: #d4a84b;
+  --wh-success: #28a745;
+  --wh-warning: #ffc107;
+  --wh-error: #dc3545;
+
+  /* Typography */
+  --wh-font-serif: 'Georgia', 'Times New Roman', Times, serif;
+  --wh-font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Font Sizes */
+  --wh-text-xs: 0.75rem;
+  --wh-text-sm: 0.875rem;
+  --wh-text-base: 1rem;
+  --wh-text-lg: 1.125rem;
+  --wh-text-xl: 1.25rem;
+  --wh-text-2xl: 1.5rem;
+  --wh-text-3xl: 1.875rem;
+
+  /* Spacing Scale */
+  --wh-space-1: 0.25rem;
+  --wh-space-2: 0.5rem;
+  --wh-space-3: 0.75rem;
+  --wh-space-4: 1rem;
+  --wh-space-5: 1.5rem;
+  --wh-space-6: 2rem;
+  --wh-space-8: 3rem;
+
+  /* Border & Shadow */
+  --wh-border: 1px solid var(--wh-gray-light);
+  --wh-border-dark: 2px solid var(--wh-navy);
+  --wh-shadow-sm: 0 1px 2px rgba(0, 38, 77, 0.08);
+  --wh-shadow-md: 0 4px 8px rgba(0, 38, 77, 0.12);
+  --wh-shadow-lg: 0 8px 24px rgba(0, 38, 77, 0.16);
+
+  /* Border Radius - Minimal for institutional feel */
+  --wh-radius-sm: 2px;
+  --wh-radius-md: 4px;
+  --wh-radius-lg: 6px;
+
+  /* Transitions */
+  --wh-transition-fast: 150ms ease;
+  --wh-transition-base: 250ms ease;
+}
+
+/* Base page styles */
+.wh-page {
+  min-height: 100vh;
+  background: var(--wh-off-white);
+  color: var(--wh-black);
+  font-family: var(--wh-font-sans);
+  line-height: 1.5;
+}
+
+/* Typography utilities */
+.wh-heading {
+  font-family: var(--wh-font-serif);
+  color: var(--wh-navy-dark);
+  font-weight: normal;
+  line-height: 1.3;
+}
+
+.wh-heading-1 {
+  font-size: var(--wh-text-3xl);
+}
+
+.wh-heading-2 {
+  font-size: var(--wh-text-2xl);
+}
+
+.wh-heading-3 {
+  font-size: var(--wh-text-xl);
+}
+
+.wh-section-title {
+  font-family: var(--wh-font-sans);
+  font-size: var(--wh-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--wh-gray);
+  margin: 0 0 var(--wh-space-3) 0;
+}
+
+/* Link styles */
+.wh-link {
+  color: var(--wh-navy);
+  text-decoration: none;
+  transition: color var(--wh-transition-fast);
+}
+
+.wh-link:hover {
+  color: var(--wh-navy-light);
+  text-decoration: underline;
+}
+
+/* Button styles */
+.wh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wh-space-2);
+  padding: var(--wh-space-2) var(--wh-space-4);
+  font-family: var(--wh-font-sans);
+  font-size: var(--wh-text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--wh-radius-sm);
+  cursor: pointer;
+  transition: all var(--wh-transition-fast);
+}
+
+.wh-btn-primary {
+  background: var(--wh-navy);
+  color: var(--wh-white);
+  border-color: var(--wh-navy);
+}
+
+.wh-btn-primary:hover {
+  background: var(--wh-navy-dark);
+  border-color: var(--wh-navy-dark);
+}
+
+.wh-btn-secondary {
+  background: var(--wh-white);
+  color: var(--wh-navy);
+  border-color: var(--wh-navy);
+}
+
+.wh-btn-secondary:hover {
+  background: var(--wh-gray-lightest);
+}
+
+.wh-btn-ghost {
+  background: transparent;
+  color: var(--wh-navy);
+  border-color: transparent;
+}
+
+.wh-btn-ghost:hover {
+  background: rgba(0, 51, 102, 0.08);
+}
+
+/* Status indicators */
+.wh-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wh-gray);
+}
+
+.wh-status-dot--success {
+  background: var(--wh-success);
+}
+
+.wh-status-dot--warning {
+  background: var(--wh-warning);
+}
+
+.wh-status-dot--error {
+  background: var(--wh-error);
+}
+
+/* Card/Panel base */
+.wh-card {
+  background: var(--wh-white);
+  border: var(--wh-border);
+  border-radius: var(--wh-radius-md);
+  box-shadow: var(--wh-shadow-sm);
+}
+
+/* iPad responsive utilities */
+@media (max-width: 1024px) {
+  :root {
+    --wh-text-base: 0.9375rem;
+    --wh-space-4: 0.875rem;
+    --wh-space-5: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --wh-text-3xl: 1.5rem;
+    --wh-text-2xl: 1.25rem;
+  }
+}

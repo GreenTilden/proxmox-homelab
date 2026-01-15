@@ -39,6 +39,51 @@ const router = createRouter({
       path: '/calendar',
       name: 'Calendar',
       component: CalendarPage
+    },
+    {
+      path: '/container-monitor',
+      name: 'ContainerMonitor',
+      component: () => import('@/pages/ContainerMonitor.vue')
+    },
+    {
+      path: '/toolbox',
+      name: 'Toolbox',
+      component: () => import('@/pages/Toolbox.vue')
+    },
+    {
+      path: '/file-manager',
+      name: 'FileManager',
+      component: () => import('@/pages/FileManager.vue')
+    },
+    {
+      path: '/weather',
+      name: 'Weather',
+      component: () => import('@/pages/WeatherPage.vue')
+    },
+    {
+      path: '/docs',
+      name: 'Docs',
+      component: () => import('@/pages/DocsPage.vue')
+    },
+    {
+      path: '/notes',
+      name: 'Notes',
+      component: () => import('@/pages/NotesPage.vue')
+    },
+    {
+      path: '/nanit',
+      name: 'Nanit',
+      component: () => import('@/pages/NanitPage.vue')
+    },
+    {
+      path: '/vault',
+      name: 'Vault',
+      component: () => import('@/pages/VaultPage.vue')
+    },
+    {
+      path: '/ellabot',
+      name: 'Ellabot',
+      component: () => import('@/pages/EllabotPage.vue')
     }
   ]
 })

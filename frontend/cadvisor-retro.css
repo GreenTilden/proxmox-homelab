@@ -1,0 +1,140 @@
+/* Jehkoba64 Retro Theme Injection for cAdvisor */
+
+body {
+  background-color: #050e1a !important; /* Retro Dark Base */
+  color: #fabbaf !important;            /* Retro Text Primary (Pink) */
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+}
+
+/* Navbar / Header */
+.navbar {
+  background: linear-gradient(135deg, #4e278c, #0d2140) !important; /* Purple to Dark Surface */
+  border-bottom: 2px solid #49c2f2 !important; /* Bright Blue */
+  box-shadow: 0 4px 15px rgba(5, 14, 26, 0.8) !important;
+}
+
+.navbar-brand {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 0px #4e278c;
+  font-weight: bold;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #6b93d6 !important; /* Muted Blue */
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+  color: #49c2f2 !important; /* Bright Blue */
+  text-shadow: 0 0 8px #49c2f2;
+}
+
+/* Containers / Panels */
+.container-fluid {
+  background-color: transparent !important;
+}
+
+.panel {
+  background-color: #1a2847 !important; /* Retro Card BG */
+  border: 2px solid #6b93d6 !important; /* Light Border */
+  border-radius: 0px !important; /* Pixelated look */
+  box-shadow: 4px 4px 0px rgba(73, 194, 242, 0.2) !important; /* Hard shadow */
+}
+
+.panel-heading {
+  background: linear-gradient(90deg, #4e278c, transparent) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #49c2f2 !important;
+  border-radius: 0px !important;
+}
+
+.panel-title {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Tables */
+.table {
+  background-color: rgba(13, 33, 64, 0.5) !important;
+  color: #fabbaf !important;
+}
+
+.table > thead > tr > th {
+  border-bottom: 2px solid #49c2f2 !important;
+  color: #49c2f2 !important;
+}
+
+.table > tbody > tr > td {
+  border-top: 1px solid #6b93d6 !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(73, 194, 242, 0.05) !important;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: rgba(73, 194, 242, 0.15) !important;
+}
+
+/* Progress Bars */
+.progress {
+  background-color: #0d2140 !important;
+  border: 1px solid #6b93d6 !important;
+  border-radius: 0px !important;
+}
+
+.progress-bar {
+  background-color: #4fc049 !important; /* Retro Success Green */
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3) !important;
+}
+
+.progress-bar-danger {
+  background-color: #ff6b93 !important; /* Retro Error Pink */
+}
+
+.progress-bar-warning {
+  background-color: #faa032 !important; /* Retro Warning Orange */
+}
+
+/* Links */
+a {
+  color: #49c2f2 !important;
+  text-decoration: none !important;
+}
+
+a:hover {
+  color: #fabbaf !important;
+  text-decoration: underline !important;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 0px !important;
+  border: 2px solid #49c2f2 !important;
+  background: linear-gradient(135deg, #0d2140, #1a2847) !important;
+  color: #49c2f2 !important;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #49c2f2 !important;
+  color: #050e1a !important;
+  box-shadow: 0 0 10px #49c2f2;
+}
+
+/* Page Header */
+.page-header {
+  border-bottom: 2px solid #49c2f2 !important;
+  color: #fabbaf !important;
+}
+
+/* Hides generic Google charts or tries to invert them if possible (tricky without SVG filters) */
+/* This is a best-effort for the charts */
+rect {
+  fill: #1a2847 !important;
+}
+text {
+  fill: #6b93d6 !important;
+}

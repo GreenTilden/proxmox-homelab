@@ -28,6 +28,21 @@
 
           <div class="header-actions">
             <el-text class="current-time">{{ currentTime }}</el-text>
+            <router-link to="/toolbox">
+              <el-button type="primary" circle>
+                <span style="font-size: 20px;">🛠️</span>
+              </el-button>
+            </router-link>
+            <router-link to="/file-manager">
+              <el-button type="primary" circle>
+                <span style="font-size: 20px;">📁</span>
+              </el-button>
+            </router-link>
+            <router-link to="/ellabot">
+              <el-button type="primary" circle>
+                <span style="font-size: 20px;">🤖</span>
+              </el-button>
+            </router-link>
           </div>
         </div>
       </el-header>
@@ -113,6 +128,9 @@
       </el-footer>
     </div>
   </el-config-provider>
+
+  <!-- EllaBot Chat Widget - Outside config provider for proper fixed positioning -->
+  <EllaBotChat />
 </template>
 
 <script setup lang="ts">
@@ -134,7 +152,8 @@ import {
 import { CircleCheck } from '@element-plus/icons-vue'
 import AtmosphericBackground from '../components/themes/retro/AtmosphericBackground.vue'
 import ScanlineOverlay from '../components/themes/retro/ScanlineOverlay.vue'
-import ServiceCard from '../components/themes/element/ServiceCard.vue'
+import ServiceCard from '../components/themes/retro/ServiceCard.vue'
+import EllaBotChat from '../components/ellabot/EllaBotChat.vue'
 import { useServiceMonitoring } from '../composables/useServiceMonitoring'
 import { useTheme } from '../composables/useTheme'
 import { getCurrentConfig } from '../config/environments'

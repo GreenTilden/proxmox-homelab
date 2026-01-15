@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
-import { Server, Database, Shield, Activity, Download, Folder, TrendingUp, Play } from 'lucide-vue-next'
+import { Server, Database, Shield, Activity, Download, Folder, TrendingUp, Play, Code } from 'lucide-vue-next'
 import type { ServiceStatus } from '@/composables/useServiceMonitoring'
 import ServiceMetrics from '@/components/monitoring/ServiceMetrics.vue'
 import { PARTICLE_HUE_ROTATIONS } from '@/themes/jehkoba64-palette'
@@ -127,7 +127,8 @@ const serviceIcons = {
   'grafana': TrendingUp,
   'qbittorrent': Download,
   'filebrowser': Folder,
-  'proxmox': Server
+  'proxmox': Server,
+  'code-server': Code
 }
 
 const serviceIcon = computed(() => {

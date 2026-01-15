@@ -60,10 +60,46 @@
           >
             {{ getThemeIcon(currentSeason) }} {{ getThemeName(currentSeason) }}
           </button>
+          <router-link to="/toolbox" class="nes-btn is-primary" :style="controlButtonStyles">
+            🛠️ Toolbox
+          </router-link>
+          <router-link to="/file-manager" class="nes-btn is-primary" :style="controlButtonStyles">
+            📁 Files
+          </router-link>
+          <router-link to="/weather" class="nes-btn is-warning" :style="controlButtonStyles">
+            🌤️ Weather
+          </router-link>
+          <router-link to="/docs" class="nes-btn is-success" :style="controlButtonStyles">
+            📚 Docs
+          </router-link>
+          <router-link to="/notes" class="nes-btn" :style="controlButtonStyles" style="background: #a371f7; color: white;">
+            📝 Notes
+          </router-link>
+          <router-link to="/vault" class="nes-btn" :style="controlButtonStyles" style="background: #6a9fb5; color: white;">
+            📚 Vault
+          </router-link>
+          <router-link to="/nanit" class="nes-btn" :style="controlButtonStyles" style="background: #da70d6; color: white;">
+            👶 Baby Cam
+          </router-link>
+          <a href="http://192.168.0.99:3000" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #68bc71; color: white;">
+            🛡️ AdGuard
+          </a>
+          <a href="http://192.168.0.99:8087" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #ff4444; color: white;">
+            📺 yt-dlp
+          </a>
+          <a href="http://192.168.0.125:6080/vnc.html" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #9333ea; color: white;" title="VNC: 192.168.0.125:6080 | User: developer | Pass: devpass123">
+            🖥️ Dev Box
+          </a>
+          <router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
+            🤖 EllaBot
+          </router-link>
         </div>
       </main>
     </div>
   </SeasonalThemeProvider>
+
+  <!-- EllaBot Chat Widget - Outside SeasonalThemeProvider to avoid overflow clipping -->
+  <EllaBotChat />
 </template>
 
 <script setup lang="ts">
@@ -72,6 +108,7 @@ import SeasonalThemeProvider from '../components/themes/retro/SeasonalThemeProvi
 import ServiceCard from '../components/themes/retro/ServiceCard.vue'
 import CalendarWidget from '../components/core/CalendarWidget.vue'
 import UpcomingEventsCard from '../components/themes/retro/UpcomingEventsCard.vue'
+import EllaBotChat from '../components/ellabot/EllaBotChat.vue'
 import { useServiceMonitoring } from '../composables/useServiceMonitoring'
 import { useTheme } from '../composables/useTheme'
 import { getCurrentConfig } from '../config/environments'
