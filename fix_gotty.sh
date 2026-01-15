@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh -T -o BatchMode=yes -o StrictHostKeyChecking=no root@192.168.0.250 "sed -i '/User=root/a Environment=\"TERM=xterm-256color\"' /etc/systemd/system/gotty.service && systemctl daemon-reload && systemctl restart gotty"
