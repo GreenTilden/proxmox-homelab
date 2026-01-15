@@ -56,6 +56,19 @@
 - Response times: 6-12 seconds for deepseek-coder:33b requests
 - Memory allocation: 13.6GB for primary models
 
+## 🎙️ Podcast & Content Services
+
+| Service | URL | Port | Type | Purpose | Status |
+|---------|-----|------|------|---------|--------|
+| **Article Digest Podcast** | http://192.168.0.131:8081/feed.xml | 8081 | LXC | AI-generated podcast from RSS feeds | ✅ |
+| **FreshRSS** | http://192.168.0.131:8080 | 8080 | LXC | RSS feed aggregation | ✅ |
+| **TTS API** | http://192.168.0.120:5011 | 5011 | LXC | Coqui TTS text-to-speech service | ✅ |
+
+**Authentication**:
+- **FreshRSS**: admin/podcast2026
+
+**Documentation**: See [ARTICLE_DIGEST_PODCAST.md](../ARTICLE_DIGEST_PODCAST.md) for full setup guide.
+
 ## 🎬 Media Services
 
 | Service | URL | Port | Type | Purpose | Status |
