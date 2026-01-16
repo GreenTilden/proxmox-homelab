@@ -34,9 +34,15 @@
             </div>
 
             <div class="plex-actions">
-              <button @click="rescanPlex" class="nes-btn is-primary">Rescan Plex Libraries</button>
+              <div class="action-buttons">
+                <button @click="rescanPlex" class="nes-btn is-primary">Rescan Plex Libraries</button>
+                <button @click="refreshCync" class="nes-btn is-warning">Refresh Cync Lights</button>
+              </div>
               <div v-if="plexStatus" :class="['nes-container', 'is-rounded', 'is-dark']" style="margin-top: 1rem; padding: 1rem; width: 100%;">
                 <p :class="plexStatus.type === 'success' ? 'nes-text is-success' : 'nes-text is-error'" style="margin: 0;">{{ plexStatus.message }}</p>
+              </div>
+              <div v-if="cyncStatus" :class="['nes-container', 'is-rounded', 'is-dark']" style="margin-top: 1rem; padding: 1rem; width: 100%;">
+                <p :class="cyncStatus.type === 'success' ? 'nes-text is-success' : 'nes-text is-error'" style="margin: 0;">{{ cyncStatus.message }}</p>
               </div>
             </div>
           </div>
@@ -75,14 +81,16 @@ const commandServerPort = '5001';
 const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf';
 
 const gottyUrl = computed(() => `http://${frontendServerIp}:${gottyPort}/`);
-const commandServerUrl = computed(() => `http://${proxmoxHostIp}:${commandServerPort}/api/rescan-plex`);
+const plexApiUrl = computed(() => `http://${proxmoxHostIp}:${commandServerPort}/api/rescan-plex`);
+const cyncApiUrl = computed(() => `http://${proxmoxHostIp}:${commandServerPort}/api/refresh-cync`);
 
 const plexStatus = ref<{ type: string; message: string } | null>(null);
+const cyncStatus = ref<{ type: string; message: string } | null>(null);
 
 const rescanPlex = async () => {
   plexStatus.value = { type: 'info', message: 'Triggering Plex rescan...' };
   try {
-    const response = await fetch(commandServerUrl.value, {
+    const response = await fetch(plexApiUrl.value, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SECRET_TOKEN}`,
@@ -97,6 +105,27 @@ const rescanPlex = async () => {
     }
   } catch (error) {
     plexStatus.value = { type: 'error', message: 'Network error or server unreachable.' };
+  }
+};
+
+const refreshCync = async () => {
+  cyncStatus.value = { type: 'info', message: 'Refreshing Cync integration...' };
+  try {
+    const response = await fetch(cyncApiUrl.value, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SECRET_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    if (response.ok) {
+      cyncStatus.value = { type: 'success', message: data.message || 'Cync integration refreshed!' };
+    } else {
+      cyncStatus.value = { type: 'error', message: data.error || 'Failed to refresh Cync integration.' };
+    }
+  } catch (error) {
+    cyncStatus.value = { type: 'error', message: 'Network error or server unreachable.' };
   }
 };
 
@@ -197,6 +226,12 @@ iframe {
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 /* NES.css Overrides (Scoped) */
