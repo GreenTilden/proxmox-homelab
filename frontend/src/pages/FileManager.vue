@@ -81,8 +81,8 @@ const commandServerPort = '5001';
 const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf';
 
 const gottyUrl = computed(() => `http://${frontendServerIp}:${gottyPort}/`);
-const plexApiUrl = computed(() => `http://${proxmoxHostIp}:${commandServerPort}/api/rescan-plex`);
-const cyncApiUrl = computed(() => `http://${proxmoxHostIp}:${commandServerPort}/api/refresh-cync`);
+const plexApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/rescan-plex`);
+const cyncApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/refresh-cync`);
 
 const plexStatus = ref<{ type: string; message: string } | null>(null);
 const cyncStatus = ref<{ type: string; message: string } | null>(null);
