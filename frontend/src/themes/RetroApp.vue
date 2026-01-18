@@ -140,6 +140,9 @@
             <span class="nav-emoji">🛡️</span> AdGuard
           </a>
           <a href="http://192.168.0.99:8087" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #ff4444; color: white;">
+          <a href="http://192.168.0.131:8080" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #f78c6c; color: white;">
+            <span class="nav-emoji">📰</span> FreshRSS
+          </a>
             <span class="nav-emoji">📹</span> yt-dlp
           </a>
           <a href="http://192.168.0.99:8090" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #0082c9; color: white;">
