@@ -283,36 +283,64 @@ npm install tsdav         # CalDAV client (optional, can use fetch)
 
 ### Nextcloud Mobile App
 - Install Nextcloud app
-- Login with SSO (Authelia redirects)
-- Calendar syncs automatically
+- Server: `https://nextcloud.darrenarney.com`
+- Login options:
+  1. Use "Log in with Authelia" button for SSO
+  2. Or use local admin account with app password (more secure)
+- **Important**: `allow_multiple_user_backends` must be enabled for mobile apps to work
+  ```bash
+  docker exec nextcloud-app-1 php occ config:app:set user_oidc allow_multiple_user_backends --value=1
+  ```
+- Create app passwords in Settings → Security → Devices & sessions
 
 ---
 
 ## Implementation Order
 
-### Session 1 (Current): Planning & Prep
+### Session 1: Planning & Prep ✅
 - [x] Document current infrastructure
 - [x] Create this plan
-- [ ] Verify VPS access for reverse proxy changes
-- [ ] Test Nextcloud container health
+- [x] Verify VPS access for reverse proxy changes
+- [x] Test Nextcloud container health
 
-### Session 2: SSO Integration
-- [ ] Add DNS records for nextcloud/tandoor subdomains
-- [ ] Configure VPS nginx for new subdomains
-- [ ] Configure Nextcloud trusted domains
-- [ ] Test SSO flow end-to-end
+### Session 2: SSO Integration ✅ (Completed 2026-01-18)
+- [x] Add DNS records for nextcloud/tandoor subdomains
+- [x] Configure nginx for new subdomains (SSL via certbot)
+- [x] Configure Nextcloud trusted domains
+- [x] Configure Authelia as OIDC provider
+- [x] Install user_oidc app in Nextcloud
+- [x] Configure OIDC client with Authelia
+- [x] Test SSO flow end-to-end (web works)
+- [x] Enable multiple_user_backends for mobile app support
 
-### Session 3: Calendar Aggregation
-- [ ] Install Nextcloud calendar app
-- [ ] Add Google calendar subscription
-- [ ] Add Outlook calendar subscription
+### Session 3: Apps & Recipe Integration ✅ (Completed 2026-01-18)
+- [x] Install Nextcloud Calendar app
+- [x] Install Nextcloud Tasks app
+- [x] Install Nextcloud Cookbook app
+- [x] Install Nextcloud Deck app
+- [x] Fix mobile app nginx bypass for Login Flow v2
+- [x] Configure Tandoor behind Authelia
+- [ ] Add Google calendar subscription (user to configure)
+- [ ] Add Outlook calendar subscription (user to configure)
 - [ ] Create family shared calendar
 
-### Session 4: Dashboard Integration
+### Session 4: Dashboard Integration (Future)
 - [ ] Create useNextcloudCalendar composable
 - [ ] Update useCalendarData to fetch from CalDAV
 - [ ] Add calendar source indicators to UI
 - [ ] Test and deploy
+
+---
+
+## Recipe & Meal Planning
+
+### Installed Apps
+- **Nextcloud Cookbook**: Basic recipe storage, integrated with Nextcloud files
+- **Tandoor**: Full meal planning with macro tracking, shopping lists
+
+### Recommendation
+- **Use Tandoor** for macro-focused meal planning (better nutrition tracking)
+- **Use Cookbook** for quick recipe saves from URLs
 
 ---
 
