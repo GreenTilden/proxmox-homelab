@@ -21,11 +21,39 @@
         <div class="nes-container with-title is-dark" :style="containerStyles">
           <p class="title">File Manager</p>
           <div class="file-manager-content">
-             <p style="margin-bottom: 1rem;">Manage your downloads and media library directly from here.</p>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+              <button 
+                @click="activeTab = 'downloads'" 
+                :class="['nes-btn', activeTab === 'downloads' ? 'is-primary' : '']"
+              >
+                📥 Downloads / Media
+              </button>
+              <button 
+                @click="activeTab = 'roms'" 
+                :class="['nes-btn', activeTab === 'roms' ? 'is-warning' : '']"
+              >
+                🎮 Batocera ROMs
+              </button>
+            </div>
+
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 0.8rem; color: var(--text-dim);">
+              {{ activeTab === 'downloads' ? 'Left: Staging Downloads | Right: Media Pool' : 'Left: Staging Downloads | Right: Batocera ROMs' }}
+            </p>
 
             <div class="gotty-terminal-wrapper">
               <iframe
-                :src="gottyUrl"
+                v-if="activeTab === 'downloads'"
+                :src="gottyDownloadsUrl"
+                frameborder="0"
+                width="100%"
+                height="600px"
+                allowfullscreen
+              ></iframe>
+              <iframe
+                v-else
+                :src="gottyRomsUrl"
                 frameborder="0"
                 width="100%"
                 height="600px"
@@ -70,17 +98,19 @@ import { useTheme } from '../composables/useTheme';
 
 const enableScanlines = ref(true);
 const enableParticles = ref(true);
+const activeTab = ref<'downloads' | 'roms'>('downloads');
 
 const { currentSeason } = useTheme();
 
 // --- FileManager Logic ---
-const proxmoxHostIp = '192.168.0.99'; // For Command Server
-const frontendServerIp = '192.168.0.250'; // For Gotty/MC
-const gottyPort = '8083';
+const frontendServerIp = '192.168.0.250';
+const gottyDownloadsPort = '8083';
+const gottyRomsPort = '8084';
 const commandServerPort = '5001';
 const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf';
 
-const gottyUrl = computed(() => `http://${frontendServerIp}:${gottyPort}/`);
+const gottyDownloadsUrl = computed(() => `http://${frontendServerIp}:${gottyDownloadsPort}/`);
+const gottyRomsUrl = computed(() => `http://${frontendServerIp}:${gottyRomsPort}/`);
 const plexApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/rescan-plex`);
 const cyncApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/refresh-cync`);
 
@@ -132,7 +162,7 @@ const refreshCync = async () => {
 const toggleScanlines = () => { enableScanlines.value = !enableScanlines.value; };
 const toggleParticles = () => { enableParticles.value = !enableParticles.value; };
 
-// --- Styles (Copied/Adapted from RetroApp.vue) ---
+// --- Styles ---
 const appStyles = computed(() => ({
   minHeight: '100vh',
   padding: '0',
@@ -190,9 +220,7 @@ const mainStyles = computed(() => ({
   gap: 'var(--space-xl)'
 }));
 
-const containerStyles = computed(() => ({
-  // NES.css container needs explicit color sometimes to match theme override
-}));
+const containerStyles = computed(() => ({}));
 
 const controlsStyles = computed(() => ({
   display: 'flex',
@@ -209,9 +237,15 @@ const controlsStyles = computed(() => ({
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+.tab-navigation {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 .gotty-terminal-wrapper {
-  margin-top: 1.5rem;
-  border: 4px solid var(--color-primary-3); /* Matching retro border */
+  margin-top: 0.5rem;
+  border: 4px solid var(--color-primary-3);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -234,7 +268,6 @@ iframe {
   flex-wrap: wrap;
 }
 
-/* NES.css Overrides (Scoped) */
 :deep(.nes-container) {
   background-color: var(--bg-card) !important;
   border-color: var(--color-primary-3) !important;
