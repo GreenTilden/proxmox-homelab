@@ -1,44 +1,62 @@
-# GPU Switching Workflow
+# GPU Configuration & Switching
 
 **Last Updated:** January 18, 2026
 
 ## Overview
 
-The RTX 5070 Ti operates in **shared mode** - it can be used by either:
-- **Host/AI Mode**: NVIDIA driver on host, accessible by containers (Ollama, GBGreg CT 120)
-- **VM/Gaming Mode**: VFIO passthrough to Windows VM 101 or Batocera VM 103
+The system has **two GPUs** with different purposes:
 
-Only one mode can be active at a time.
-
----
-
-## Current Hardware
-
-| Component | PCI Address | Device ID |
-|-----------|-------------|-----------|
-| RTX 5070 Ti GPU | 0000:06:00.0 | 10de:2d07 |
-| RTX 5070 Ti Audio | 0000:06:00.1 | 10de:22e9 |
-
-**Driver Version:** 590.48.01 (CUDA 13.1)
+| GPU | PCI Address | Purpose | Mode |
+|-----|-------------|---------|------|
+| **NVIDIA RTX 5070 Ti** | 06:00.0 | Windows Gaming + AI workloads | Shared (switch between host/VM) |
+| **AMD RX 6800 XT** | 03:00.0 | Batocera retro gaming | Permanent VFIO passthrough |
 
 ---
 
-## GPU Switch Script
+## GPU Assignments
+
+### NVIDIA RTX 5070 Ti (Shared)
+- **Host/AI Mode**: nvidia driver for containers (Ollama, GBGreg)
+- **Windows Gaming Mode**: VFIO passthrough to VM 101
+- **Requires switching** via `/root/gpu-switch.sh`
+
+### AMD RX 6800 XT (Dedicated)
+- **Permanently bound to VFIO** for Batocera VM 103
+- **No switching needed** - always available for Batocera
+- Connect display directly to AMD GPU for Batocera output
+
+---
+
+## Hardware Details
+
+| Component | PCI Address | Device ID | Driver |
+|-----------|-------------|-----------|--------|
+| RTX 5070 Ti GPU | 0000:06:00.0 | 10de:2d07 | nvidia (shared) |
+| RTX 5070 Ti Audio | 0000:06:00.1 | 10de:22e9 | nvidia/vfio |
+| RX 6800 XT GPU | 0000:03:00.0 | 1002:73bf | vfio-pci (permanent) |
+| RX 6800 XT Audio | 0000:03:00.1 | 1002:ab28 | vfio-pci (permanent) |
+| Intel UHD 630 | 0000:00:02.0 | 8086:3e92 | i915 (Plex QuickSync) |
+
+---
+
+## NVIDIA GPU Switch Script
 
 Location: `/root/gpu-switch.sh`
+
+**Only use this for NVIDIA GPU switching (Windows gaming).**
 
 ### Usage
 
 ```bash
-# Check current GPU status
+# Check current NVIDIA GPU status
 /root/gpu-switch.sh status
 
-# Switch to VM/Gaming mode (unbind nvidia, bind vfio)
+# Switch NVIDIA to Windows VM mode
 /root/gpu-switch.sh vm
 # or
 /root/gpu-switch.sh gaming
 
-# Switch back to Host/AI mode (unbind vfio, load nvidia)
+# Switch NVIDIA back to Host/AI mode
 /root/gpu-switch.sh host
 # or
 /root/gpu-switch.sh ai
@@ -48,72 +66,64 @@ Location: `/root/gpu-switch.sh`
 
 ## Workflows
 
-### Starting a Gaming Session (Windows or Batocera)
+### Windows Gaming Session (NVIDIA)
 
 ```bash
-# 1. Switch GPU to VM mode
+# 1. Switch NVIDIA GPU to VM mode
 /root/gpu-switch.sh vm
 
-# 2. Start the VM
-qm start 101    # Windows Gaming
-# or
-qm start 103    # Batocera
+# 2. Start Windows VM
+qm start 101
 
-# 3. Connect via Proxmox console, SPICE, or physical display
+# 3. Connect display to NVIDIA GPU output
+# 4. Game!
+
+# 5. When done - shutdown VM
+qm shutdown 101
+
+# 6. Switch NVIDIA back to host for AI
+/root/gpu-switch.sh host
 ```
 
-### Ending Gaming Session
+### Batocera Retro Gaming (AMD)
 
 ```bash
-# 1. Shutdown the VM (from inside the OS or force stop)
-qm shutdown 101    # graceful
-# or
-qm stop 101        # force
+# No switching needed - AMD is always ready
 
-# 2. Switch GPU back to host
-/root/gpu-switch.sh host
+# Just start the VM
+qm start 103
 
-# 3. GPU is now available for AI workloads
-nvidia-smi    # verify
+# Connect display to AMD GPU output
+# Game!
+
+# Shutdown when done
+qm shutdown 103
 ```
 
 ---
 
-## GPU Consumers by Mode
+## VM Configurations
 
-### Host/AI Mode (nvidia driver)
-| Consumer | Type | Access Method |
-|----------|------|---------------|
-| GBGreg (CT 120) | LXC | Device bind mounts |
-| Ollama | Docker | nvidia-container-toolkit |
-| Any host container | Docker | `--gpus all` flag |
-
-### VM/Gaming Mode (vfio-pci)
-| Consumer | VM ID | Purpose |
-|----------|-------|---------|
-| WIN-GAMING | 101 | Windows 11 gaming |
-| BATOCERA | 103 | Retro gaming |
-| HACK-SEQUOIA | 102 | macOS (if GPU added) |
-
----
-
-## LXC GPU Passthrough (GBGreg Style)
-
-For containers that need GPU access in Host mode, add to LXC config:
-
+### Windows Gaming (VM 101) - NVIDIA RTX 5070 Ti
 ```
-# /etc/pve/lxc/120.conf
-lxc.cgroup2.devices.allow: c 195:* rwm
-lxc.cgroup2.devices.allow: c 509:* rwm
-lxc.cgroup2.devices.allow: c 234:* rwm
-lxc.mount.entry: /dev/nvidia0 dev/nvidia0 none bind,optional,create=file
-lxc.mount.entry: /dev/nvidiactl dev/nvidiactl none bind,optional,create=file
-lxc.mount.entry: /dev/nvidia-uvm dev/nvidia-uvm none bind,optional,create=file
-lxc.mount.entry: /dev/nvidia-uvm-tools dev/nvidia-uvm-tools none bind,optional,create=file
-lxc.mount.entry: /dev/nvidia-modeset dev/nvidia-modeset none bind,optional,create=file
+hostpci0: 0000:06:00.0,pcie=1,x-vga=1
+hostpci1: 0000:06:00.1,pcie=1
+cpu: host,hidden=1
+args: -cpu host,kvm=on,+hypervisor,+invtsc,hv_vapic,hv_relaxed,hv_spinlocks=0x1fff,hv_vendor_id=proxmox
 ```
 
-Container must have `features: nesting=1` enabled.
+### Batocera (VM 103) - AMD RX 6800 XT
+```
+hostpci0: 0000:03:00.0,pcie=1,x-vga=1
+hostpci1: 0000:03:00.1,pcie=1
+bios: seabios
+vga: none
+```
+
+### Hackintosh (VM 102) - No GPU (uses vmware vga)
+```
+vga: vmware
+```
 
 ---
 
@@ -122,22 +132,45 @@ Container must have `features: nesting=1` enabled.
 File: `/etc/modprobe.d/vfio.conf`
 
 ```bash
-# NVIDIA RTX 5070 Ti - shared mode
-# Manually unbind for Windows gaming VM when needed
-# Do NOT add to vfio-pci ids= for auto-bind at boot
-
-# AMD RX 6800 XT - permanent passthrough (if present)
+# AMD RX 6800 XT - PERMANENT passthrough for Batocera
 options vfio-pci ids=1002:73bf,1002:ab28
 softdep amdgpu pre: vfio-pci
+
+# NVIDIA RTX 5070 Ti - SHARED mode
+# Stays on nvidia driver by default for AI containers
+# Use gpu-switch.sh to bind to vfio for Windows gaming
+# Do NOT add NVIDIA IDs here
+
+# Intel UHD 630 - stays on i915 for Plex QuickSync
 ```
 
-The RTX 5070 Ti is **not** in the vfio-pci ids because we want it on the nvidia driver by default.
+---
+
+## GPU Consumers
+
+### NVIDIA RTX 5070 Ti
+| Mode | Consumer | Access |
+|------|----------|--------|
+| Host | GBGreg (CT 120) | LXC device bind |
+| Host | Ollama | Docker nvidia-container-toolkit |
+| Host | Any container | `--gpus all` |
+| VM | WIN-GAMING (101) | VFIO passthrough |
+
+### AMD RX 6800 XT
+| Mode | Consumer | Access |
+|------|----------|--------|
+| VM (always) | BATOCERA (103) | VFIO passthrough |
+
+### Intel UHD 630
+| Mode | Consumer | Access |
+|------|----------|--------|
+| Host (always) | Plex | VA-API / QuickSync |
 
 ---
 
 ## Troubleshooting
 
-### GPU stuck after VM shutdown
+### NVIDIA GPU stuck after Windows VM shutdown
 ```bash
 # Force unbind from vfio
 echo "0000:06:00.0" > /sys/bus/pci/drivers/vfio-pci/unbind
@@ -148,25 +181,16 @@ echo 1 > /sys/bus/pci/rescan
 modprobe nvidia nvidia_uvm nvidia_modeset
 ```
 
-### nvidia-smi shows no GPU after switch
-```bash
-# Remove old vfio bindings
-echo "10de:2d07" > /sys/bus/pci/drivers/vfio-pci/remove_id 2>/dev/null
-echo "10de:22e9" > /sys/bus/pci/drivers/vfio-pci/remove_id 2>/dev/null
+### Batocera black screen
+- Check that display is connected to **AMD GPU output** (not NVIDIA)
+- AMD GPU is at PCI slot 03:00 (usually second GPU slot on motherboard)
 
-# Full rescan
-echo 1 > /sys/bus/pci/rescan
-sleep 2
-modprobe -r nvidia_uvm nvidia_modeset nvidia
-modprobe nvidia nvidia_uvm nvidia_modeset
-```
-
-### VM won't start - GPU in use
+### VM won't start - NVIDIA GPU in use
 ```bash
-# Check what's using the GPU
+# Check what's using NVIDIA
 lsof /dev/nvidia* 2>/dev/null
 
-# Stop containers using GPU
+# Stop GPU containers
 docker stop ollama
 pct stop 120
 
@@ -176,33 +200,13 @@ pct stop 120
 
 ---
 
-## VM Configurations
-
-### Windows Gaming (VM 101)
-```
-hostpci0: 0000:06:00.0,pcie=1,x-vga=1
-hostpci1: 0000:06:00.1,pcie=1
-cpu: host,hidden=1
-args: -cpu host,kvm=on,+hypervisor,+invtsc,hv_vapic,hv_relaxed,hv_spinlocks=0x1fff,hv_vendor_id=proxmox
-```
-
-### Batocera (VM 103)
-```
-# Currently no GPU passthrough
-# Add for GPU gaming:
-hostpci0: 0000:06:00.0,pcie=1,x-vga=1
-hostpci1: 0000:06:00.1,pcie=1
-```
-
----
-
 ## Quick Reference
 
-| Command | Description |
-|---------|-------------|
-| `/root/gpu-switch.sh status` | Show current GPU mode |
-| `/root/gpu-switch.sh vm` | Switch to VM passthrough |
-| `/root/gpu-switch.sh host` | Switch to host/containers |
-| `nvidia-smi` | Verify host GPU access |
-| `qm start 101` | Start Windows gaming VM |
-| `qm start 103` | Start Batocera VM |
+| Task | Command |
+|------|---------|
+| Check NVIDIA status | `/root/gpu-switch.sh status` |
+| NVIDIA → Windows VM | `/root/gpu-switch.sh vm && qm start 101` |
+| NVIDIA → Host/AI | `/root/gpu-switch.sh host` |
+| Start Batocera | `qm start 103` (no switch needed) |
+| Stop Batocera | `qm shutdown 103` |
+| Verify NVIDIA on host | `nvidia-smi` |

@@ -111,25 +111,13 @@ export const useServiceMonitoring = () => {
       id: 'mc-file-manager',
       name: 'File Manager (mc)',
       description: 'Midnight Commander in a web terminal',
-      status: 'online', // This is a static link, so it's always "online"
+      status: 'online', // This is a static link, so it's always online
       lastChecked: new Date(),
       responseTime: 0,
       job: 'local',
       instance: 'local',
       url: '/file-manager', // Internal Vue route
       healthEndpoint: undefined
-    },
-    {
-      id: 'code-server',
-      name: 'Code Server',
-      description: 'VS Code in the Browser',
-      status: 'unknown',
-      lastChecked: null,
-      responseTime: null,
-      job: 'code-server',
-      instance: 'code-server',
-      url: 'http://192.168.0.250:8081',
-      healthEndpoint: 'http://192.168.0.250:8081'
     },
     {
       id: 'proxmox',
@@ -144,19 +132,44 @@ export const useServiceMonitoring = () => {
       healthEndpoint: 'https://192.168.0.99:8006/api2/json/version'
     },
     {
-      id: 'homeassistant',
-      name: 'Home Assistant',
-      description: 'Smart Home Automation',
-      status: 'unknown',
+      id: "homeassistant",
+      name: "Home Assistant",
+      description: "Smart Home Automation",
+      status: "unknown",
       lastChecked: null,
       responseTime: null,
-      job: 'homeassistant',
-      instance: 'smart-home',
-      url: 'http://192.168.0.99:8123',
-      healthEndpoint: 'http://192.168.0.99:8123'
+      job: "homeassistant",
+      instance: "smart-home",
+      url: "http://192.168.0.99:8123",
+      healthEndpoint: "http://192.168.0.99:8123"
+    },
+    {
+      id: "nextcloud",
+      name: "Nextcloud",
+      description: "Hub (Calendar & Tasks)",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "nextcloud",
+      instance: "cloud-hub",
+      url: "https://nextcloud.darrenarney.com",
+      healthEndpoint: "https://nextcloud.darrenarney.com/status.php"
+    }
+    ,
+    {
+      id: "tandoor",
+      name: "Tandoor Recipes",
+      description: "Recipe Management",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "tandoor",
+      instance: "recipes",
+      url: "https://tandoor.darrenarney.com",
+      healthEndpoint: "http://192.168.0.99:8080"
     }
   ])
-  
+
   const serviceMetrics = ref<ServiceMetrics>({
     totalServices: 0,
     onlineServices: 0,
@@ -164,30 +177,30 @@ export const useServiceMonitoring = () => {
     healthyPercentage: 0,
     lastUpdateTime: null
   })
-  
+
   const isLoading = ref(false)
   const error = ref('')
   const isAutoRefreshEnabled = ref(true)
   const isRefreshing = ref(false)
-  
+
   // Monitoring intervals
   let monitoringInterval: NodeJS.Timeout | null = null
-  
+
   // Computed values
-  const onlineServices = computed(() => 
+  const onlineServices = computed(() =>
     services.value.filter(service => service.status === 'online')
   )
-  
+
   const offlineServices = computed(() =>
     services.value.filter(service => service.status === 'offline')
   )
-  
+
   const checkingServices = computed(() =>
     services.value.filter(service => service.status === 'checking')
   )
-  
+
   const criticalServices = computed(() =>
-    services.value.filter(service => 
+    services.value.filter(service =>
       service.status === 'offline' && ['prometheus', 'node-exporter'].includes(service.id)
     )
   )
@@ -197,14 +210,14 @@ export const useServiceMonitoring = () => {
    */
   const checkServiceViaPrometheus = async (service: ServiceStatus): Promise<void> => {
     try {
-      const query = `up{job="${service.job}",instance="${service.instance}"}`
+      const query = `up{job=${service.job},instance=${service.instance}}`
       const response = await prometheusClient.query(query)
-      
+
       if (response.status === 'success' && response.data.result.length > 0) {
         const value = MetricsUtils.extractValue(response.data.result)
         service.status = value === 1 ? 'online' : 'offline'
         service.lastChecked = new Date()
-        
+
         // Get additional metrics if available
         await fetchServiceMetrics(service)
       } else {
@@ -223,24 +236,24 @@ export const useServiceMonitoring = () => {
    */
   const checkServiceViaHTTP = async (service: ServiceStatus): Promise<void> => {
     if (!service.healthEndpoint) return
-    
+
     const startTime = Date.now()
-    
+
     try {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 5000)
-      
+
       const response = await fetch(service.healthEndpoint, {
         method: 'GET',
         signal: controller.signal,
         mode: 'no-cors' // Handle CORS for external services
       })
-      
+
       clearTimeout(timeoutId)
       service.responseTime = Date.now() - startTime
       service.lastChecked = new Date()
       service.status = 'online'
-      
+
     } catch (error) {
       service.responseTime = Date.now() - startTime
       service.lastChecked = new Date()
@@ -255,12 +268,12 @@ export const useServiceMonitoring = () => {
   const fetchServiceMetrics = async (service: ServiceStatus): Promise<void> => {
     try {
       const promises: Promise<any>[] = []
-      
+
       // Common metrics for all services
       promises.push(
         prometheusClient.query(`node_time_seconds - node_boot_time_seconds`).catch(() => null)
       )
-      
+
       // Service-specific metrics
       switch (service.id) {
         case 'qbittorrent-exporter':
@@ -270,32 +283,30 @@ export const useServiceMonitoring = () => {
             prometheusClient.query(SYSTEM_QUERIES.qbittorrentUploadSpeed).catch(() => null)
           )
           break
-          
+
         case 'zfs-exporter':
           promises.push(
             prometheusClient.query(SYSTEM_QUERIES.zfsPoolHealth).catch(() => null),
             prometheusClient.query(SYSTEM_QUERIES.zfsPoolUsagePercent).catch(() => null)
           )
           break
-          
+
         case 'cadvisor':
           promises.push(
-            prometheusClient.query(SYSTEM_QUERIES.containerCount).catch(() => null),
-            prometheusClient.query(SYSTEM_QUERIES.containerTotalCpu).catch(() => null),
-            prometheusClient.query(SYSTEM_QUERIES.containerTotalMemory).catch(() => null)
+            prometheusClient.query(SYSTEM_QUERIES.containerCount).catch(() => null)
           )
           break
       }
-      
+
       const results = await Promise.allSettled(promises)
-      
+
       if (!service.metrics) service.metrics = {}
-      
+
       // Process results
       results.forEach((result, index) => {
         if (result.status === 'fulfilled' && result.value?.status === 'success') {
           const value = MetricsUtils.extractValue(result.value.data.result)
-          
+
           switch (index) {
             case 0:
               service.metrics!.uptime = value
@@ -308,18 +319,12 @@ export const useServiceMonitoring = () => {
                   case 2: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, downloadSpeed: value }; break
                   case 3: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, uploadSpeed: value }; break
                 }
-              } else if (service.id === 'cadvisor') {
-                switch (index) {
-                  case 1: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, containerCount: value }; break
-                  case 2: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, cpuUsage: value }; break
-                  case 3: service.metrics!.customMetrics = { ...service.metrics!.customMetrics, memoryUsage: value }; break
-                }
               }
               break
           }
         }
       })
-      
+
     } catch (error) {
       console.warn(`Failed to fetch metrics for ${service.name}:`, error)
     }
@@ -330,10 +335,10 @@ export const useServiceMonitoring = () => {
    */
   const checkServiceHealth = async (service: ServiceStatus): Promise<void> => {
     service.status = 'checking'
-    
+
     // Try Prometheus first, fallback to HTTP
     await checkServiceViaPrometheus(service)
-    
+
     if (service.status === 'unknown' && service.healthEndpoint) {
       await checkServiceViaHTTP(service)
     }
@@ -346,14 +351,14 @@ export const useServiceMonitoring = () => {
     try {
       isLoading.value = true
       error.value = ''
-      
+
       // Check all services in parallel
       const promises = services.value.map(service => checkServiceHealth(service))
       await Promise.allSettled(promises)
-      
+
       // Update service metrics
       updateServiceMetrics()
-      
+
     } catch (err) {
       console.error('Failed to check services health:', err)
       error.value = err instanceof Error ? err.message : 'Unknown error'
@@ -369,7 +374,7 @@ export const useServiceMonitoring = () => {
     const total = services.value.length
     const online = onlineServices.value.length
     const offline = offlineServices.value.length
-    
+
     serviceMetrics.value = {
       totalServices: total,
       onlineServices: online,
@@ -404,10 +409,10 @@ export const useServiceMonitoring = () => {
    */
   const startAutoRefresh = (): void => {
     if (monitoringInterval) return
-    
+
     // Initial check
     checkAllServicesHealth()
-    
+
     // Set up interval (every 60 seconds)
     monitoringInterval = setInterval(checkAllServicesHealth, 60000)
   }
@@ -427,7 +432,7 @@ export const useServiceMonitoring = () => {
    */
   const toggleAutoRefresh = (): void => {
     isAutoRefreshEnabled.value = !isAutoRefreshEnabled.value
-    
+
     if (isAutoRefreshEnabled.value) {
       startAutoRefresh()
     } else {
@@ -462,13 +467,13 @@ export const useServiceMonitoring = () => {
     error: readonly(error),
     isAutoRefreshEnabled: readonly(isAutoRefreshEnabled),
     isRefreshing: readonly(isRefreshing),
-    
+
     // Computed
     onlineServices,
     offlineServices,
     checkingServices,
     criticalServices,
-    
+
     // Actions
     checkServiceHealth,
     checkAllServicesHealth,
