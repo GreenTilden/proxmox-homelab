@@ -30,10 +30,14 @@ Based on hardware analysis (January 2026), the storage hierarchy is:
         *   *Strategy:* Pass through the Intel UHD 630 for macOS Metal acceleration. This will speed up the UI and animations, even if accessed via RustDesk.
 *   **Remote Access (RustDesk):**
     *   Since macOS running in a VM can have display quirks with standard VNC/Spice, we use **RustDesk**.
-    *   **Setup:**
-        *   Install RustDesk Client inside the macOS VM.
-        *   The client acts as a "Virtual Monitor" bridge, allowing high-performance remote control from other devices.
-        *   *Current State:* Connecting to public RustDesk infrastructure (Client-to-Client).
+    *   **Self-Hosted Server:** `/opt/rustdesk-server/` on Proxmox
+        *   `hbbs` (ID server): Port 54011 (TCP/UDP), 21115, 21118
+        *   `hbbr` (relay server): Port 54012, 21119
+    *   **Client Setup:**
+        *   Install RustDesk Client on VMs and workstations
+        *   Configure ID Server: `192.168.0.99:54011` (internal) or `darrenarney.com:54011` (external)
+        *   Relay Server: `192.168.0.99:54012` (internal) or `darrenarney.com:54012` (external)
+        *   Public key: Found in `/opt/rustdesk-server/rustdesk-data/id_ed25519.pub`
 
 ### 2. Gaming & AI Workstation (Dual Boot Node)
 *   **Strategy:** "Scenario B" - Shared Hardware, Distinct Roles.

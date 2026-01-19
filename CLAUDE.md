@@ -17,3 +17,28 @@ The project's documentation has been broken down into smaller, more focused docu
 *   **[💾 Hardware Overview](./docs/UNIFIED-REFERENCE/ARCHITECTURE/HARDWARE_OVERVIEW.md)**: Details on the physical hardware and storage setup.
 
 All detailed project information has been moved to the `docs/UNIFIED-REFERENCE/` directory. This file remains as a historical marker and entry point.
+
+## Development Environment
+
+### Frontend (Vue Dashboard)
+
+The frontend is developed and served from **192.168.0.250** (not locally).
+
+- **Source location**: `root@192.168.0.250:/var/www/vue-frontend/`
+- **Edit files directly via SSH**: `ssh root@192.168.0.250` then edit in `/var/www/vue-frontend/src/`
+- **Build after changes**: `cd /var/www/vue-frontend && npm run build`
+- **Served by nginx** from `/var/www/vue-frontend/dist/`
+- **Code-server available** at `http://192.168.0.250:8081` (no password)
+
+When making frontend changes, always edit files on 192.168.0.250 directly, not the local copy.
+
+## SSH Access
+
+Use the configured SSH aliases for quick access:
+
+```bash
+ssh proxmox        # Proxmox host (192.168.0.99)
+ssh frontend       # Frontend server (192.168.0.250) - if configured
+```
+
+SSH config is at `~/.ssh/config`.

@@ -6,8 +6,13 @@
 - **RAM**: 32GB total (all 4 DIMM slots occupied)
   - DIMM_A1/A2: 16GB Corsair Vengeance LPX DDR4-2400 (2x8GB)
   - DIMM_B1/B2: 16GB T-Force DARK DDR4-3000 (2x8GB)
-- **GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ⚠️ (Driver not available)
-- **Secondary GPU**: GTX 970 4GB - **REMOVED** (2025-08-25)
+- **Primary GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ✅
+  - Reserved for: AI/LLM inference, Gaming VMs
+  - Driver: NVIDIA 570.86.16 with CUDA 12.5
+- **Secondary GPU**: AMD Radeon RX 6800 XT 16GB (PCIe x16_2 slot) - **PLANNED**
+  - Role: Host display, VM passthrough, macOS, Plex transcoding
+  - Offloads general workloads from 5070 Ti
+  - Native macOS support (Monterey/Ventura compatible)
 - **PSU**: Seasonic Focus PX-750 (750W 80+ Platinum) - Excellent for upgrades
 - **Network**: 192.168.0.99
 
@@ -29,10 +34,12 @@
 - Carved originals: 1,246 files (123MB) forensic archive
 - Organized recovery: 929 files (80MB) categorized content
 
-## Hardware Status Update (2025-08-25)
-- ⚠️ **GPU Setup**: RTX 5070 Ti installed but no driver support (Blackwell GB203)
-- ✅ **ICY DOCK**: MB024SP-B mobile rack operational  
-- ❌ **GPU Drivers**: RTX 5070 Ti requires NVIDIA 575+ drivers (not yet available)
+## Hardware Status Update (2026-01-16)
+- ✅ **GPU Setup**: RTX 5070 Ti operational with NVIDIA 570.86.16 drivers
+- ✅ **ICY DOCK**: MB024SP-B mobile rack operational
+- 🔄 **Dual GPU Plan**: RX 6800 XT incoming for workload separation
+  - AMD GPU handles: host, VMs, macOS passthrough, Plex (VAAPI/AMF)
+  - NVIDIA GPU reserved: AI inference, gaming (dedicated)
 - 🔧 **Storage Expansion Plans**:
   - LSI HBA card in PCIe x16_2 slot (adds 8 SATA ports)
   - SATA power splitters for additional drives
