@@ -65,12 +65,18 @@
               <div class="action-buttons">
                 <button @click="rescanPlex" class="nes-btn is-primary">Rescan Plex Libraries</button>
                 <button @click="refreshCync" class="nes-btn is-warning">Refresh Cync Lights</button>
+                <button @click="triggerUpload" class="nes-btn is-success">🎬 Movie Upload</button>
+                <input ref="fileInput" type="file" style="display: none" @change="handleFileUpload" />
               </div>
               <div v-if="plexStatus" :class="['nes-container', 'is-rounded', 'is-dark']" style="margin-top: 1rem; padding: 1rem; width: 100%;">
                 <p :class="plexStatus.type === 'success' ? 'nes-text is-success' : 'nes-text is-error'" style="margin: 0;">{{ plexStatus.message }}</p>
               </div>
               <div v-if="cyncStatus" :class="['nes-container', 'is-rounded', 'is-dark']" style="margin-top: 1rem; padding: 1rem; width: 100%;">
                 <p :class="cyncStatus.type === 'success' ? 'nes-text is-success' : 'nes-text is-error'" style="margin: 0;">{{ cyncStatus.message }}</p>
+              </div>
+              <div v-if="uploadStatus" :class="['nes-container', 'is-rounded', 'is-dark']" style="margin-top: 1rem; padding: 1rem; width: 100%;">
+                <p :class="uploadStatus.type === 'success' ? 'nes-text is-success' : uploadStatus.type === 'info' ? 'nes-text is-primary' : 'nes-text is-error'" style="margin: 0;">{{ uploadStatus.message }}</p>
+                <progress v-if="uploadProgress >= 0" class="nes-progress is-success" :value="uploadProgress" max="100" style="margin-top: 0.5rem;"></progress>
               </div>
             </div>
           </div>
@@ -116,6 +122,11 @@ const cyncApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPor
 
 const plexStatus = ref<{ type: string; message: string } | null>(null);
 const cyncStatus = ref<{ type: string; message: string } | null>(null);
+const uploadStatus = ref<{ type: string; message: string } | null>(null);
+const uploadProgress = ref(-1);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const uploadApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/upload-media`);
 
 const rescanPlex = async () => {
   plexStatus.value = { type: 'info', message: 'Triggering Plex rescan...' };
@@ -157,6 +168,57 @@ const refreshCync = async () => {
   } catch (error) {
     cyncStatus.value = { type: 'error', message: 'Network error or server unreachable.' };
   }
+};
+
+const triggerUpload = () => {
+  fileInput.value?.click();
+};
+
+const handleFileUpload = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  uploadStatus.value = { type: 'info', message: `Uploading ${file.name}...` };
+  uploadProgress.value = 0;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', uploadApiUrl.value);
+    xhr.setRequestHeader('Authorization', `Bearer ${SECRET_TOKEN}`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        uploadProgress.value = Math.round((e.loaded / e.total) * 100);
+      }
+    };
+
+    xhr.onload = () => {
+      const data = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) {
+        uploadStatus.value = { type: 'success', message: data.message };
+      } else {
+        uploadStatus.value = { type: 'error', message: data.error || 'Upload failed.' };
+      }
+      uploadProgress.value = -1;
+    };
+
+    xhr.onerror = () => {
+      uploadStatus.value = { type: 'error', message: 'Network error or server unreachable.' };
+      uploadProgress.value = -1;
+    };
+
+    xhr.send(formData);
+  } catch (error) {
+    uploadStatus.value = { type: 'error', message: 'Upload failed.' };
+    uploadProgress.value = -1;
+  }
+
+  // Reset file input so same file can be re-selected
+  input.value = '';
 };
 
 const toggleScanlines = () => { enableScanlines.value = !enableScanlines.value; };

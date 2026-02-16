@@ -138,9 +138,6 @@
       </n-layout-footer>
     </n-layout>
   </n-config-provider>
-
-  <!-- EllaBot Chat Widget - Outside config provider for proper fixed positioning -->
-  <EllaBotChat />
 </template>
 
 <script setup lang="ts">
@@ -166,7 +163,6 @@ import {
 import ServiceCard from '../components/themes/retro/ServiceCard.vue'
 import CalendarWidget from '../components/core/CalendarWidget.vue'
 import AtmosphericBackground from '../components/themes/retro/AtmosphericBackground.vue'
-import EllaBotChat from '../components/ellabot/EllaBotChat.vue'
 // import DarkVeil from '../components/themes/naive/DarkVeil.vue'
 import { useServiceMonitoring } from '../composables/useServiceMonitoring'
 import { useTheme } from '../composables/useTheme'

@@ -104,11 +104,14 @@ const statusBarStyle = computed(() => {
 .metric-title {
   @apply text-xs font-medium opacity-80;
   color: var(--text-color);
+  line-height: 1.2;
 }
 
 .metric-value {
-  @apply text-lg font-bold mb-1;
+  @apply text-lg font-bold;
   color: var(--text-color);
+  line-height: 1;           /* Tight line-height for numbers */
+  margin-bottom: 0.25rem;   /* Consistent spacing */
 }
 
 .metric-subtitle {

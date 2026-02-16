@@ -54,7 +54,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="http://192.168.0.99:3000" target="_blank" class="nav-link">
+            <a href="http://192.168.0.99:8083" target="_blank" class="nav-link">
               <TrendingUp class="nav-icon" />
               <span class="nav-text" v-if="!collapsed">Grafana</span>
             </a>

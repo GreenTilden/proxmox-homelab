@@ -17,17 +17,6 @@
 
       <!-- Dashboard Content -->
       <main :style="mainStyles">
-        <!-- Quick Actions Section -->
-        <section :style="sectionStyles">
-          <QuickActionsGrid
-            title="Quick Actions"
-            :columns="isMobile ? 4 : 8"
-            :button-size="isMobile ? 'small' : 'medium'"
-            :on-refresh-services="refreshAllServices"
-            variant="filled"
-          />
-        </section>
-
         <!-- System Metrics Bar -->
         <section :style="metricsBarStyles">
           <CompactMetricCard
@@ -83,7 +72,7 @@
           />
         </div>
 
-        <!-- Calendar & Upcoming Events Row (Combined) -->
+        <!-- Calendar, Events & Lights Row -->
         <div :style="calendarEventsRowStyles">
           <!-- Calendar Card -->
           <div v-if="currentConfig.features.calendarIntegration === 'card'" class="nes-container with-title is-dark" :style="calendarCardStyles">
@@ -93,6 +82,15 @@
 
           <!-- Upcoming Events Card -->
           <UpcomingEventsCard :style="eventsCardStyles" />
+
+          <!-- Light Controls -->
+          <LightControls />
+
+          <!-- Oliver's Almanac -->
+          <div class="nes-container with-title is-dark" :style="oliverCardStyles">
+            <p class="title">📒 Oliver's Almanac</p>
+            <OliverQuoteWidget theme="retro" />
+          </div>
         </div>
 
         <!-- Navigation Links with Emoji -->
@@ -118,11 +116,8 @@
           >
             {{ getThemeIcon(currentSeason) }} {{ getThemeName(currentSeason) }}
           </button>
-          <router-link to="/toolbox" class="nes-btn is-primary" :style="controlButtonStyles">
-            <span class="nav-emoji">🧰</span> Toolbox
-          </router-link>
           <router-link to="/file-manager" class="nes-btn is-primary" :style="controlButtonStyles">
-            <span class="nav-emoji">📁</span> Files
+            <span class="nav-emoji">📁</span> File Manager
           </router-link>
           <router-link to="/weather" class="nes-btn is-warning" :style="controlButtonStyles">
             <span class="nav-emoji">🌤️</span> Weather
@@ -136,7 +131,7 @@
           <router-link to="/nanit" class="nes-btn" :style="controlButtonStyles" style="background: #da70d6; color: white;">
             <span class="nav-emoji">👶</span> Baby Cam
           </router-link>
-          <a href="http://192.168.0.99:3000" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #68bc71; color: white;">
+          <a href="http://192.168.0.99:8083" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #68bc71; color: white;">
             <span class="nav-emoji">🛡️</span> AdGuard
           </a>
           <a href="http://192.168.0.99:8087" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #ff4444; color: white;">
@@ -145,10 +140,10 @@
           <a href="http://192.168.0.131:8080" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #f78c6c; color: white;">
             <span class="nav-emoji">📰</span> FreshRSS
           </a>
-          <a href="http://192.168.0.99:8090" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #0082c9; color: white;">
-            <span class="nav-emoji">☁️</span> Cloud
-          </a>
-          <router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
+          <router-link to="/freezer-meals" class="nes-btn" :style="controlButtonStyles" style="background: #e8a838; color: white;">
+            <span class="nav-emoji">🧊</span> Freezer Meals
+          </router-link>
+<router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
             <span class="nav-emoji">🤖</span> EllaBot
           </router-link>
         </div>
@@ -172,10 +167,11 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SeasonalThemeProvider from '../components/themes/retro/SeasonalThemeProvider.vue'
 import CalendarWidget from '../components/core/CalendarWidget.vue'
 import UpcomingEventsCard from '../components/themes/retro/UpcomingEventsCard.vue'
-import QuickActionsGrid from '../components/dashboard/QuickActionsGrid.vue'
 import CompactServiceCard from '../components/dashboard/CompactServiceCard.vue'
 import CompactMetricCard from '../components/dashboard/CompactMetricCard.vue'
 import ServiceDetailModal from '../components/monitoring/ServiceDetailModal.vue'
+import LightControls from '../components/dashboard/LightControls.vue'
+import OliverQuoteWidget from '../components/dashboard/OliverQuoteWidget.vue'
 import { useServiceMonitoring, type ServiceStatus } from '../composables/useServiceMonitoring'
 import { useTheme } from '../composables/useTheme'
 import { getCurrentConfig } from '../config/environments'
@@ -302,10 +298,6 @@ const mainStyles = computed(() => ({
   gap: 'var(--space-lg)'
 }))
 
-const sectionStyles = computed(() => ({
-  width: '100%'
-}))
-
 const metricsBarStyles = computed(() => ({
   display: 'grid',
   gridTemplateColumns: isMobile.value ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
@@ -339,7 +331,7 @@ const servicesGridStyles = computed(() => ({
 // Calendar & Events combined row styles
 const calendarEventsRowStyles = computed(() => ({
   display: 'grid',
-  gridTemplateColumns: isMobile.value ? '1fr' : '1fr 2fr',
+  gridTemplateColumns: isMobile.value ? '1fr' : '1fr 2fr 1fr 1fr',
   gap: 'var(--space-lg)',
   alignItems: 'stretch'
 }))
@@ -354,6 +346,14 @@ const calendarCardStyles = computed(() => ({
 }))
 
 const eventsCardStyles = computed(() => ({
+  height: '100%'
+}))
+
+const oliverCardStyles = computed(() => ({
+  background: 'rgba(135, 93, 88, 0.1)',
+  backdropFilter: 'blur(1px)',
+  border: '4px solid var(--color-primary-3)',
+  padding: 'var(--space-lg)',
   height: '100%'
 }))
 

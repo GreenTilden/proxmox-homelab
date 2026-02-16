@@ -251,7 +251,7 @@ const navigationCategories = ref<NavCategory[]>([
         icon: TrendingUp,
         status: 'checking',
         action: 'external',
-        url: 'http://192.168.0.99:3000'
+        url: 'http://192.168.0.99:8083'
       },
       {
         id: 'prometheus',

@@ -18,6 +18,29 @@
 
     <div class="wh-page-content">
       <WhitehouseSidebar>
+        <WhitehouseControlSection title="Baby Sister Countdown">
+          <div class="countdown-header">
+            <span class="countdown-days">{{ daysRemaining }}</span>
+            <span class="countdown-label">days to go!</span>
+          </div>
+          <div class="balloon-grid">
+            <div
+              v-for="i in totalCountdownDays"
+              :key="i"
+              class="balloon-slot"
+              :class="{ 'is-popped': i <= poppedCount }"
+            >
+              <div v-if="i <= poppedCount" class="balloon-pop">*</div>
+              <div v-else class="balloon" :style="{ '--balloon-color': balloonColor(i) }">
+                <div class="balloon-body"></div>
+                <div class="balloon-knot"></div>
+                <div class="balloon-string"></div>
+              </div>
+            </div>
+          </div>
+          <p class="countdown-due">Due {{ dueDateFormatted }}</p>
+        </WhitehouseControlSection>
+
         <WhitehouseControlSection title="Stream Status">
           <div class="wh-status-item">
             <span
@@ -113,6 +136,30 @@ const isConnected = ref(false)
 const isMuted = ref(true)
 const tokenExpiry = ref<Date | null>(null)
 let hls: Hls | null = null
+
+// Baby sister countdown - due March 19, 2026
+const dueDate = new Date('2026-03-19')
+const startDate = new Date('2026-01-26')
+const totalCountdownDays = Math.ceil((dueDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+
+const daysRemaining = computed(() => {
+  const now = new Date()
+  const diff = Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  return Math.max(0, diff)
+})
+
+const poppedCount = computed(() => totalCountdownDays - daysRemaining.value)
+
+const dueDateFormatted = computed(() =>
+  dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+)
+
+const balloonColors = [
+  '#FF69B4', '#DDA0DD', '#DA70D6', '#FF85A2', '#BA55D3',
+  '#EE82EE', '#FFB6C1', '#DB7093', '#E6A8D7', '#C77DFF',
+]
+
+const balloonColor = (index: number) => balloonColors[index % balloonColors.length]
 
 const streamUrl = computed(() => {
   const host = window.location.hostname
@@ -284,6 +331,110 @@ onUnmounted(() => {
   color: var(--wh-gray);
   margin: 0 0 var(--wh-space-2) 0;
   line-height: 1.4;
+}
+
+/* Balloon Countdown */
+.countdown-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.countdown-days {
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-family: var(--wh-font-serif);
+  color: #DA70D6;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.95rem;
+  color: var(--wh-gray);
+  font-family: var(--wh-font-serif);
+}
+
+.balloon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.balloon-slot {
+  width: 22px;
+  height: 38px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.balloon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+
+.balloon:hover {
+  animation: wobble 0.5s ease-in-out;
+}
+
+.balloon-body {
+  width: 18px;
+  height: 22px;
+  background: var(--balloon-color);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  position: relative;
+  box-shadow: inset -3px -2px 4px rgba(255, 255, 255, 0.35),
+              inset 2px 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.balloon-knot {
+  width: 4px;
+  height: 4px;
+  background: var(--balloon-color);
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  filter: brightness(0.85);
+}
+
+.balloon-string {
+  width: 1px;
+  height: 10px;
+  background: #ccc;
+}
+
+.balloon-pop {
+  color: #e0c0e0;
+  font-size: 10px;
+  opacity: 0.4;
+  margin-top: 6px;
+}
+
+.is-popped {
+  opacity: 0.6;
+}
+
+.countdown-due {
+  font-size: 0.75rem;
+  color: var(--wh-gray);
+  text-align: center;
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+@keyframes wobble {
+  0% { transform: rotate(0deg); }
+  15% { transform: rotate(8deg); }
+  30% { transform: rotate(-8deg); }
+  45% { transform: rotate(5deg); }
+  60% { transform: rotate(-5deg); }
+  75% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
 }
 
 /* Responsive */

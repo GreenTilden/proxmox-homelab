@@ -66,11 +66,6 @@ const router = createRouter({
       component: () => import('@/pages/DocsPage.vue')
     },
     {
-      path: '/notes',
-      name: 'Notes',
-      component: () => import('@/pages/NotesPage.vue')
-    },
-    {
       path: '/nanit',
       name: 'Nanit',
       component: () => import('@/pages/NanitPage.vue')
@@ -79,6 +74,11 @@ const router = createRouter({
       path: '/vault',
       name: 'Vault',
       component: () => import('@/pages/VaultPage.vue')
+    },
+    {
+      path: '/freezer-meals',
+      name: 'FreezerMeals',
+      component: () => import('@/pages/FreezerMeals.vue')
     },
     {
       path: '/ellabot',

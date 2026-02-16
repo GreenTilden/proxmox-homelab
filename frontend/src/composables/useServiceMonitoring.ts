@@ -210,7 +210,7 @@ export const useServiceMonitoring = () => {
    */
   const checkServiceViaPrometheus = async (service: ServiceStatus): Promise<void> => {
     try {
-      const query = `up{job=${service.job},instance=${service.instance}}`
+      const query = `up{job="${service.job}",instance="${service.instance}"}`
       const response = await prometheusClient.query(query)
 
       if (response.status === 'success' && response.data.result.length > 0) {

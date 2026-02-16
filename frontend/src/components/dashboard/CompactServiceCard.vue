@@ -28,33 +28,34 @@
       <div :style="statusDotStyle" :title="service.status" />
     </div>
 
-    <!-- Hover overlay with sparkline and actions -->
+    <!-- Always-visible action buttons (bottom-right) -->
+    <div :style="actionsContainerStyle">
+      <button
+        :style="actionButtonStyle"
+        @click.stop="handleRefresh"
+        title="Refresh"
+      >
+        <RotateCw :size="12" />
+      </button>
+      <button
+        v-if="service.url"
+        :style="actionButtonStyle"
+        @click.stop="handleOpen"
+        title="Open"
+      >
+        <ExternalLink :size="12" />
+      </button>
+    </div>
+
+    <!-- Hover sparkline overlay -->
     <transition name="fade">
-      <div v-if="hover" :style="hoverOverlayStyle">
+      <div v-if="hover && sparklineData.length > 0" :style="hoverOverlayStyle">
         <ApexSparkline
-          v-if="sparklineData.length > 0"
           :data="sparklineData"
           :height="28"
           :color="statusColor"
           :show-tooltip="false"
         />
-        <div :style="actionsStyle">
-          <button
-            :style="actionButtonStyle"
-            @click.stop="handleRefresh"
-            title="Refresh"
-          >
-            <RotateCw :size="12" />
-          </button>
-          <button
-            v-if="service.url"
-            :style="actionButtonStyle"
-            @click.stop="handleOpen"
-            title="Open"
-          >
-            <ExternalLink :size="12" />
-          </button>
-        </div>
       </div>
     </transition>
   </div>
@@ -217,20 +218,22 @@ const statusDotStyle = computed(() => ({
   animation: props.service.status === 'checking' ? 'pulse 1.5s infinite' : 'none'
 }))
 
+const actionsContainerStyle = computed(() => ({
+  position: 'absolute' as const,
+  bottom: '8px',
+  right: '12px',
+  display: 'flex',
+  gap: '4px',
+  zIndex: 2
+}))
+
 const hoverOverlayStyle = computed(() => ({
   position: 'absolute' as const,
   bottom: '8px',
   left: '12px',
-  right: '12px',
+  right: '80px',
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: '8px'
-}))
-
-const actionsStyle = computed(() => ({
-  display: 'flex',
-  gap: '4px'
+  alignItems: 'center'
 }))
 
 const actionButtonStyle = computed(() => ({
