@@ -92,8 +92,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const API_BASE = 'http://192.168.0.250:5001/api/ha'
-const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf'
+const API_BASE = '/cmd-api/ha'
 
 const officeBrightness = ref(0)
 const basementBrightness = ref(0)
@@ -104,7 +103,6 @@ const weatherAmbient = ref(false)
 const error = ref('')
 
 const headers: Record<string, string> = {
-  'Authorization': `Bearer ${SECRET_TOKEN}`,
   'Content-Type': 'application/json'
 }
 

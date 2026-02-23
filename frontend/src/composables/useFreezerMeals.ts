@@ -1,11 +1,9 @@
 import { ref, computed, reactive } from 'vue'
 
 const API_BASE = '/cmd-api/freezer'
-const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf'
 
 function authHeaders(extra: Record<string, string> = {}) {
   return {
-    'Authorization': `Bearer ${SECRET_TOKEN}`,
     'Content-Type': 'application/json',
     ...extra
   }

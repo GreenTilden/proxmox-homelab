@@ -201,10 +201,8 @@ const featureCards = [
 ]
 
 // --- Oliver's Almanac ---
-const API_BASE = window.location.protocol + '//' + window.location.host
-const API_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf'
+const API_BASE = ''
 const apiHeaders: Record<string, string> = {
-  'Authorization': `Bearer ${API_TOKEN}`,
   'Content-Type': 'application/json'
 }
 

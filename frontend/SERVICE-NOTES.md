@@ -10,11 +10,11 @@
 
 ### Needs Configuration
 - **Grafana Dashboard**: http://192.168.0.99:3000 ✅
-  - **Credentials**: admin/test123
+  - **Credentials**: See `/opt/.env` on Proxmox host
   - **Status**: Fully operational with 16-bit themed dashboards
 
 - **qBittorrent**: http://192.168.0.111:8112 ⚠️
-  - **Credentials**: admin/adminadmin
+  - **Credentials**: See `/opt/.env` on CT 110
   - **Container Status**: LXC CT 110 running
   - **Service Status**: Web interface not accessible (port 8112 not responding)
   - **Fixed**: Updated service name from "Deluge Web UI" to "qBittorrent"

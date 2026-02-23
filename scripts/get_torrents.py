@@ -1,10 +1,12 @@
 import qbittorrentapi
 
-# Default qBittorrent Web UI credentials and host
-HOST = 'localhost'
-PORT = 8112
-USERNAME = 'admin'
-PASSWORD = 'adminadmin'
+import os
+
+# qBittorrent Web UI credentials from environment
+HOST = os.getenv('QBITTORRENT_HOST', 'localhost')
+PORT = int(os.getenv('QBITTORRENT_PORT', '8112'))
+USERNAME = os.getenv('QBITTORRENT_USER', 'admin')
+PASSWORD = os.getenv('QBITTORRENT_PASSWORD', '')
 
 def get_stuck_torrents():
     try:

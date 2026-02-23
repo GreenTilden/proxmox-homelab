@@ -112,13 +112,11 @@ const { currentSeason } = useTheme();
 const frontendServerIp = '192.168.0.250';
 const gottyDownloadsPort = '8083';
 const gottyRomsPort = '8084';
-const commandServerPort = '5001';
-const SECRET_TOKEN = '4be03b6172afe584e6547ce38697412f99ffa552bb18b4ea73e522eed4e65eaf';
 
 const gottyDownloadsUrl = computed(() => `http://${frontendServerIp}:${gottyDownloadsPort}/`);
 const gottyRomsUrl = computed(() => `http://${frontendServerIp}:${gottyRomsPort}/`);
-const plexApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/rescan-plex`);
-const cyncApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/refresh-cync`);
+const plexApiUrl = '/cmd-api/rescan-plex';
+const cyncApiUrl = '/cmd-api/refresh-cync';
 
 const plexStatus = ref<{ type: string; message: string } | null>(null);
 const cyncStatus = ref<{ type: string; message: string } | null>(null);
@@ -126,15 +124,14 @@ const uploadStatus = ref<{ type: string; message: string } | null>(null);
 const uploadProgress = ref(-1);
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const uploadApiUrl = computed(() => `http://${frontendServerIp}:${commandServerPort}/api/upload-media`);
+const uploadApiUrl = '/cmd-api/upload-media';
 
 const rescanPlex = async () => {
   plexStatus.value = { type: 'info', message: 'Triggering Plex rescan...' };
   try {
-    const response = await fetch(plexApiUrl.value, {
+    const response = await fetch(plexApiUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SECRET_TOKEN}`,
         'Content-Type': 'application/json',
       },
     });
@@ -152,10 +149,9 @@ const rescanPlex = async () => {
 const refreshCync = async () => {
   cyncStatus.value = { type: 'info', message: 'Refreshing Cync integration...' };
   try {
-    const response = await fetch(cyncApiUrl.value, {
+    const response = await fetch(cyncApiUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SECRET_TOKEN}`,
         'Content-Type': 'application/json',
       },
     });
@@ -187,8 +183,7 @@ const handleFileUpload = async (event: Event) => {
 
   try {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', uploadApiUrl.value);
-    xhr.setRequestHeader('Authorization', `Bearer ${SECRET_TOKEN}`);
+    xhr.open('POST', uploadApiUrl);
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {

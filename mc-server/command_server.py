@@ -10,7 +10,10 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 * 1024  # 50 GB max upload
-CORS(app) # Enable CORS for all routes
+CORS(app, origins=[
+    "http://192.168.0.250",
+    "https://home.darrenarney.com",
+])
 
 # Get the secret token from environment variables
 SECRET_TOKEN = os.getenv("COMMAND_SERVER_TOKEN")
