@@ -112,49 +112,67 @@ def seed_gates():
 
     defaults = [
         {
-            "id": "savings-buffer",
-            "label": "3-Month Savings Buffer",
-            "description": "Build $15k emergency runway before giving notice",
+            "id": "llc-filed",
+            "label": "LLC Filed + EIN + Bank",
+            "description": "Indiana LLC at inbiz.in.gov ($115), EIN (free, instant), business bank account",
             "status": "not-started",
             "phase": "foundation",
             "dependencies": [],
             "sortOrder": 1,
         },
         {
-            "id": "health-insurance",
-            "label": "Health Insurance Secured",
-            "description": "Marketplace, COBRA, or wife's employer plan confirmed",
+            "id": "savings-buffer",
+            "label": "3-Month Savings Buffer",
+            "description": "Build $20-30k runway (salary savings + Kiva $15k at 0%)",
             "status": "not-started",
             "phase": "foundation",
             "dependencies": [],
             "sortOrder": 2,
         },
         {
-            "id": "llc-filed",
-            "label": "LLC Filed",
-            "description": "Indiana LLC at inbiz.in.gov ($95), separate from nanny payroll LLC",
+            "id": "health-insurance",
+            "label": "Health Insurance Secured",
+            "description": "ACA individual Silver plan ~$564/mo ($6,768/yr). Kids on Alissa's employer plan.",
             "status": "not-started",
             "phase": "foundation",
             "dependencies": [],
             "sortOrder": 3,
         },
         {
+            "id": "eo-insurance",
+            "label": "E&O + GL Insurance",
+            "description": "Professional liability ($2,000/yr) + general liability ($1,000/yr). Required for consulting.",
+            "status": "not-started",
+            "phase": "foundation",
+            "dependencies": ["llc-filed"],
+            "sortOrder": 4,
+        },
+        {
             "id": "lilly-retainer",
             "label": "Lilly Retainer Confirmed",
-            "description": "Rate, scope, and hours guaranteed — most critical gate",
+            "description": "Rate ($8-15k/mo), scope, and hours confirmed — most critical gate",
             "status": "not-started",
             "phase": "foundation",
             "dependencies": [],
-            "sortOrder": 4,
+            "sortOrder": 5,
+        },
+        {
+            "id": "proposal-accepted",
+            "label": "At Least One Proposal Accepted",
+            "description": "Biosero transition, Lilly direct, or GBGreg premium — need at least one signed",
+            "status": "not-started",
+            "phase": "foundation",
+            "dependencies": [],
+            "sortOrder": 6,
         },
         {
             "id": "notice-given",
             "label": "Notice Given",
-            "description": "Give notice only after ALL other gates are completed",
+            "description": "Give notice only after ALL other gates are completed. Target: Jul/Aug 2026.",
             "status": "not-started",
             "phase": "transition",
-            "dependencies": ["savings-buffer", "health-insurance", "llc-filed", "lilly-retainer"],
-            "sortOrder": 5,
+            "dependencies": ["savings-buffer", "health-insurance", "llc-filed", "eo-insurance", "lilly-retainer", "proposal-accepted"],
+            "sortOrder": 7,
         },
     ]
     data['gates'] = defaults
@@ -297,6 +315,88 @@ def delete_goal(goal_id):
     return jsonify({"deleted": True}), 200
 
 
+@bp.route('/api/financials/goals/seed', methods=['POST'])
+def seed_goals():
+    """Seed financial goals from the verified 2026 financial model."""
+    data = _load_goals()
+    if data.get('goals'):
+        return jsonify({"message": "Goals already seeded", "count": len(data['goals'])}), 200
+
+    # All targets verified against 2026 IRS brackets, OBBBA, Indiana DOR
+    # See: Operation Darrentan - Financial Model.md
+    defaults = [
+        {
+            "id": "annual-gross",
+            "label": "Annual Gross Revenue",
+            "target": 221000,
+            "current": 0,
+            "unit": "$",
+            "color": "#22c55e",
+        },
+        {
+            "id": "savings-buffer",
+            "label": "3-Month Buffer",
+            "target": 30000,
+            "current": 0,
+            "unit": "$",
+            "color": "#3b82f6",
+        },
+        {
+            "id": "tax-reserve",
+            "label": "Quarterly Tax Reserve",
+            "target": 10644,
+            "current": 0,
+            "unit": "$",
+            "color": "#ef4444",
+        },
+        {
+            "id": "health-insurance",
+            "label": "Health Insurance (Annual)",
+            "target": 6768,
+            "current": 0,
+            "unit": "$",
+            "color": "#8b5cf6",
+        },
+        {
+            "id": "solo-401k",
+            "label": "Solo 401(k) Contributions",
+            "target": 40000,
+            "current": 0,
+            "unit": "$",
+            "color": "#f59e0b",
+        },
+        {
+            "id": "business-insurance",
+            "label": "E&O + GL Insurance",
+            "target": 3000,
+            "current": 0,
+            "unit": "$",
+            "color": "#6366f1",
+        },
+        {
+            "id": "llc-setup",
+            "label": "LLC + EIN + Bank",
+            "target": 115,
+            "current": 0,
+            "unit": "$",
+            "color": "#14b8a6",
+        },
+        {
+            "id": "kiva-bridge",
+            "label": "Kiva Bridge Loan (0%)",
+            "target": 15000,
+            "current": 0,
+            "unit": "$",
+            "color": "#06b6d4",
+        },
+    ]
+    data['goals'] = [
+        {**g, "createdAt": datetime.now().isoformat()} for g in defaults
+    ]
+    _save_goals(data)
+    return jsonify({"message": "Seeded default goals", "count": len(defaults)}), 201
+
+
 # ============================================================
 # Risk Board (Kanban)
 # ============================================================
@@ -378,23 +478,28 @@ def seed_risks():
     if data.get('risks'):
         return jsonify({"message": "Risks already seeded", "count": len(data['risks'])}), 200
 
+    # Updated with verified 2026 research (Feb 23)
     known_knowns = [
         {"title": "Monthly nut: ~$3.5-4k", "description": "Housing, bills, food, misc — base survival cost", "impact": "high"},
         {"title": "No non-compete", "description": "Legally clear to consult for any client immediately", "impact": "low"},
-        {"title": "LLC: $95 Indiana filing", "description": "inbiz.in.gov, separate from nanny payroll LLC", "impact": "low"},
+        {"title": "LLC: $115 Indiana filing", "description": "inbiz.in.gov, 1 business day. Separate from nanny payroll LLC.", "impact": "low"},
         {"title": "Baby: Mar 19, 2026", "description": "Paternity leave starts, execute plan after leave", "impact": "high"},
-        {"title": "Target: $150k net / $215-225k gross", "description": "Revenue target for independence", "impact": "high"},
+        {"title": "Target: $221k gross / $125-149k net", "description": "Verified tax model: 19.3% effective rate, $10.4k/mo take-home with $40k 401(k)", "impact": "high"},
         {"title": "Biosero rate: $125/hr", "description": "Established rate for transition consulting", "impact": "medium"},
         {"title": "Wife is a lawyer", "description": "Contract review, MSA drafting — no LegalZoom needed", "impact": "low"},
+        {"title": "Health insurance: $564/mo", "description": "ACA Silver individual, unsubsidized. Enhanced credits expired Jan 2026 (OBBBA).", "impact": "medium"},
+        {"title": "Tax structure: Year 1 sole prop, Year 2 S-Corp", "description": "S-Corp saves ~$9k/yr SE tax. File Form 2553 by Mar 15, 2027.", "impact": "medium"},
+        {"title": "Kiva: $15k at 0% interest", "description": "National program active. Indy hub status uncertain — verify with LISC.", "impact": "medium"},
+        {"title": "Marion County tax: 2.02%", "description": "Combined state+county: 4.97% (not the outdated 1.62% on some sites)", "impact": "low"},
+        {"title": "Solo 401(k) max: $72k", "description": "2026 limit. Biggest tax shelter available. Open at Fidelity/Schwab.", "impact": "medium"},
+        {"title": "SBIR/STTR: FROZEN", "description": "Expired Sept 2025. H.R.5100 passed House, stuck in Senate. Year 2+ play.", "impact": "low"},
     ]
     known_unknowns = [
         {"title": "Lilly retainer rate and terms", "description": "What rate? What scope? How many hours guaranteed?", "impact": "high", "linkedGateId": "lilly-retainer"},
-        {"title": "Health insurance cost", "description": "Marketplace vs COBRA vs wife's employer — need quotes", "impact": "high", "linkedGateId": "health-insurance"},
         {"title": "Biosero consulting demand", "description": "Actual demand post-departure — pipeline uncertain", "impact": "medium"},
         {"title": "GBGreg willingness to pay", "description": "Would they pay $60-100k for phased rebuild as consulting?", "impact": "medium"},
-        {"title": "SBA loan terms", "description": "E-brake contingency — terms and timeline if needed", "impact": "low"},
-        {"title": "LLC tax structure", "description": "S-corp election? Tax implications need CPA input", "impact": "medium"},
-        {"title": "Contracting infrastructure", "description": "MSA template, W-9, business insurance ($500-1500/yr E&O)", "impact": "medium"},
+        {"title": "Invoice payment timing", "description": "Net 30-60 creates cash flow gaps. Stagger billing + Kiva bridge.", "impact": "medium"},
+        {"title": "ACA plan selection", "description": "Specific plan TBD — Anthem cheapest in IN. SEP triggers on job loss.", "impact": "low", "linkedGateId": "health-insurance"},
     ]
 
     risks = []
@@ -624,45 +729,59 @@ def seed_revenue():
     if data.get('streams'):
         return jsonify({"message": "Revenue already seeded", "count": len(data['streams'])}), 200
 
+    # Revenue streams matching Financial Model Scenario A ($221k gross)
     defaults = [
         {
             "id": "biosero",
             "name": "Biosero Consulting",
             "type": "hourly",
-            "monthlyAmount": 10000,
+            "monthlyAmount": 7813,
             "hourlyRate": 125,
-            "hoursPerMonth": 80,
-            "startMonth": "2026-06",
+            "hoursPerMonth": 65,
+            "startMonth": "2026-08",
             "endMonth": None,
             "probability": 0.8,
             "color": "#22c55e",
-            "notes": "Transition consulting, $125/hr, ~80hrs/mo expected",
+            "notes": "Transition consulting, $125/hr, 15 hrs/wk = $93,750/yr",
         },
         {
             "id": "lilly",
             "name": "Lilly Direct Retainer",
             "type": "retainer",
-            "monthlyAmount": 12000,
+            "monthlyAmount": 8000,
             "hourlyRate": None,
             "hoursPerMonth": None,
-            "startMonth": "2026-07",
+            "startMonth": "2026-08",
             "endMonth": None,
-            "probability": 0.5,
+            "probability": 0.6,
             "color": "#ef4444",
-            "notes": "Retainer terms TBD — $8-15k/mo range, using $12k estimate",
+            "notes": "Retainer $8k/mo base ($96k/yr). Could expand to $12-15k.",
+        },
+        {
+            "id": "ai-rag",
+            "name": "AI/RAG Consulting",
+            "type": "hourly",
+            "monthlyAmount": 2604,
+            "hourlyRate": 125,
+            "hoursPerMonth": 22,
+            "startMonth": "2026-09",
+            "endMonth": None,
+            "probability": 0.4,
+            "color": "#8b5cf6",
+            "notes": "1-2 clients, $125/hr, 5 hrs/wk = $31,250/yr",
         },
         {
             "id": "gbgreg",
-            "name": "GBGreg Rebuild",
+            "name": "GBGreg Premium Rebuild",
             "type": "project",
             "monthlyAmount": 13333,
             "hourlyRate": None,
             "hoursPerMonth": None,
-            "startMonth": "2026-08",
-            "endMonth": "2026-12",
+            "startMonth": "2026-09",
+            "endMonth": "2027-02",
             "probability": 0.3,
             "color": "#f59e0b",
-            "notes": "$60-80k phased rebuild, ~$13k/mo over 5 months",
+            "notes": "$60-80k phased rebuild, ~$13k/mo over 5-6 months",
         },
     ]
     data['streams'] = [
@@ -833,33 +952,44 @@ def seed_scenarios():
     if data.get('scenarios'):
         return jsonify({"message": "Scenarios already seeded", "count": len(data['scenarios'])}), 200
 
+    # Tax rate 0.193 = verified 19.3% effective rate (SE + fed + IN + Marion)
+    # Monthly expenses include insurance ($814) + business costs ($279) = ~$1,093 + household
     defaults = [
         {
             "id": "conservative",
             "name": "Conservative",
-            "description": "Biosero consulting only — baseline survival",
+            "description": "Biosero only — $94k/yr, baseline survival",
             "streamIds": ["biosero"],
             "monthlyExpenses": 4500,
-            "taxRate": 0.30,
+            "taxRate": 0.193,
             "color": "#6b7280",
         },
         {
             "id": "moderate",
             "name": "Moderate",
-            "description": "Biosero + Lilly retainer — comfortable independence",
+            "description": "Biosero + Lilly — $190k/yr, comfortable independence",
             "streamIds": ["biosero", "lilly"],
             "monthlyExpenses": 4500,
-            "taxRate": 0.30,
+            "taxRate": 0.193,
             "color": "#3a7bd5",
         },
         {
             "id": "optimistic",
             "name": "Optimistic",
-            "description": "All streams active — full target revenue",
-            "streamIds": ["biosero", "lilly", "gbgreg"],
+            "description": "All streams — $221k/yr target with AI/RAG clients",
+            "streamIds": ["biosero", "lilly", "ai-rag"],
             "monthlyExpenses": 4500,
-            "taxRate": 0.30,
+            "taxRate": 0.193,
             "color": "#22c55e",
+        },
+        {
+            "id": "full-throttle",
+            "name": "Full Throttle",
+            "description": "All streams + GBGreg premium — max Year 1 revenue",
+            "streamIds": ["biosero", "lilly", "ai-rag", "gbgreg"],
+            "monthlyExpenses": 4500,
+            "taxRate": 0.193,
+            "color": "#f59e0b",
         },
     ]
     data['scenarios'] = [
