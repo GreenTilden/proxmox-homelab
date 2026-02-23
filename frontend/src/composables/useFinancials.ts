@@ -80,6 +80,57 @@ export interface ExpenseCategory {
   icon: string
 }
 
+export interface RevenueStream {
+  id: string
+  name: string
+  type: 'hourly' | 'retainer' | 'project'
+  monthlyAmount: number
+  hourlyRate: number | null
+  hoursPerMonth: number | null
+  startMonth: string | null
+  endMonth: string | null
+  probability: number
+  color?: string
+  notes: string
+}
+
+export interface Scenario {
+  id: string
+  name: string
+  description: string
+  streamIds: string[]
+  monthlyExpenses: number
+  taxRate: number
+  color?: string
+}
+
+export interface ProjectionMonth {
+  month: string
+  grossRevenue: number
+  taxes: number
+  netRevenue: number
+  expenses: number
+  netCashFlow: number
+  cumulative: number
+  streams: { id: string; name: string; amount: number }[]
+}
+
+export interface ScenarioProjection {
+  scenario: string
+  scenarioId: string
+  months: ProjectionMonth[]
+  totalGrossRevenue: number
+  totalNetCashFlow: number
+  breakEvenMonth: string | null
+  annualizedGross: number
+}
+
+export interface RewardsEstimate {
+  estimates: { card: string; name: string; spending: number; reward: number }[]
+  totalRewards: number
+  annualizedRewards: number
+}
+
 // --- Phase definitions ---
 
 export const PHASES = [
@@ -99,6 +150,10 @@ export function useFinancials() {
   const risks = ref<RiskItem[]>([])
   const expenses = ref<Expense[]>([])
   const categories = ref<ExpenseCategory[]>([])
+  const revenueStreams = ref<RevenueStream[]>([])
+  const scenarios = ref<Scenario[]>([])
+  const projections = ref<Map<string, ScenarioProjection>>(new Map())
+  const rewards = ref<RewardsEstimate | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   const expenseTotals = ref({ total: 0, businessTotal: 0, personalTotal: 0 })
@@ -332,6 +387,145 @@ export function useFinancials() {
     }
   }
 
+  // --- Revenue Streams ---
+
+  async function fetchRevenue() {
+    try {
+      const data = await apiFetch('/financials/revenue')
+      revenueStreams.value = data.streams || []
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function addRevenueStream(stream: Partial<RevenueStream>) {
+    try {
+      await apiFetch('/financials/revenue', {
+        method: 'POST',
+        body: JSON.stringify(stream),
+      })
+      await fetchRevenue()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function updateRevenueStream(id: string, updates: Partial<RevenueStream>) {
+    try {
+      await apiFetch(`/financials/revenue/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates),
+      })
+      await fetchRevenue()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function deleteRevenueStream(id: string) {
+    try {
+      await apiFetch(`/financials/revenue/${id}`, { method: 'DELETE' })
+      await fetchRevenue()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function seedDefaultRevenue() {
+    try {
+      await apiFetch('/financials/revenue/seed', { method: 'POST' })
+      await fetchRevenue()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  // --- Scenarios ---
+
+  async function fetchScenarios() {
+    try {
+      const data = await apiFetch('/financials/scenarios')
+      scenarios.value = data.scenarios || []
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function addScenario(scenario: Partial<Scenario>) {
+    try {
+      await apiFetch('/financials/scenarios', {
+        method: 'POST',
+        body: JSON.stringify(scenario),
+      })
+      await fetchScenarios()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function updateScenario(id: string, updates: Partial<Scenario>) {
+    try {
+      await apiFetch(`/financials/scenarios/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates),
+      })
+      await fetchScenarios()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function deleteScenario(id: string) {
+    try {
+      await apiFetch(`/financials/scenarios/${id}`, { method: 'DELETE' })
+      await fetchScenarios()
+      projections.value.delete(id)
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function seedDefaultScenarios() {
+    try {
+      await apiFetch('/financials/scenarios/seed', { method: 'POST' })
+      await fetchScenarios()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function fetchProjection(scenarioId: string, startMonth?: string) {
+    try {
+      const qs = startMonth ? `?start=${startMonth}` : ''
+      const data = await apiFetch(`/financials/scenarios/${scenarioId}/projection${qs}`)
+      projections.value.set(scenarioId, data)
+      return data as ScenarioProjection
+    } catch (e: any) {
+      error.value = e.message
+      return null
+    }
+  }
+
+  async function fetchAllProjections(startMonth?: string) {
+    const results: ScenarioProjection[] = []
+    for (const s of scenarios.value) {
+      const p = await fetchProjection(s.id, startMonth)
+      if (p) results.push(p)
+    }
+    return results
+  }
+
+  // --- Rewards ---
+
+  async function fetchRewards() {
+    try {
+      const data = await apiFetch('/financials/rewards/estimate')
+      rewards.value = data
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
   // --- Computed ---
 
   const gateProgress = computed(() => {
@@ -373,7 +567,13 @@ export function useFinancials() {
         fetchRisks(),
         fetchCategories(),
         fetchExpenses(),
+        fetchRevenue(),
+        fetchScenarios(),
       ])
+      // Fetch projections after scenarios are loaded
+      if (scenarios.value.length > 0) {
+        await fetchAllProjections()
+      }
     } finally {
       isLoading.value = false
     }
@@ -382,6 +582,7 @@ export function useFinancials() {
   return {
     // State
     gates, milestones, goals, risks, expenses, categories,
+    revenueStreams, scenarios, projections, rewards,
     isLoading, error, expenseTotals,
 
     // Computed
@@ -402,6 +603,16 @@ export function useFinancials() {
 
     // Expense actions
     fetchCategories, fetchExpenses, addExpense,
+
+    // Revenue actions
+    fetchRevenue, addRevenueStream, updateRevenueStream, deleteRevenueStream, seedDefaultRevenue,
+
+    // Scenario actions
+    fetchScenarios, addScenario, updateScenario, deleteScenario, seedDefaultScenarios,
+    fetchProjection, fetchAllProjections,
+
+    // Rewards
+    fetchRewards,
 
     // Init
     init,

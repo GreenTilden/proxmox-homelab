@@ -234,98 +234,234 @@
           </ProjectTimelineView>
         </section>
 
-        <!-- SUPPLY TAB — Goals / Expenses -->
+        <!-- SUPPLY TAB — Goals / Scenarios / Expenses -->
         <section v-if="activeTab === 'supply'">
-          <!-- Add goal form -->
-          <div :style="addGoalFormStyles">
-            <input v-model="newGoalLabel" placeholder="Goal name (e.g. Monthly Revenue)" class="nes-input" :style="inputStyles" />
-            <input v-model.number="newGoalTarget" type="number" placeholder="Target $" class="nes-input" :style="smallInputStyles" />
-            <input v-model.number="newGoalCurrent" type="number" placeholder="Current $" class="nes-input" :style="smallInputStyles" />
-            <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddGoal" :disabled="!newGoalLabel.trim() || !newGoalTarget">
-              Add
-            </button>
+          <!-- Supply sub-tab toggle -->
+          <div :style="filterBarStyles" style="margin-bottom: 0.75rem;">
+            <button class="nes-btn" :class="supplyView === 'scenarios' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'scenarios'">Scenarios</button>
+            <button class="nes-btn" :class="supplyView === 'revenue' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'revenue'">Revenue</button>
+            <button class="nes-btn" :class="supplyView === 'goals' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'goals'">Goals</button>
+            <button class="nes-btn" :class="supplyView === 'expenses' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'expenses'">Expenses</button>
           </div>
 
-          <div v-if="fin.goals.value.length === 0" :style="emptyStyles">
-            <p class="nes-text">No supply lines tracked. Add revenue goals above.</p>
-          </div>
+          <!-- SCENARIOS VIEW -->
+          <template v-if="supplyView === 'scenarios'">
+            <div v-if="fin.scenarios.value.length === 0" :style="cardStyles">
+              <h3 :style="cardTitleStyles">Scenario Planning</h3>
+              <p :style="emptyInlineStyles">No scenarios configured.</p>
+              <button class="nes-btn is-primary" :style="actionBtnStyles" @click="handleSeedScenarios">Seed Defaults</button>
+            </div>
+            <template v-else>
+              <!-- Projection Chart -->
+              <div :style="cardStyles">
+                <h3 :style="cardTitleStyles">12-Month Cash Flow Projection</h3>
+                <ScenarioChart
+                  :projections="fin.projections.value"
+                  :scenarios="fin.scenarios.value"
+                  :accent-color="OPS_GREEN"
+                  :bg-color="OPS_NAVY"
+                />
+              </div>
 
-          <div v-else :style="goalsGridStyles">
-            <ProjectGoalCard
-              v-for="goal in fin.goals.value"
-              :key="goal.id"
-              :goal="goal"
-              :accent-color="OPS_GREEN"
-              :bg-color="OPS_NAVY"
-              @delete="handleRemoveGoal"
-            >
-              <template #edit>
-                <div :style="goalEditStyles">
-                  <input
-                    :value="goal.current"
-                    type="number"
-                    class="nes-input"
-                    :style="smallInputStyles"
-                    @change="handleUpdateGoalCurrent(goal.id, ($event.target as HTMLInputElement).valueAsNumber)"
-                  />
-                  <span :style="goalEditLabelStyles">current {{ goal.unit || '$' }}</span>
+              <!-- Scenario list -->
+              <div :style="cardStyles">
+                <h3 :style="cardTitleStyles">Scenarios</h3>
+                <div v-for="s in fin.scenarios.value" :key="s.id" :style="scenarioItemStyles">
+                  <span :style="scenarioDotStyle(s.color)"></span>
+                  <div style="flex: 1; min-width: 0;">
+                    <span :style="scenarioNameStyle">{{ s.name }}</span>
+                    <span :style="scenarioDescStyle">{{ s.description }}</span>
+                  </div>
+                  <span :style="scenarioMetaStyle">{{ s.streamIds.length }} streams</span>
+                  <span :style="scenarioMetaStyle">{{ (s.taxRate * 100).toFixed(0) }}% tax</span>
+                  <span :style="scenarioMetaStyle">${{ s.monthlyExpenses.toLocaleString() }}/mo exp</span>
                 </div>
-              </template>
-            </ProjectGoalCard>
-          </div>
+              </div>
+            </template>
+          </template>
 
-          <!-- Expense Entry -->
-          <div :style="cardStyles" style="margin-top: 1rem;">
-            <h3 :style="cardTitleStyles">Add Expense</h3>
-            <div :style="expenseFormStyles">
-              <input v-model.number="newExpenseAmount" type="number" step="0.01" placeholder="Amount" class="nes-input" :style="smallInputStyles" />
-              <select v-model="newExpenseCategory" class="nes-select" :style="selectInputStyles">
-                <option v-for="cat in fin.categories.value" :key="cat.id" :value="cat.id">{{ cat.icon }} {{ cat.label }}</option>
-              </select>
-              <select v-model="newExpenseClassification" class="nes-select" :style="selectInputStyles">
-                <option value="personal">Personal</option>
-                <option value="business">Business</option>
-                <option value="mixed">Mixed</option>
-              </select>
-              <input v-model="newExpenseDesc" placeholder="Description" class="nes-input" :style="inputStyles" />
-              <input v-model="newExpenseVendor" placeholder="Vendor" class="nes-input" :style="smallInputStyles" />
-              <select v-model="newExpenseCard" class="nes-select" :style="selectInputStyles">
-                <option :value="null">No card</option>
-                <option value="costco-citi">Costco Citi</option>
-                <option value="costco-executive">Costco Executive</option>
-                <option value="microcenter">Microcenter</option>
-              </select>
-              <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddExpense" :disabled="!newExpenseAmount">
-                Log
+          <!-- REVENUE VIEW -->
+          <template v-if="supplyView === 'revenue'">
+            <div v-if="fin.revenueStreams.value.length === 0" :style="cardStyles">
+              <h3 :style="cardTitleStyles">Revenue Streams</h3>
+              <p :style="emptyInlineStyles">No revenue streams defined.</p>
+              <button class="nes-btn is-primary" :style="actionBtnStyles" @click="handleSeedRevenue">Seed Defaults</button>
+            </div>
+            <template v-else>
+              <div :style="cardStyles">
+                <h3 :style="cardTitleStyles">Revenue Streams</h3>
+                <div v-for="stream in fin.revenueStreams.value" :key="stream.id" :style="revenueCardStyles(stream)">
+                  <div :style="revenueHeader">
+                    <span :style="revenueDot(stream.color)"></span>
+                    <span :style="revenueName">{{ stream.name }}</span>
+                    <span :style="revenueType">{{ stream.type }}</span>
+                    <span :style="revenueProbability(stream.probability)">{{ (stream.probability * 100).toFixed(0) }}%</span>
+                  </div>
+                  <div :style="revenueDetails">
+                    <span :style="revenueAmount">${{ stream.monthlyAmount.toLocaleString() }}/mo</span>
+                    <span v-if="stream.hourlyRate" :style="revenueMetaStyle">${{ stream.hourlyRate }}/hr x {{ stream.hoursPerMonth }}hrs</span>
+                    <span :style="revenueMetaStyle">{{ stream.startMonth || '?' }} - {{ stream.endMonth || 'ongoing' }}</span>
+                  </div>
+                  <div v-if="stream.notes" :style="revenueNotes">{{ stream.notes }}</div>
+                  <!-- Inline edit: probability + monthly amount -->
+                  <div :style="revenueEditRow">
+                    <label :style="revenueEditLabel">$/mo</label>
+                    <input
+                      :value="stream.monthlyAmount"
+                      type="number"
+                      class="nes-input"
+                      :style="tinyInputStyles"
+                      @change="handleUpdateRevenue(stream.id, { monthlyAmount: Number(($event.target as HTMLInputElement).value) })"
+                    />
+                    <label :style="revenueEditLabel">Prob</label>
+                    <input
+                      :value="stream.probability"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="1"
+                      class="nes-input"
+                      :style="tinyInputStyles"
+                      @change="handleUpdateRevenue(stream.id, { probability: Number(($event.target as HTMLInputElement).value) })"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Add revenue stream form -->
+              <div :style="cardStyles">
+                <h3 :style="cardTitleStyles">Add Revenue Stream</h3>
+                <div :style="expenseFormStyles">
+                  <input v-model="newRevName" placeholder="Name" class="nes-input" :style="inputStyles" />
+                  <select v-model="newRevType" class="nes-select" :style="selectInputStyles">
+                    <option value="hourly">Hourly</option>
+                    <option value="retainer">Retainer</option>
+                    <option value="project">Project</option>
+                  </select>
+                  <input v-model.number="newRevMonthly" type="number" placeholder="$/mo" class="nes-input" :style="smallInputStyles" />
+                  <input v-model.number="newRevProb" type="number" step="0.1" min="0" max="1" placeholder="Prob" class="nes-input" :style="tinyInputStyles" />
+                  <input v-model="newRevStart" type="month" class="nes-input" :style="smallInputStyles" />
+                  <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddRevenue" :disabled="!newRevName.trim() || !newRevMonthly">Add</button>
+                </div>
+              </div>
+            </template>
+          </template>
+
+          <!-- GOALS VIEW -->
+          <template v-if="supplyView === 'goals'">
+            <div :style="addGoalFormStyles">
+              <input v-model="newGoalLabel" placeholder="Goal name (e.g. Monthly Revenue)" class="nes-input" :style="inputStyles" />
+              <input v-model.number="newGoalTarget" type="number" placeholder="Target $" class="nes-input" :style="smallInputStyles" />
+              <input v-model.number="newGoalCurrent" type="number" placeholder="Current $" class="nes-input" :style="smallInputStyles" />
+              <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddGoal" :disabled="!newGoalLabel.trim() || !newGoalTarget">
+                Add
               </button>
             </div>
-          </div>
 
-          <!-- Monthly expense summary -->
-          <div :style="cardStyles" v-if="fin.expenses.value.length > 0">
-            <h3 :style="cardTitleStyles">Expense Summary</h3>
-            <div :style="expenseSummaryRow">
-              <div :style="expenseStat">
-                <span :style="expenseStatLabel">Total</span>
-                <span :style="expenseStatValue">${{ fin.expenseTotals.value.total.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
-              </div>
-              <div :style="expenseStat">
-                <span :style="expenseStatLabel">Business</span>
-                <span :style="expenseStatValueBiz">${{ fin.expenseTotals.value.businessTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
-              </div>
-              <div :style="expenseStat">
-                <span :style="expenseStatLabel">Personal</span>
-                <span :style="expenseStatValuePersonal">${{ fin.expenseTotals.value.personalTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+            <div v-if="fin.goals.value.length === 0" :style="emptyStyles">
+              <p class="nes-text">No supply lines tracked. Add revenue goals above.</p>
+            </div>
+
+            <div v-else :style="goalsGridStyles">
+              <ProjectGoalCard
+                v-for="goal in fin.goals.value"
+                :key="goal.id"
+                :goal="goal"
+                :accent-color="OPS_GREEN"
+                :bg-color="OPS_NAVY"
+                @delete="handleRemoveGoal"
+              >
+                <template #edit>
+                  <div :style="goalEditStyles">
+                    <input
+                      :value="goal.current"
+                      type="number"
+                      class="nes-input"
+                      :style="smallInputStyles"
+                      @change="handleUpdateGoalCurrent(goal.id, ($event.target as HTMLInputElement).valueAsNumber)"
+                    />
+                    <span :style="goalEditLabelStyles">current {{ goal.unit || '$' }}</span>
+                  </div>
+                </template>
+              </ProjectGoalCard>
+            </div>
+          </template>
+
+          <!-- EXPENSES VIEW -->
+          <template v-if="supplyView === 'expenses'">
+            <!-- Expense Entry -->
+            <div :style="cardStyles">
+              <h3 :style="cardTitleStyles">Add Expense</h3>
+              <div :style="expenseFormStyles">
+                <input v-model.number="newExpenseAmount" type="number" step="0.01" placeholder="Amount" class="nes-input" :style="smallInputStyles" />
+                <select v-model="newExpenseCategory" class="nes-select" :style="selectInputStyles">
+                  <option v-for="cat in fin.categories.value" :key="cat.id" :value="cat.id">{{ cat.icon }} {{ cat.label }}</option>
+                </select>
+                <select v-model="newExpenseClassification" class="nes-select" :style="selectInputStyles">
+                  <option value="personal">Personal</option>
+                  <option value="business">Business</option>
+                  <option value="mixed">Mixed</option>
+                </select>
+                <input v-model="newExpenseDesc" placeholder="Description" class="nes-input" :style="inputStyles" />
+                <input v-model="newExpenseVendor" placeholder="Vendor" class="nes-input" :style="smallInputStyles" />
+                <select v-model="newExpenseCard" class="nes-select" :style="selectInputStyles">
+                  <option :value="null">No card</option>
+                  <option value="costco-citi">Costco Citi</option>
+                  <option value="costco-executive">Costco Executive</option>
+                  <option value="microcenter">Microcenter</option>
+                </select>
+                <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddExpense" :disabled="!newExpenseAmount">
+                  Log
+                </button>
               </div>
             </div>
-            <!-- Recent expenses list -->
-            <div v-for="exp in fin.expenses.value.slice(0, 10)" :key="exp.id" :style="expenseRowStyles">
-              <span :style="expenseDateCol">{{ exp.date }}</span>
-              <span :style="expenseDescCol">{{ exp.description || exp.category }}</span>
-              <span :style="expenseClassBadge(exp.classification)">{{ exp.classification.slice(0, 3).toUpperCase() }}</span>
-              <span :style="expenseAmountCol">${{ exp.amount.toFixed(2) }}</span>
+
+            <!-- Monthly expense summary -->
+            <div :style="cardStyles" v-if="fin.expenses.value.length > 0">
+              <h3 :style="cardTitleStyles">Expense Summary</h3>
+              <div :style="expenseSummaryRow">
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Total</span>
+                  <span :style="expenseStatValue">${{ fin.expenseTotals.value.total.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Business</span>
+                  <span :style="expenseStatValueBiz">${{ fin.expenseTotals.value.businessTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Personal</span>
+                  <span :style="expenseStatValuePersonal">${{ fin.expenseTotals.value.personalTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+                </div>
+              </div>
+              <!-- Recent expenses list -->
+              <div v-for="exp in fin.expenses.value.slice(0, 10)" :key="exp.id" :style="expenseRowStyles">
+                <span :style="expenseDateCol">{{ exp.date }}</span>
+                <span :style="expenseDescCol">{{ exp.description || exp.category }}</span>
+                <span :style="expenseClassBadge(exp.classification)">{{ exp.classification.slice(0, 3).toUpperCase() }}</span>
+                <span :style="expenseAmountCol">${{ exp.amount.toFixed(2) }}</span>
+              </div>
             </div>
-          </div>
+
+            <!-- Rewards estimate -->
+            <div :style="cardStyles" v-if="fin.rewards.value">
+              <h3 :style="cardTitleStyles">Rewards Estimate</h3>
+              <div :style="expenseSummaryRow">
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Actual</span>
+                  <span :style="expenseStatValueBiz">${{ fin.rewards.value.totalRewards.toFixed(2) }}</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Annualized</span>
+                  <span :style="expenseStatValueBiz">${{ fin.rewards.value.annualizedRewards.toFixed(2) }}</span>
+                </div>
+              </div>
+              <div v-for="est in fin.rewards.value.estimates" :key="est.card" :style="expenseRowStyles">
+                <span :style="expenseDescCol">{{ est.name }}</span>
+                <span :style="expenseAmountCol">${{ est.spending.toFixed(2) }} spent</span>
+                <span :style="rewardAmtStyle">${{ est.reward.toFixed(2) }} back</span>
+              </div>
+            </div>
+          </template>
         </section>
 
         <!-- RECON TAB — Risk Board -->
@@ -360,10 +496,11 @@ import ProjectQuickLinks from '../components/project/ProjectQuickLinks.vue'
 import DecisionGateCard from '../components/project/DecisionGateCard.vue'
 import PhaseTimeline from '../components/project/PhaseTimeline.vue'
 import RiskKanbanBoard from '../components/project/RiskKanbanBoard.vue'
+import ScenarioChart from '../components/project/ScenarioChart.vue'
 import type { QuickLink } from '../components/project/ProjectQuickLinks.vue'
 import { useProjectHub } from '../composables/useProjectHub'
 import { useFinancials } from '../composables/useFinancials'
-import type { DecisionGate, RiskItem } from '../composables/useFinancials'
+import type { DecisionGate, RiskItem, RevenueStream } from '../composables/useFinancials'
 
 // Set page favicon
 const originalFavicon = document.querySelector('link[rel="icon"]')?.getAttribute('href') || ''
@@ -399,6 +536,9 @@ const newGoalLabel = ref('')
 const newGoalTarget = ref<number>(0)
 const newGoalCurrent = ref<number>(0)
 
+// Supply sub-view
+const supplyView = ref<'scenarios' | 'revenue' | 'goals' | 'expenses'>('scenarios')
+
 // Expense form state
 const newExpenseAmount = ref<number>(0)
 const newExpenseCategory = ref('other')
@@ -406,6 +546,13 @@ const newExpenseClassification = ref<'business' | 'personal' | 'mixed'>('persona
 const newExpenseDesc = ref('')
 const newExpenseVendor = ref('')
 const newExpenseCard = ref<string | null>(null)
+
+// Revenue form state
+const newRevName = ref('')
+const newRevType = ref<'hourly' | 'retainer' | 'project'>('retainer')
+const newRevMonthly = ref<number>(0)
+const newRevProb = ref<number>(0.5)
+const newRevStart = ref('')
 
 const tabs = [
   { id: 'hq', label: 'HQ', icon: '\uD83C\uDFDB\uFE0F' },
@@ -444,10 +591,12 @@ const filteredTasks = computed(() => {
 
 // --- Init ---
 onMounted(async () => {
-  // Init financials (gates, timeline, goals, risks, expenses)
-  fin.init()
+  // Init financials (gates, timeline, goals, risks, expenses, revenue, scenarios)
+  await fin.init()
   // Migrate localStorage goals to server
   fin.migrateGoalsFromLocalStorage('darrentan-goals')
+  // Fetch rewards estimate
+  fin.fetchRewards()
   // Init project hub (tasks, events)
   await Promise.all([fetchTasks(), fetchProjectEvents()])
 })
@@ -510,6 +659,42 @@ async function handleAddRisk(risk: Partial<RiskItem>) {
 
 async function handleSeedRisks() {
   await fin.seedDefaultRisks()
+}
+
+// --- Revenue Handlers ---
+async function handleAddRevenue() {
+  if (!newRevName.value.trim() || !newRevMonthly.value) return
+  await fin.addRevenueStream({
+    name: newRevName.value.trim(),
+    type: newRevType.value,
+    monthlyAmount: newRevMonthly.value,
+    probability: newRevProb.value || 0.5,
+    startMonth: newRevStart.value || undefined,
+  } as Partial<RevenueStream>)
+  newRevName.value = ''
+  newRevMonthly.value = 0
+  newRevProb.value = 0.5
+  newRevStart.value = ''
+}
+
+async function handleUpdateRevenue(id: string, updates: Partial<RevenueStream>) {
+  await fin.updateRevenueStream(id, updates)
+  // Re-fetch projections when revenue changes
+  await fin.fetchAllProjections()
+}
+
+async function handleSeedRevenue() {
+  await fin.seedDefaultRevenue()
+}
+
+// --- Scenario Handlers ---
+async function handleSeedScenarios() {
+  // Seed revenue first if needed, then scenarios
+  if (fin.revenueStreams.value.length === 0) {
+    await fin.seedDefaultRevenue()
+  }
+  await fin.seedDefaultScenarios()
+  await fin.fetchAllProjections()
 }
 
 // --- Expense Handlers ---
@@ -694,6 +879,50 @@ function expenseClassBadge(classification: string) {
     color: colors[classification] || '#6b7280',
   }
 }
+const rewardAmtStyle = { fontWeight: '700', color: '#22c55e', fontSize: '0.65rem' }
+
+// --- Scenario styles ---
+const scenarioItemStyles = computed(() => ({
+  display: 'flex', alignItems: 'center', gap: '0.4rem',
+  padding: '0.35rem 0', borderBottom: `1px solid ${OPS_GREEN}15`,
+}))
+function scenarioDotStyle(color?: string) {
+  return { width: '8px', height: '8px', borderRadius: '50%', background: color || OPS_GREEN, flexShrink: '0' }
+}
+const scenarioNameStyle = { fontSize: '0.7rem', fontWeight: '600', color: OPS_GOLD, display: 'block' }
+const scenarioDescStyle = { fontSize: '0.55rem', color: 'var(--text-muted)', display: 'block' }
+const scenarioMetaStyle = { fontSize: '0.5rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const }
+
+// --- Revenue styles ---
+function revenueCardStyles(stream: RevenueStream) {
+  return {
+    background: `${OPS_NAVY}88`, border: `1px solid ${stream.color || OPS_GREEN}44`,
+    borderRadius: '3px', padding: '0.5rem', marginBottom: '0.4rem',
+  }
+}
+const revenueHeader = { display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.2rem' }
+function revenueDot(color?: string) {
+  return { width: '8px', height: '8px', borderRadius: '50%', background: color || OPS_GREEN, flexShrink: '0' }
+}
+const revenueName = { fontSize: '0.7rem', fontWeight: '600', color: OPS_GOLD, flex: '1' }
+const revenueType = { fontSize: '0.45rem', padding: '0.1rem 0.25rem', borderRadius: '2px', background: `${OPS_GREEN}33`, color: 'var(--text-muted)' }
+function revenueProbability(prob: number) {
+  const color = prob >= 0.7 ? '#22c55e' : prob >= 0.4 ? '#f59e0b' : '#ef4444'
+  return { fontSize: '0.5rem', fontWeight: '700', color }
+}
+const revenueDetails = { display: 'flex', gap: '0.5rem', alignItems: 'baseline', marginBottom: '0.2rem' }
+const revenueAmount = { fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-bright)' }
+const revenueMetaStyle = { fontSize: '0.5rem', color: 'var(--text-muted)' }
+const revenueNotes = { fontSize: '0.5rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '0.15rem' }
+const revenueEditRow = {
+  display: 'flex', gap: '0.3rem', alignItems: 'center', marginTop: '0.3rem',
+  paddingTop: '0.3rem', borderTop: `1px solid ${OPS_GREEN}22`,
+}
+const revenueEditLabel = { fontSize: '0.5rem', color: 'var(--text-muted)' }
+const tinyInputStyles = computed(() => ({
+  width: '70px', fontSize: '0.65rem', padding: '0.25rem',
+  background: OPS_NAVY, color: 'var(--text-bright)', border: `1px solid ${OPS_GREEN}66`,
+}))
 </script>
 
 <style scoped>
