@@ -16,6 +16,7 @@ RISKS_FILE = os.path.join(FINANCIALS_DIR, 'risks.json')
 EXPENSES_FILE = os.path.join(FINANCIALS_DIR, 'expenses.json')
 REVENUE_FILE = os.path.join(FINANCIALS_DIR, 'revenue.json')
 SCENARIOS_FILE = os.path.join(FINANCIALS_DIR, 'scenarios.json')
+RD_LOG_FILE = os.path.join(FINANCIALS_DIR, 'rd-log.json')
 
 os.makedirs(FINANCIALS_DIR, exist_ok=True)
 
@@ -1086,4 +1087,146 @@ def rewards_estimate():
         "totalRewards": round(total_rewards, 2),
         "annualizedRewards": round(total_rewards * annualization_factor, 2),
         "annualizationFactor": round(annualization_factor, 2),
+    }), 200
+
+
+# ============================================================
+# R&D Hour Log (for Indiana 15% + Federal Startup R&D credits)
+# ============================================================
+
+RD_CATEGORIES = [
+    'Software Development',
+    'AI/ML Development',
+    'RAG Pipeline',
+    'Automation Engineering',
+    'System Integration',
+    'Prototyping',
+    'Architecture Design',
+]
+
+
+def _load_rd_log():
+    return _load(RD_LOG_FILE, 'entries')
+
+
+def _save_rd_log(data):
+    _save(RD_LOG_FILE, data)
+
+
+@bp.route('/api/financials/rd-log', methods=['GET'])
+def list_rd_entries():
+    """List R&D hour log entries. Optional filters: ?project=X, ?quarter=YYYY-QN, ?month=YYYY-MM."""
+    data = _load_rd_log()
+    entries = data.get('entries', [])
+
+    project = request.args.get('project')
+    quarter = request.args.get('quarter')  # e.g. 2026-Q3
+    month = request.args.get('month')      # e.g. 2026-08
+
+    if project:
+        entries = [e for e in entries if e.get('project', '').lower() == project.lower()]
+    if month:
+        entries = [e for e in entries if e.get('date', '').startswith(month)]
+    if quarter:
+        # Parse quarter: 2026-Q3 → months 07,08,09
+        try:
+            qy, qn = quarter.split('-Q')
+            q_int = int(qn)
+            q_months = {1: ('01','02','03'), 2: ('04','05','06'),
+                        3: ('07','08','09'), 4: ('10','11','12')}[q_int]
+            prefixes = [f"{qy}-{m}" for m in q_months]
+            entries = [e for e in entries if any(e.get('date','').startswith(p) for p in prefixes)]
+        except (ValueError, KeyError):
+            pass
+
+    entries.sort(key=lambda e: e.get('date', ''), reverse=True)
+
+    total_hours = sum(e.get('hours', 0) for e in entries)
+
+    return jsonify({
+        "entries": entries,
+        "totalHours": round(total_hours, 2),
+        "count": len(entries),
+        "categories": RD_CATEGORIES,
+    }), 200
+
+
+@bp.route('/api/financials/rd-log', methods=['POST'])
+def create_rd_entry():
+    """Log R&D hours. Body: {date, hours, project, description, category?}."""
+    body = request.get_json()
+    if not body or not body.get('hours'):
+        return jsonify({"error": "hours is required"}), 400
+
+    data = _load_rd_log()
+    entry = {
+        "id": _gen_id(),
+        "date": body.get('date', datetime.now().strftime('%Y-%m-%d')),
+        "hours": round(float(body['hours']), 2),
+        "project": body.get('project', ''),
+        "description": body.get('description', ''),
+        "category": body.get('category', 'Software Development'),
+        "createdAt": datetime.now().isoformat(),
+    }
+    data.setdefault('entries', []).append(entry)
+    _save_rd_log(data)
+    return jsonify(entry), 201
+
+
+@bp.route('/api/financials/rd-log/<entry_id>', methods=['DELETE'])
+def delete_rd_entry(entry_id):
+    data = _load_rd_log()
+    before = len(data.get('entries', []))
+    data['entries'] = [e for e in data.get('entries', []) if e['id'] != entry_id]
+    if len(data['entries']) == before:
+        return jsonify({"error": "Entry not found"}), 404
+    _save_rd_log(data)
+    return jsonify({"deleted": True}), 200
+
+
+@bp.route('/api/financials/rd-log/summary', methods=['GET'])
+def rd_summary():
+    """Quarterly aggregation for tax filing. Returns hours by quarter, project, and category."""
+    data = _load_rd_log()
+    entries = data.get('entries', [])
+
+    by_quarter = {}
+    by_project = {}
+    by_category = {}
+
+    for e in entries:
+        hours = e.get('hours', 0)
+        date = e.get('date', '')
+        project = e.get('project', 'Unspecified')
+        category = e.get('category', 'Other')
+
+        # Quarter calculation
+        if len(date) >= 7:
+            year = date[:4]
+            month = int(date[5:7])
+            q = (month - 1) // 3 + 1
+            qkey = f"{year}-Q{q}"
+            by_quarter.setdefault(qkey, 0)
+            by_quarter[qkey] += hours
+
+        by_project.setdefault(project, 0)
+        by_project[project] += hours
+
+        by_category.setdefault(category, 0)
+        by_category[category] += hours
+
+    total_hours = sum(e.get('hours', 0) for e in entries)
+
+    # Estimate credit value (Indiana 15% on qualifying expenses, rough $125/hr imputed rate)
+    imputed_rd_spend = total_hours * 125
+    estimated_indiana_credit = round(imputed_rd_spend * 0.15, 2)
+
+    return jsonify({
+        "totalHours": round(total_hours, 2),
+        "totalEntries": len(entries),
+        "byQuarter": {k: round(v, 2) for k, v in sorted(by_quarter.items())},
+        "byProject": {k: round(v, 2) for k, v in sorted(by_project.items(), key=lambda x: -x[1])},
+        "byCategory": {k: round(v, 2) for k, v in sorted(by_category.items(), key=lambda x: -x[1])},
+        "imputedRdSpend": round(imputed_rd_spend, 2),
+        "estimatedIndianaCreditAt15Pct": estimated_indiana_credit,
     }), 200
