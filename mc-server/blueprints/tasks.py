@@ -7,7 +7,7 @@ import requests as http_requests
 from flask import Blueprint, request, jsonify
 
 from .shared import (CONFIG, nextcloud_auth, nextcloud_configured,
-                     caldav_url, parse_ical_todos, parse_date)
+                     caldav_url, parse_ical_todos, parse_date, ical_escape_text)
 
 bp = Blueprint('tasks', __name__)
 
@@ -66,7 +66,7 @@ def get_tasks():
                         "due": parse_date(todo.get("due", "")),
                         "dueAllDay": todo.get("dueAllDay", False),
                         "percent_complete": todo.get("percent_complete", 0),
-                        "categories": todo.get("categories", ""),
+                        "categories": todo.get("categories", []),
                     }
 
                     if status_filter == "incomplete" and task["status"] == "COMPLETED":
@@ -95,10 +95,12 @@ def create_task():
 
     uid = str(uuid.uuid4())
     now = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-    summary = data["summary"].strip().replace('"', "'")
-    description = (data.get("description") or "").replace('"', "'")
+    summary = ical_escape_text(data["summary"].strip())
+    description = ical_escape_text(data.get("description") or "")
     priority = data.get("priority", 0)
     categories = data.get("categories", "")
+    if isinstance(categories, list):
+        categories = ",".join(categories)
     due = data.get("due", "")
     tasks_calendar = data.get("calendar", CONFIG['nextcloud_tasks_calendar'])
 
@@ -141,7 +143,7 @@ def create_task():
         put_url = caldav_url(tasks_calendar) + uid + ".ics"
         r = http_requests.put(
             put_url,
-            data=ical,
+            data=ical.encode('utf-8'),
             headers={"Content-Type": "text/calendar; charset=utf-8"},
             auth=nextcloud_auth(),
             timeout=10
@@ -248,9 +250,9 @@ def update_task(uid):
 
         # Apply updates
         if "summary" in data:
-            existing["SUMMARY"] = "SUMMARY:" + data["summary"].replace('"', "'")
+            existing["SUMMARY"] = "SUMMARY:" + ical_escape_text(data["summary"])
         if "description" in data:
-            desc = data["description"].replace('"', "'")
+            desc = ical_escape_text(data["description"])
             if desc:
                 existing["DESCRIPTION"] = "DESCRIPTION:" + desc
             else:
@@ -296,6 +298,8 @@ def update_task(uid):
                 existing.pop("DUE", None)
         if "categories" in data:
             cats = data["categories"]
+            if isinstance(cats, list):
+                cats = ",".join(cats)
             if cats:
                 existing["CATEGORIES"] = "CATEGORIES:" + cats
             else:
@@ -320,7 +324,7 @@ def update_task(uid):
 
         r2 = http_requests.put(
             put_url,
-            data=new_ical,
+            data=new_ical.encode('utf-8'),
             headers=put_headers,
             auth=nextcloud_auth(),
             timeout=10

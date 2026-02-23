@@ -93,6 +93,15 @@
             </div>
           </div>
 
+          <!-- Work Sprint -->
+          <WorkSprintCard
+            v-if="sprintTasks.length > 0"
+            :tasks="tasks"
+            :accent-color="OPS_GREEN"
+            :bg-color="OPS_NAVY"
+            @toggle="handleToggleTask"
+          />
+
           <!-- High priority tasks -->
           <div :style="cardStyles" v-if="highPriorityTasks.length > 0">
             <h3 :style="cardTitleStyles">Priority Intel</h3>
@@ -182,6 +191,9 @@
             :tasks="filteredTasks"
             :show-add-form="true"
             :show-priority="true"
+            :show-categories="true"
+            :show-due="true"
+            :category-options="['lilly', 'regeneron', 'gbgreg', 'biosero']"
             add-placeholder="New mission objective..."
             :accent-color="OPS_GREEN"
             :bg-color="OPS_NAVY"
@@ -498,6 +510,7 @@ import DecisionGateCard from '../components/project/DecisionGateCard.vue'
 import PhaseTimeline from '../components/project/PhaseTimeline.vue'
 import RiskKanbanBoard from '../components/project/RiskKanbanBoard.vue'
 import ScenarioChart from '../components/project/ScenarioChart.vue'
+import WorkSprintCard from '../components/project/WorkSprintCard.vue'
 import type { QuickLink } from '../components/project/ProjectQuickLinks.vue'
 import { useProjectHub } from '../composables/useProjectHub'
 import { useFinancials } from '../composables/useFinancials'
@@ -516,16 +529,17 @@ onUnmounted(() => {
 })
 
 // --- Project Hub (tasks, events) ---
+const hub = useProjectHub({
+  taskCalendar: 'tasks',
+  eventCalendar: 'personal',
+  goalsStorageKey: 'darrentan-goals',
+})
 const {
   tasks, events, isLoading, error,
   incompleteTasks, completedTasks, highPriorityTasks, upcomingEvents, taskProgress,
   fetchTasks, createTask, toggleTaskComplete, deleteTask,
   fetchProjectEvents,
-} = useProjectHub({
-  taskCalendar: 'tasks',
-  eventCalendar: 'personal',
-  goalsStorageKey: 'darrentan-goals',
-})
+} = hub
 
 // --- Financials (gates, timeline, goals, risks, expenses) ---
 const fin = useFinancials()
@@ -590,6 +604,11 @@ const filteredTasks = computed(() => {
   return list
 })
 
+const WORK_CATEGORIES = ['lilly', 'regeneron', 'gbgreg', 'biosero']
+const sprintTasks = computed(() =>
+  tasks.value.filter(t => t.categories.some(c => WORK_CATEGORIES.includes(c)))
+)
+
 // --- Init ---
 onMounted(async () => {
   // Init financials (gates, timeline, goals, risks, expenses, revenue, scenarios)
@@ -599,13 +618,18 @@ onMounted(async () => {
   // Fetch rewards estimate
   fin.fetchRewards()
   // Init project hub (tasks, events)
-  await Promise.all([fetchTasks(), fetchProjectEvents()])
+  await hub.init()
 })
 
 // --- Task Handlers ---
-async function handleAddTask(summary: string, priority: number) {
-  if (!summary) return
-  await createTask({ summary, priority: priority || undefined })
+async function handleAddTask(payload: { summary: string; priority: number; categories?: string; due?: string }) {
+  if (!payload.summary) return
+  await createTask({
+    summary: payload.summary,
+    priority: payload.priority || undefined,
+    categories: payload.categories || undefined,
+    due: payload.due || undefined,
+  })
 }
 
 async function handleToggleTask(uid: string) {

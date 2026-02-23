@@ -1,26 +1,5 @@
 import { ref, computed } from 'vue'
-
-const API_BASE = '/cmd-api'
-
-function authHeaders(extra: Record<string, string> = {}) {
-  return {
-    'Content-Type': 'application/json',
-    ...extra,
-  }
-}
-
-async function apiFetch(path: string, options: RequestInit = {}) {
-  const url = `${API_BASE}${path}`
-  const res = await fetch(url, {
-    ...options,
-    headers: authHeaders((options.headers as Record<string, string>) || {}),
-  })
-  if (!res.ok && res.status !== 201) {
-    const err = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(err.error || `API error ${res.status}`)
-  }
-  return res.json()
-}
+import { apiFetch } from '@/services/apiClient'
 
 // --- Types ---
 
@@ -90,7 +69,7 @@ export function useProjectHub(config: ProjectHubConfig = {}) {
         priority: t.priority || 0,
         due: t.due || undefined,
         percentComplete: t.percent_complete || 0,
-        categories: t.categories || [],
+        categories: Array.isArray(t.categories) ? t.categories : [],
       }))
     } catch (e: any) {
       error.value = e.message
@@ -260,6 +239,15 @@ export function useProjectHub(config: ProjectHubConfig = {}) {
     return Math.round((done / total) * 100)
   })
 
+  async function init() {
+    isLoading.value = true
+    try {
+      await Promise.all([fetchTasks(), fetchProjectEvents()])
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     // State
     tasks,
@@ -274,6 +262,9 @@ export function useProjectHub(config: ProjectHubConfig = {}) {
     highPriorityTasks,
     upcomingEvents,
     taskProgress,
+
+    // Init
+    init,
 
     // Task actions
     fetchTasks,

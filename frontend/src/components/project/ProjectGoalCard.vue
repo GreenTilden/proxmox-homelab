@@ -20,18 +20,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { RevenueGoal } from '@/composables/useProjectHub'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   goal: RevenueGoal
   showDelete?: boolean
   accentColor?: string
   bgColor?: string
+  goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  ...THEME_DEFAULTS,
   showDelete: true,
-  accentColor: '#4a6741',
-  bgColor: '#1a2a3a',
 })
 
 defineEmits<{ (e: 'delete', id: string): void }>()

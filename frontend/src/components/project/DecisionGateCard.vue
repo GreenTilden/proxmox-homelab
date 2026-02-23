@@ -45,18 +45,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { DecisionGate } from '@/composables/useFinancials'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   gate: DecisionGate
   allGates?: DecisionGate[]
   accentColor?: string
   bgColor?: string
+  goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  ...THEME_DEFAULTS,
   allGates: () => [],
-  accentColor: '#4a6741',
-  bgColor: '#1a2a3a',
 })
 
 defineEmits<{ (e: 'update', id: string, updates: Partial<DecisionGate>): void }>()

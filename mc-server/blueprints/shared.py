@@ -75,10 +75,24 @@ def caldav_url(calendar=None):
             + CONFIG['nextcloud_user'] + "/" + cal + "/")
 
 
+# --- iCal Helpers ---
+
+def ical_escape_text(text):
+    """Escape text per RFC 5545 TEXT value rules."""
+    return (text.replace('\\', '\\\\').replace(';', '\\;')
+            .replace(',', '\\,').replace('\n', '\\n'))
+
+
+def _unfold_ical(text):
+    """Unfold iCal content lines per RFC 5545 section 3.1."""
+    return text.replace('\r\n ', '').replace('\r\n\t', '').replace('\n ', '').replace('\n\t', '')
+
+
 # --- iCal Parsers ---
 
 def parse_ical_events(ical_text):
     """Parse iCalendar text into a list of event dicts."""
+    ical_text = _unfold_ical(ical_text)
     events = []
     in_event = False
     current = {}
@@ -105,7 +119,7 @@ def parse_ical_events(ical_text):
             elif key == "UID":
                 current["uid"] = value
             elif key == "CATEGORIES":
-                current["categories"] = value
+                current["categories"] = [c.strip() for c in value.split(',') if c.strip()]
             elif key == "DESCRIPTION":
                 current["description"] = value
     return events
@@ -113,6 +127,7 @@ def parse_ical_events(ical_text):
 
 def parse_ical_todos(ical_text):
     """Parse iCalendar text into a list of VTODO dicts."""
+    ical_text = _unfold_ical(ical_text)
     todos = []
     in_todo = False
     current = {}
@@ -151,7 +166,7 @@ def parse_ical_todos(ical_text):
                 except ValueError:
                     current["percent_complete"] = 0
             elif key == "CATEGORIES":
-                current["categories"] = value
+                current["categories"] = [c.strip() for c in value.split(',') if c.strip()]
     return todos
 
 

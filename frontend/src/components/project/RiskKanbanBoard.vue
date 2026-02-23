@@ -68,18 +68,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { RiskItem } from '@/composables/useFinancials'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   risks: RiskItem[]
   showAddForm?: boolean
   accentColor?: string
   bgColor?: string
+  goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  ...THEME_DEFAULTS,
   showAddForm: true,
-  accentColor: '#4a6741',
-  bgColor: '#1a2a3a',
 })
 
 const emit = defineEmits<{

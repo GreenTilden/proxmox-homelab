@@ -7,7 +7,7 @@ import requests as http_requests
 from flask import Blueprint, request, jsonify
 
 from .shared import (CONFIG, nextcloud_auth, nextcloud_configured,
-                     caldav_url, parse_ical_events, parse_date)
+                     caldav_url, parse_ical_events, parse_date, ical_escape_text)
 
 bp = Blueprint('calendar', __name__)
 
@@ -63,13 +63,14 @@ def get_calendar_events():
             if cal_data_el is not None and cal_data_el.text:
                 parsed = parse_ical_events(cal_data_el.text)
                 for ev in parsed:
+                    cats = ev.get("categories", [])
                     events.append({
                         "id": ev.get("uid", ""),
                         "title": ev.get("summary", "Untitled"),
                         "startDate": parse_date(ev.get("dtstart", "")),
                         "endDate": parse_date(ev.get("dtend", "")),
                         "allDay": ev.get("allDay", False),
-                        "category": ev.get("categories", "personal"),
+                        "category": cats[0] if cats else "personal",
                         "description": ev.get("description", ""),
                     })
 
@@ -92,8 +93,8 @@ def create_calendar_event():
 
     uid = str(uuid.uuid4())
     now = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-    title = data['title'].replace('"', "'")
-    description = (data.get('description') or '').replace('"', "'")
+    title = ical_escape_text(data['title'])
+    description = ical_escape_text(data.get('description') or '')
     category = data.get('category', 'personal')
     all_day = data.get('allDay', False)
     start_str = data.get('startDate', '')
@@ -145,7 +146,7 @@ def create_calendar_event():
         put_url = caldav_url(target_calendar) + uid + ".ics"
         r = http_requests.put(
             put_url,
-            data=ical,
+            data=ical.encode('utf-8'),
             headers={"Content-Type": "text/calendar; charset=utf-8"},
             auth=nextcloud_auth(),
             timeout=10

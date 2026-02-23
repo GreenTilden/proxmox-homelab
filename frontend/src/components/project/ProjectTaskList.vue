@@ -16,6 +16,11 @@
         <option :value="5">P5</option>
         <option :value="9">P9</option>
       </select>
+      <select v-if="showCategories" v-model="newCategories" class="nes-select" :style="catSelectStyles">
+        <option value="">No category</option>
+        <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ cat }}</option>
+      </select>
+      <input v-if="showDue" v-model="newDue" type="date" class="nes-input" :style="dateInputStyles" />
       <button class="nes-btn is-success" :style="btnStyles" @click="handleAdd" :disabled="!newSummary.trim()">Add</button>
     </div>
 
@@ -57,40 +62,56 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { ProjectTask } from '@/composables/useProjectHub'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   tasks: ProjectTask[]
   showAddForm?: boolean
   showDelete?: boolean
   showPriority?: boolean
+  showCategories?: boolean
+  showDue?: boolean
+  categoryOptions?: string[]
   addPlaceholder?: string
   accentColor?: string
   bgColor?: string
+  goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  ...THEME_DEFAULTS,
   showAddForm: true,
   showDelete: true,
   showPriority: true,
+  showCategories: false,
+  showDue: false,
+  categoryOptions: () => [],
   addPlaceholder: 'New task...',
-  accentColor: '#4a6741',
-  bgColor: '#1a2a3a',
 })
 
 const emit = defineEmits<{
-  (e: 'add', summary: string, priority: number): void
+  (e: 'add', payload: { summary: string; priority: number; categories?: string; due?: string }): void
   (e: 'toggle', uid: string): void
   (e: 'delete', uid: string): void
 }>()
 
 const newSummary = ref('')
 const newPriority = ref(0)
+const newCategories = ref('')
+const newDue = ref('')
 
 function handleAdd() {
   if (!newSummary.value.trim()) return
-  emit('add', newSummary.value.trim(), newPriority.value)
+  emit('add', {
+    summary: newSummary.value.trim(),
+    priority: newPriority.value,
+    categories: newCategories.value || undefined,
+    due: newDue.value || undefined,
+  })
   newSummary.value = ''
   newPriority.value = 0
+  newCategories.value = ''
+  newDue.value = ''
 }
 
 function formatDate(d: string | undefined): string {
@@ -102,6 +123,8 @@ function formatDate(d: string | undefined): string {
 const addFormStyles = { display: 'flex', gap: '0.4rem', marginBottom: '0.75rem', flexWrap: 'wrap' as const }
 const inputStyles = { flex: '1', minWidth: '150px', fontSize: '0.75rem', padding: '0.4rem', background: props.bgColor, color: 'var(--text-bright)', border: `2px solid ${props.accentColor}66` }
 const selectStyles = { width: '60px', fontSize: '0.65rem', padding: '0.35rem', background: props.bgColor, color: 'var(--text-bright)', border: `2px solid ${props.accentColor}66` }
+const catSelectStyles = { width: 'auto', fontSize: '0.65rem', padding: '0.35rem', background: props.bgColor, color: 'var(--text-bright)', border: `2px solid ${props.accentColor}66` }
+const dateInputStyles = { width: '130px', fontSize: '0.65rem', padding: '0.35rem', background: props.bgColor, color: 'var(--text-bright)', border: `2px solid ${props.accentColor}66` }
 const btnStyles = { fontSize: '0.65rem', padding: '0.35rem 0.7rem' }
 const emptyStyles = { textAlign: 'center' as const, padding: '1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem' }
 const listStyles = { display: 'flex', flexDirection: 'column' as const, gap: '2px' }

@@ -19,16 +19,17 @@
 
 <script setup lang="ts">
 import type { CalendarEvent } from '@/composables/useProjectHub'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   events: CalendarEvent[]
   accentColor?: string
+  bgColor?: string
   goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  accentColor: '#4a6741',
-  goldColor: '#c4a747',
+  ...THEME_DEFAULTS,
 })
 
 function formatDate(d: string): string {

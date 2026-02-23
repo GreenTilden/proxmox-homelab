@@ -1,26 +1,7 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, computed } from 'vue'
+import { createApiClient } from '@/services/apiClient'
 
-const API_BASE = '/cmd-api/freezer'
-
-function authHeaders(extra: Record<string, string> = {}) {
-  return {
-    'Content-Type': 'application/json',
-    ...extra
-  }
-}
-
-async function apiFetch(path: string, options: RequestInit = {}) {
-  const url = `${API_BASE}${path}`
-  const res = await fetch(url, {
-    ...options,
-    headers: authHeaders(options.headers as Record<string, string> || {})
-  })
-  if (!res.ok && res.status !== 201) {
-    const err = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(err.error || `API error ${res.status}`)
-  }
-  return res.json()
-}
+const apiFetch = createApiClient('/cmd-api/freezer')
 
 export interface TandoorRecipe {
   id: number
@@ -286,6 +267,15 @@ export function useFreezerMeals() {
       : 0
   )
 
+  async function init() {
+    isLoading.value = true
+    try {
+      await Promise.all([fetchRecipes(), fetchSessions(), fetchInventory()])
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     // State
     recipes,
@@ -302,6 +292,9 @@ export function useFreezerMeals() {
     totalShoppingItems,
     checkedShoppingItems,
     shoppingProgress,
+
+    // Init
+    init,
 
     // Actions
     fetchRecipes,

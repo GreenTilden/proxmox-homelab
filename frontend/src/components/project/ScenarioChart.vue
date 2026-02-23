@@ -47,6 +47,7 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import type { ScenarioProjection, Scenario } from '@/composables/useFinancials'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 Chart.register(...registerables)
 
@@ -55,11 +56,11 @@ interface Props {
   scenarios: Scenario[]
   accentColor?: string
   bgColor?: string
+  goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  accentColor: '#4a6741',
-  bgColor: '#1a2a3a',
+  ...THEME_DEFAULTS,
 })
 
 const chartCanvas = ref<HTMLCanvasElement | null>(null)

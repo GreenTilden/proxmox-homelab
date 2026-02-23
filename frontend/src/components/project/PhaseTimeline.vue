@@ -38,18 +38,19 @@
 import { computed } from 'vue'
 import { PHASES } from '@/composables/useFinancials'
 import type { Milestone } from '@/composables/useFinancials'
+import { THEME_DEFAULTS } from '@/composables/types'
 
 interface Props {
   activePhase: string
   milestones?: Milestone[]
   accentColor?: string
+  bgColor?: string
   goldColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  ...THEME_DEFAULTS,
   milestones: () => [],
-  accentColor: '#4a6741',
-  goldColor: '#c4a747',
 })
 
 defineEmits<{ (e: 'select-phase', phase: string): void }>()
