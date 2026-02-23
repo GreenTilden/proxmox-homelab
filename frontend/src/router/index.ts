@@ -46,11 +46,6 @@ const router = createRouter({
       component: () => import('@/pages/ContainerMonitor.vue')
     },
     {
-      path: '/toolbox',
-      name: 'Toolbox',
-      component: () => import('@/pages/Toolbox.vue')
-    },
-    {
       path: '/file-manager',
       name: 'FileManager',
       component: () => import('@/pages/FileManager.vue')
@@ -84,6 +79,16 @@ const router = createRouter({
       path: '/ellabot',
       name: 'Ellabot',
       component: () => import('@/pages/EllabotPage.vue')
+    },
+    {
+      path: '/ops',
+      name: 'OperationDarrentan',
+      component: () => import('@/pages/DarrentanPage.vue')
+    },
+    {
+      path: '/health',
+      name: 'Health',
+      component: () => import('@/pages/HealthPage.vue')
     }
   ]
 })

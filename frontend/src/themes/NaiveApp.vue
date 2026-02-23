@@ -55,15 +55,6 @@
           <n-button
             quaternary
             circle
-            @click="$router.push('/toolbox')"
-          >
-            <template #icon>
-              <span style="font-size: 20px;">🛠️</span>
-            </template>
-          </n-button>
-          <n-button
-            quaternary
-            circle
             @click="$router.push('/file-manager')"
           >
             <template #icon>

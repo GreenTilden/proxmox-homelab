@@ -67,7 +67,7 @@
     </div>
 
     <!-- Todo Summary -->
-    <div v-if="incompleteTodos.length > 0" :style="todoSummaryStyles">
+    <div v-if="incompleteTasks.length > 0" :style="todoSummaryStyles">
       <div :style="todoHeaderStyles">
         <CheckSquare :style="todoIconStyles" />
         <span class="nes-text" :style="todoCountStyles">
@@ -93,29 +93,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, onMounted } from 'vue'
 import { Calendar, CheckSquare } from 'lucide-vue-next'
-import { useCalendarData } from '@/composables/useCalendarData'
+import { useProjectHub } from '@/composables/useProjectHub'
 
 // Get theme from provider
 const themeContext = inject('fallTheme') as any
 const { theme } = themeContext
 
-// Get calendar data
+// Get calendar data from Nextcloud via useProjectHub
 const {
   upcomingEvents,
-  incompleteTodos,
-  allTodos
-} = useCalendarData()
+  incompleteTasks,
+  tasks,
+  completedTasks,
+  fetchTasks,
+  fetchProjectEvents,
+} = useProjectHub({
+  taskCalendar: 'tasks',
+  eventCalendar: 'personal',
+})
+
+onMounted(() => {
+  fetchProjectEvents(14) // Next 2 weeks for the widget
+  fetchTasks()
+})
 
 const hover = ref(false)
 
 // Computed values
-const completedTodosCount = computed(() =>
-  allTodos.value.filter(todo => todo.completed).length
-)
+const completedTodosCount = computed(() => completedTasks.value.length)
 
-const totalTodosCount = computed(() => allTodos.value.length)
+const totalTodosCount = computed(() => tasks.value.length)
 
 // Get seasonal colors for retro theming
 const getSeasonalColors = computed(() => {
@@ -396,7 +405,8 @@ const urlTextStyles = computed(() => ({
 }))
 
 // Helper functions
-const formatEventDate = (date: Date): string => {
+const formatEventDate = (dateStr: string): string => {
+  const date = new Date(dateStr)
   const now = new Date()
   const isToday = date.toDateString() === now.toDateString()
   const isTomorrow = date.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString()
@@ -410,9 +420,9 @@ const formatEventDate = (date: Date): string => {
   })
 }
 
-const getTimeRemaining = (date: Date): string => {
+const getTimeRemaining = (dateStr: string): string => {
   const now = new Date()
-  const diff = date.getTime() - now.getTime()
+  const diff = new Date(dateStr).getTime() - now.getTime()
 
   if (diff < 0) return 'Past'
 

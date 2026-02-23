@@ -31,11 +31,12 @@ export const serviceEmoji: Record<string, string> = {
   'cadvisor': '🐳',
   'zfs-exporter': '💿',
   'qbittorrent-exporter': '📥',
+  'sprite-forge': '🎨',
+  'comfyui': '🖼️',
 }
 
 // Navigation link emoji mappings (keyed by route or identifier)
 export const navEmoji: Record<string, string> = {
-  'toolbox': '🧰',
   'files': '📁',
   'file-manager': '📁',
   'weather': '🌤️',
@@ -49,6 +50,7 @@ export const navEmoji: Record<string, string> = {
   'cloud': '☁️',
   'nextcloud': '☁️',
   'ellabot': '🤖',
+  'ops': '🎯',
 }
 
 // CSS class for pixelated emoji rendering

@@ -28,11 +28,6 @@
 
           <div class="header-actions">
             <el-text class="current-time">{{ currentTime }}</el-text>
-            <router-link to="/toolbox">
-              <el-button type="primary" circle>
-                <span style="font-size: 20px;">🛠️</span>
-              </el-button>
-            </router-link>
             <router-link to="/file-manager">
               <el-button type="primary" circle>
                 <span style="font-size: 20px;">📁</span>

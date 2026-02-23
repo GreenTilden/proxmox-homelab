@@ -24,7 +24,7 @@
 - `sync.darrenarney.com` → one factor only
 
 ### Reverse Proxy (192.168.0.250 - Frontend Server)
-- **DNS Target**: 47.227.74.38 (home public IP, port forwarded)
+- **DNS Target**: 47.227.64.28 (home public IP, port forwarded)
 - **Software**: Nginx 1.18.0 (Ubuntu) on CT 100
 - **Config**: `/etc/nginx/sites-available/all-sites`
 - **Authelia Snippets**: `/etc/nginx/snippets/authelia-*.conf`
@@ -56,10 +56,10 @@
 ## Phase 1: Add Nextcloud & Tandoor to SSO
 
 ### 1.1 DNS Configuration
-Add DNS records pointing to 47.227.74.38 (your home public IP):
-- `nextcloud.darrenarney.com` → 47.227.74.38
-- `tandoor.darrenarney.com` → 47.227.74.38
-- `recipes.darrenarney.com` → 47.227.74.38 (alias for Tandoor)
+Add DNS records pointing to 47.227.64.28 (your home public IP):
+- `nextcloud.darrenarney.com` → 47.227.64.28
+- `tandoor.darrenarney.com` → 47.227.64.28
+- `recipes.darrenarney.com` → 47.227.64.28 (alias for Tandoor)
 
 ### 1.2 SSL Certificates
 On 192.168.0.250, get Let's Encrypt certs:
@@ -408,8 +408,8 @@ docker exec authelia authelia hash-password 'your-password'
 ### Immediate (This Session or Next)
 
 **SSO for Nextcloud & Tandoor:**
-- [ ] Add DNS A records: `nextcloud.darrenarney.com` → 47.227.74.38
-- [ ] Add DNS A records: `tandoor.darrenarney.com` → 47.227.74.38
+- [ ] Add DNS A records: `nextcloud.darrenarney.com` → 47.227.64.28
+- [ ] Add DNS A records: `tandoor.darrenarney.com` → 47.227.64.28
 - [ ] SSH to 192.168.0.250, run: `certbot certonly --nginx -d nextcloud.darrenarney.com -d tandoor.darrenarney.com`
 - [ ] Add nginx server blocks to `/etc/nginx/sites-available/all-sites`
 - [ ] Add HTTP redirect for new domains
