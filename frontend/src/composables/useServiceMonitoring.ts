@@ -167,6 +167,30 @@ export const useServiceMonitoring = () => {
       instance: "recipes",
       url: "https://tandoor.darrenarney.com",
       healthEndpoint: "http://192.168.0.99:8080"
+    },
+    {
+      id: "sprite-forge",
+      name: "Sprite Forge",
+      description: "Local AI Sprite Generation with RAG",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "sprite-forge",
+      instance: "sprite-generator",
+      url: "http://192.168.0.127:5173",
+      healthEndpoint: "http://192.168.0.127:3456/api/health"
+    },
+    {
+      id: "comfyui",
+      name: "ComfyUI",
+      description: "Stable Diffusion Image Generation",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "comfyui",
+      instance: "sd-generator",
+      url: "http://192.168.0.99:8188",
+      healthEndpoint: "http://192.168.0.99:8188/system_stats"
     }
   ])
 

@@ -1,75 +1,71 @@
 # Services Overview
 
-## 🚀 Services Deployment Status
-1. **✅ Data Recovery**: Complete - 246MB personal content preserved
-2. **✅ Storage Architecture**: 9TB+ production capacity operational
-3. **✅ Web Management**: FileBrowser active
-4. **✅ Plex Media Server**: Deployed with Google auth, software transcoding ready
-5. **✅ Media Acquisition**: qBittorrent operational, torrents active
-6. **❌ GPU Configuration**: RTX 5070 Ti blocked - awaiting NVIDIA 575+ drivers
-7. **🔧 AI/LLM Services**: Ollama + Open WebUI deployment planned
-8. **🔧 Container Services**: Portainer, Home Assistant, monitoring
-9. **🔧 Development Environment**: Code-server + AI coding assistants
-10. **🔧 Network Services**: PiHole, VPN, reverse proxy
-11. **🔧 Gaming VM**: Windows 11 with GPU passthrough
+## Active Services (Docker on Proxmox 192.168.0.99)
 
-## Current GPU Configuration
+| Service | Port | Subdomain | Auth | Purpose |
+|---------|------|-----------|------|---------|
+| Home Assistant | 8123 | ha.darrenarney.com | Own auth | Smart home control |
+| Plex | 32400 | - | Own auth | Media server |
+| Authelia | 9091 | auth.darrenarney.com | - | SSO/2FA gateway |
+| AdGuard Home | 53, 8083 | - | Own auth | DNS ad blocking |
+| Prometheus | 9090 | - | - | Metrics collection |
+| Node Exporter | 9100 | - | - | System metrics |
+| Immich | 2283 | photos.darrenarney.com | Own auth | Photo management |
+| Kavita | 25600 | comics.darrenarney.com | Own auth | Comic/manga reader |
+| Tandoor | 8080 | tandoor.darrenarney.com | Authelia | Recipe management |
+| Nanit Proxy | 8085 | - | Token | Baby monitor streams |
+| Nextcloud | 8090 | nextcloud.darrenarney.com | Authelia + OIDC | File sync, CalDAV |
+| Uptime Kuma | 3001 | status.darrenarney.com | Own auth (public) | Status monitoring |
+| SearXNG | 8888 | search.darrenarney.com | Authelia | Private search engine |
+| ArchiveBox | 8200 | archive.darrenarney.com | Authelia | Web archiving |
+| n8n | 5678 | n8n.darrenarney.com | Authelia | Workflow automation |
+| Headscale | 8180 | headscale.darrenarney.com | OIDC | VPN mesh network |
+| RustDesk | 21115-21119 | - | Own auth | Remote desktop |
 
-**RTX 5070 Ti (16GB VRAM) - Single GPU Setup**:
-- Current Status: Hardware installed, awaiting NVIDIA 575+ drivers
-- Planned Usage: Windows 11 gaming VM, AI/LLM workloads (Ollama, local models)
-- Transcoding: Software transcoding only until drivers available
-- Future Capability: Heavy 4K transcoding, large model inference (70B+ parameters)
+## Services on LXC 100 (192.168.0.250)
 
-## AI/LLM Service Stack
-- **Ollama**: Primary LLM inference server (RTX 5070 Ti)
-- **Continue.dev**: VSCode coding assistant integration
-- **Open WebUI**: Web interface for LLM interaction
-- **Models**: CodeLlama 34B, Deepseek Coder 33B, Mixtral 8x7B
-- **Dynamic GPU Switching**: Script-based GPU reassignment
+| Service | Port | Purpose |
+|---------|------|---------|
+| Nginx | 80, 443 | Reverse proxy, SSL termination |
+| WeatherStar | 8082 | Weather display |
+| Code Server | 8081 | VS Code in browser |
+| CouchDB | 5984 | Obsidian sync |
+| Flask API | 5001 | Command server (dashboard backend) |
+| FreshRSS | 8085 | RSS reader (dashboard link; primary instance on CT 131) |
 
-## Services Architecture
+## LXC Containers
 
-### Web Services (✅ ACTIVE)
-- **FileBrowser**: http://192.168.0.99:8080/files/ - ZFS storage management (NoAuth, proper pool access)
-- **System Dashboard**: http://192.168.0.99/system-status.html - Basic health check
+| VMID | Name | IP | Purpose |
+|------|------|-----|---------|
+| 100 | frontend-server | 192.168.0.250 | Nginx, dashboard, APIs |
+| 110 | qbittorrent-secure | 192.168.0.111 | qBittorrent client |
+| 120 | gbgreg | 192.168.0.120 | Ollama, Kokoro TTS API (:5011) |
+| 131 | podcast-factory | 192.168.0.131 | FreshRSS (:80), Podcast Feed (:8081) |
 
-### Media Services (✅ DEPLOYED)
-- **Plex Media Server**: http://192.168.0.99:32400 - Claimed, Google auth working
-  - Storage: 8.7TB media-pool + transcoding on staging-pool
-  - Container: Proper ZFS pool mounts, software transcoding ready
+## Docker Compose Locations
 
-### Media Acquisition Stack (✅ **OPERATIONAL**)
-- **qBittorrent Container**: http://192.168.0.111:8112 - ✅ **OPERATIONAL**
-  - Type: Native Proxmox LXC (Ubuntu 22.04) - bypasses Docker s6 issues  
-  - Authentication: Password "qbittorrent"
-  - Storage: **Direct downloads to /staging-pool/downloads/** (675GB capacity)
-  - Features: Automatic .torrent processing, web interface accessible
-  - Status: CT 110 running, both torrents active and downloading
-  
+All Docker services on Proxmox are managed via compose files:
 
-- **WireGuard VPN Server**: Port 51820/udp - Remote homelab access
-  - Clients: 5 peer configurations generated
-  - Access: Full homelab network through secure tunnel
+| Service | Compose Location |
+|---------|-----------------|
+| Tandoor | `/opt/docker/apps/tandoor/docker-compose.yml` |
+| Uptime Kuma | `/opt/docker/apps/uptime-kuma/docker-compose.yml` |
+| SearXNG | `/opt/docker/apps/searxng/docker-compose.yml` |
+| ArchiveBox | `/opt/docker/apps/archivebox/docker-compose.yml` |
+| n8n | `/opt/docker/apps/n8n/docker-compose.yml` |
+| Headscale | `/opt/docker/apps/headscale/docker-compose.yml` |
+| Immich | `/opt/immich/docker-compose.yml` |
 
-### Container Architecture Lessons Learned
-**🚫 LinuxServer.io Docker Issues**: All LinuxServer.io containers (qBittorrent, Deluge, Transmission) fail with `s6-ipcserver-socketbinder: fatal: unable to create socket: Permission denied` in Proxmox environment.
+## Docker Network
 
-**✅ Working Solutions**:
-- **qBittorrent**: Native LXC container approach bypasses Docker permission issues
-- **Alternative**: Official container images without s6 supervision system
+- **homelab-net**: Shared bridge network for cross-service communication
+- Individual service stacks also create their own networks
 
-### Complete Media Workflow Architecture
-```
-🔍 Content Discovery → ⚡ Download → 🎯 Processing → 📺 Plex Integration
+## Proxmox Docker Notes
 
-Phase 2: qBittorrent Container (✅ OPERATIONAL)
-├── Native Ubuntu 22.04 installation - CT 110 running  
-├── Direct downloads to /staging-pool/downloads/ (675GB capacity)
-├── Web UI: http://192.168.0.111:8112 (password: "qbittorrent")
-├── Both torrents active: Columbo + Disney collections downloading
-└── Automatic .torrent processing via 30-second cron job
-```
+- Most containers need `security_opt: apparmor=unconfined` (AppArmor blocks process spawning)
+- Docker log rotation configured: max-size 10m, max-file 3
+- Weekly Docker prune cron at `/etc/cron.weekly/docker-prune`
 
 ## Frontend Dashboard
 

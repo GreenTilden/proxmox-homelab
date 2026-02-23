@@ -139,6 +139,25 @@ services:
         tag: "science"
         tagstyle: "is-info"
 
+  - name: "🎨 Sprite & AI Generation"
+    icon: "🎨"
+    items:
+      - name: "Sprite Forge"
+        icon: "🎨"
+        subtitle: "🎨 Local AI Sprite Generation with RAG"
+        url: "http://192.168.0.127:5173"
+        target: "_blank"
+        tag: "development"
+        tagstyle: "is-link"
+
+      - name: "ComfyUI"
+        icon: "🖼️"
+        subtitle: "🖼️ Stable Diffusion on RTX 5070 Ti"
+        url: "http://192.168.0.99:8188"
+        target: "_blank"
+        tag: "science"
+        tagstyle: "is-info"
+
   - name: "🎮 Gaming & Entertainment"
     icon: "🎮"
     items:

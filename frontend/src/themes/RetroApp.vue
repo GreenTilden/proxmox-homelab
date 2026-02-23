@@ -146,6 +146,9 @@
 <router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
             <span class="nav-emoji">🤖</span> EllaBot
           </router-link>
+          <router-link to="/ops" class="nes-btn" :style="controlButtonStyles" style="background: #4a6741; color: white;">
+            <span class="nav-emoji">🎯</span> Ops Center
+          </router-link>
         </div>
       </main>
 

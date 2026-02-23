@@ -359,7 +359,8 @@
             </div>
 
             <div v-if="fin.goals.value.length === 0" :style="emptyStyles">
-              <p class="nes-text">No supply lines tracked. Add revenue goals above.</p>
+              <p class="nes-text">No supply lines tracked.</p>
+              <button class="nes-btn is-primary" :style="actionBtnStyles" @click="handleSeedGoals">Seed Financial Model Goals</button>
             </div>
 
             <div v-else :style="goalsGridStyles">
@@ -681,6 +682,10 @@ async function handleUpdateRevenue(id: string, updates: Partial<RevenueStream>) 
   await fin.updateRevenueStream(id, updates)
   // Re-fetch projections when revenue changes
   await fin.fetchAllProjections()
+}
+
+async function handleSeedGoals() {
+  await fin.seedDefaultGoals()
 }
 
 async function handleSeedRevenue() {

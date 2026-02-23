@@ -261,6 +261,15 @@ export function useFinancials() {
     }
   }
 
+  async function seedDefaultGoals() {
+    try {
+      await apiFetch('/financials/goals/seed', { method: 'POST' })
+      await fetchGoals()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
   async function migrateGoalsFromLocalStorage(storageKey: string) {
     if (goals.value.length > 0) return
     try {
@@ -596,7 +605,7 @@ export function useFinancials() {
     fetchTimeline, addMilestone,
 
     // Goal actions
-    fetchGoals, addGoal, updateGoal, removeGoal, migrateGoalsFromLocalStorage,
+    fetchGoals, addGoal, updateGoal, removeGoal, seedDefaultGoals, migrateGoalsFromLocalStorage,
 
     // Risk actions
     fetchRisks, addRisk, updateRisk, moveRisk, deleteRisk, seedDefaultRisks,
