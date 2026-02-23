@@ -19,11 +19,12 @@ def get_calendar_events():
         return jsonify({"error": "Nextcloud not configured"}), 500
 
     days = int(request.args.get('days', 30))
+    target_calendar = request.args.get('calendar')
     now = datetime.utcnow()
     start = (now - timedelta(days=7)).strftime("%Y%m%dT%H%M%SZ")
     end = (now + timedelta(days=days)).strftime("%Y%m%dT%H%M%SZ")
 
-    cal_url = caldav_url()
+    cal_url = caldav_url(target_calendar)
 
     report_body = """<?xml version="1.0" encoding="utf-8" ?>
 <C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
@@ -138,8 +139,10 @@ def create_calendar_event():
     ical_lines.extend(["END:VEVENT", "END:VCALENDAR", ""])
     ical = "\r\n".join(ical_lines)
 
+    target_calendar = data.get('calendar')  # optional: target a specific calendar
+
     try:
-        put_url = caldav_url() + uid + ".ics"
+        put_url = caldav_url(target_calendar) + uid + ".ics"
         r = http_requests.put(
             put_url,
             data=ical,
