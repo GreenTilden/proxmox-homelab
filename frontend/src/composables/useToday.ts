@@ -38,9 +38,19 @@ export interface TodayHabits {
   log: Array<{ id: string; habitId: string; date: string; source: string }>
 }
 
+export interface FamilyScoreEntry {
+  id: string
+  date: string
+  score: number
+  label: string
+  notes: string
+}
+
 export interface TodayHealth {
   latestWeight: { weight: number; unit: string; date: string } | null
   rowingThisWeek: number
+  familyScore: FamilyScoreEntry | null
+  familyStreak: number
 }
 
 export interface TodayData {
@@ -108,6 +118,19 @@ export function useToday() {
     }
   }
 
+  async function submitFamilyScore(score: number, notes?: string) {
+    try {
+      const today = new Date().toISOString().slice(0, 10)
+      await apiFetch('/health/family-score', {
+        method: 'POST',
+        body: JSON.stringify({ score, date: today, notes: notes || '' }),
+      })
+      await fetchToday()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
   // --- Computed ---
 
   const timelineItems = computed(() => {
@@ -164,6 +187,7 @@ export function useToday() {
     fetchToday,
     toggleHabit,
     toggleTask,
+    submitFamilyScore,
     timelineItems,
     habitProgress,
     pillarSummary,

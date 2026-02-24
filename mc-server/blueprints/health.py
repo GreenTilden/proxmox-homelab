@@ -13,6 +13,7 @@ WEIGHT_FILE = os.path.join(HEALTH_DATA_DIR, 'weight-log.json')
 ROWING_FILE = os.path.join(HEALTH_DATA_DIR, 'rowing-log.json')
 HABITS_FILE = os.path.join(HEALTH_DATA_DIR, 'habits.json')
 HABIT_LOG_FILE = os.path.join(HEALTH_DATA_DIR, 'habit-log.json')
+FAMILY_SCORE_FILE = os.path.join(HEALTH_DATA_DIR, 'family-score.json')
 
 os.makedirs(HEALTH_DATA_DIR, exist_ok=True)
 
@@ -349,6 +350,121 @@ def delete_habit_log(entry_id):
     return jsonify({'deleted': entry_id})
 
 
+# --- Family Time Score ---
+
+FAMILY_SCORE_LABELS = {
+    1: 'Didn\'t try',
+    2: 'Mostly distracted',
+    3: 'Mixed',
+    4: 'Mostly present',
+    5: 'Phone on charger',
+}
+
+
+def _load_family_scores():
+    """Load family time score entries."""
+    data = _load_json(FAMILY_SCORE_FILE)
+    if isinstance(data, dict):
+        return data.get('entries', [])
+    return data if isinstance(data, list) else []
+
+
+def _save_family_scores(entries):
+    """Save family time score entries."""
+    _save_json(FAMILY_SCORE_FILE, {'entries': entries})
+
+
+def _family_score_streak(entries):
+    """Calculate current streak of days with score >= 4."""
+    if not entries:
+        return 0
+    sorted_entries = sorted(entries, key=lambda e: e.get('date', ''), reverse=True)
+    streak = 0
+    expected = datetime.now().strftime('%Y-%m-%d')
+    for entry in sorted_entries:
+        d = entry.get('date', '')
+        if d == expected and entry.get('score', 0) >= 4:
+            streak += 1
+            expected = (datetime.strptime(d, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
+        elif d == expected:
+            # Scored but below threshold — streak broken
+            break
+        elif d < expected:
+            # Missed a day — streak broken
+            break
+    return streak
+
+
+@bp.route('/api/health/family-score', methods=['GET'])
+def get_family_score():
+    """Get family time scores. Optional ?date=YYYY-MM-DD or ?days=N."""
+    entries = _load_family_scores()
+    date_filter = request.args.get('date')
+    days = request.args.get('days', type=int)
+
+    if date_filter:
+        entries = [e for e in entries if e.get('date') == date_filter]
+    elif days:
+        cutoff = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+        entries = [e for e in entries if e.get('date', '') >= cutoff]
+
+    entries.sort(key=lambda e: e.get('date', ''), reverse=True)
+    streak = _family_score_streak(_load_family_scores())
+
+    return jsonify({
+        'entries': entries,
+        'count': len(entries),
+        'streak': streak,
+        'labels': FAMILY_SCORE_LABELS,
+    })
+
+
+@bp.route('/api/health/family-score', methods=['POST'])
+def submit_family_score():
+    """Submit daily family time score. Body: {score (1-5), date?, notes?}. One per day."""
+    data = request.get_json(force=True) or {}
+    score = data.get('score')
+    if score is None or int(score) not in range(1, 6):
+        return jsonify({'error': 'score must be 1-5'}), 400
+
+    date_str = data.get('date') or datetime.now().strftime('%Y-%m-%d')
+    entries = _load_family_scores()
+
+    # One score per day — update if exists
+    existing = next((e for e in entries if e.get('date') == date_str), None)
+    if existing:
+        existing['score'] = int(score)
+        existing['label'] = FAMILY_SCORE_LABELS.get(int(score), '')
+        existing['notes'] = data.get('notes', existing.get('notes', ''))
+        existing['updatedAt'] = datetime.now().isoformat()
+        _save_family_scores(entries)
+        return jsonify({'entry': existing, 'updated': True})
+
+    entry = {
+        'id': str(uuid.uuid4())[:8],
+        'date': date_str,
+        'score': int(score),
+        'label': FAMILY_SCORE_LABELS.get(int(score), ''),
+        'notes': data.get('notes', ''),
+        'createdAt': datetime.now().isoformat(),
+    }
+    entries.append(entry)
+    _save_family_scores(entries)
+    return jsonify({'entry': entry}), 201
+
+
+@bp.route('/api/health/family-score/<entry_id>', methods=['DELETE'])
+def delete_family_score(entry_id):
+    """Delete a family time score entry."""
+    entries = _load_family_scores()
+    before = len(entries)
+    entries = [e for e in entries if e.get('id') != entry_id]
+    if len(entries) == before:
+        return jsonify({'error': 'not found'}), 404
+    _save_family_scores(entries)
+    return jsonify({'deleted': entry_id})
+
+
 # --- Summary ---
 
 @bp.route('/api/health/summary', methods=['GET'])
@@ -399,6 +515,11 @@ def health_summary():
         week_total_possible += sum(1 for h in active_habits if wd in h.get('defaultDays', []))
     week_rate = round(week_completed / week_total_possible, 2) if week_total_possible else 0
 
+    # Family time score
+    family_scores = _load_family_scores()
+    todays_family = next((e for e in family_scores if e.get('date') == today), None)
+    family_streak = _family_score_streak(family_scores)
+
     return jsonify({
         'latestWeight': latest_weight,
         'weightTrend': weight_trend,
@@ -422,5 +543,9 @@ def health_summary():
             'totalPossible': week_total_possible,
             'completed': week_completed,
             'completionRate': week_rate,
+        },
+        'familyScore': {
+            'today': todays_family,
+            'streak': family_streak,
         },
     })

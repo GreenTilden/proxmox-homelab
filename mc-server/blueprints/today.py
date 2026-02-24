@@ -9,6 +9,7 @@ from flask import Blueprint, jsonify
 from .shared import (CONFIG, nextcloud_auth, nextcloud_configured,
                      caldav_url, parse_ical_events, parse_ical_todos, parse_date)
 from .health import (_load_habits, _load_habit_log, _load_json,
+                     _load_family_scores, _family_score_streak,
                      WEIGHT_FILE, ROWING_FILE)
 
 bp = Blueprint('today', __name__)
@@ -206,7 +207,7 @@ def _fetch_habits(today_str, iso_weekday):
 
 
 def _fetch_health_snapshot(today_str):
-    """Get latest weight and rowing count this week."""
+    """Get latest weight, rowing count this week, and family time score."""
     weight_entries = _load_json(WEIGHT_FILE)
     rowing_entries = _load_json(ROWING_FILE)
 
@@ -223,9 +224,16 @@ def _fetch_health_snapshot(today_str):
     week_ago = (datetime.strptime(today_str, '%Y-%m-%d') - timedelta(days=7)).strftime('%Y-%m-%d')
     rowing_this_week = sum(1 for e in rowing_entries if e.get('date', '') >= week_ago)
 
+    # Family time score
+    family_scores = _load_family_scores()
+    todays_family = next((e for e in family_scores if e.get('date') == today_str), None)
+    family_streak = _family_score_streak(family_scores)
+
     return {
         'latestWeight': latest_weight,
         'rowingThisWeek': rowing_this_week,
+        'familyScore': todays_family,
+        'familyStreak': family_streak,
     }
 
 

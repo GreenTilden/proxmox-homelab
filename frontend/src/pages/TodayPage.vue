@@ -39,6 +39,11 @@
             </div>
             <div :style="snapshotDividerStyles"></div>
             <div :style="snapshotItemStyles">
+              <span :style="snapshotValueStyles">{{ today.health.familyScore ? '\u2605'.repeat(today.health.familyScore.score) : '--' }}</span>
+              <span :style="snapshotLabelStyles">Family</span>
+            </div>
+            <div :style="snapshotDividerStyles"></div>
+            <div :style="snapshotItemStyles">
               <span :style="snapshotValueStyles">{{ habitProgress.done }}/{{ habitProgress.total }}</span>
               <span :style="snapshotLabelStyles">Habits</span>
             </div>
@@ -66,6 +71,39 @@
               <div :style="progressBarFillStyles(habitProgress.pct)"></div>
             </div>
             <div :style="progressLabelStyles">{{ habitProgress.pct }}% complete</div>
+          </section>
+
+          <!-- Family Time Score -->
+          <section :style="familySectionStyles">
+            <div :style="familyHeaderStyles">
+              <h2 :style="sectionTitleStyles">Family Time</h2>
+              <span v-if="today.health.familyStreak > 0" :style="streakBadgeStyles">
+                {{ today.health.familyStreak }}d streak
+              </span>
+            </div>
+            <p :style="familyDescStyles">5pm-bedtime &middot; Phone on charger &middot; Be present</p>
+            <div v-if="today.health.familyScore" :style="familyScoredStyles">
+              <span :style="familyScoredStarsStyles">
+                {{ '\u2605'.repeat(today.health.familyScore.score) }}{{ '\u2606'.repeat(5 - today.health.familyScore.score) }}
+              </span>
+              <span :style="familyScoredLabelStyles">{{ today.health.familyScore.label }}</span>
+            </div>
+            <div v-else :style="familyRatingStyles">
+              <button
+                v-for="n in 5"
+                :key="n"
+                class="nes-btn"
+                :style="familyStarBtnStyles"
+                @click="handleFamilyScore(n)"
+                :title="familyScoreLabels[n]"
+              >
+                {{ n }}
+              </button>
+            </div>
+            <div :style="familyScaleLabelStyles">
+              <span>Didn't try</span>
+              <span>Phone on charger</span>
+            </div>
           </section>
 
           <!-- Timeline Section -->
@@ -136,7 +174,19 @@ import SeasonalThemeProvider from '../components/themes/retro/SeasonalThemeProvi
 import { useToday } from '@/composables/useToday'
 import { PILLAR_CONFIG, type Pillar } from '@/config/pillars'
 
-const { data: today, isLoading, error, fetchToday, toggleHabit, toggleTask, timelineItems, habitProgress, isHabitDone } = useToday()
+const { data: today, isLoading, error, fetchToday, toggleHabit, toggleTask, submitFamilyScore, timelineItems, habitProgress, isHabitDone } = useToday()
+
+const familyScoreLabels: Record<number, string> = {
+  1: 'Didn\'t try',
+  2: 'Mostly distracted',
+  3: 'Mixed',
+  4: 'Mostly present',
+  5: 'Phone on charger',
+}
+
+function handleFamilyScore(score: number) {
+  submitFamilyScore(score)
+}
 
 const isMobile = ref(false)
 const checkMobile = () => { isMobile.value = window.innerWidth < 768 }
@@ -455,6 +505,85 @@ function pillarCardStyles(color: string) {
 }
 
 const pillarCardLabelStyles = {
+  fontSize: '0.55rem',
+  fontFamily: '"Press Start 2P", monospace',
+  color: 'var(--text-bright)',
+}
+
+// --- Family Time Score ---
+
+const familySectionStyles = {
+  background: 'linear-gradient(135deg, rgba(232, 168, 56, 0.1), rgba(232, 168, 56, 0.05))',
+  borderRadius: '6px',
+  border: '2px solid #e8a838',
+  padding: '1rem',
+}
+
+const familyHeaderStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '0.25rem',
+}
+
+const familyDescStyles = {
+  fontSize: '0.5rem',
+  fontFamily: '"Press Start 2P", monospace',
+  color: 'var(--text-muted)',
+  marginBottom: '0.75rem',
+  lineHeight: '1.4',
+}
+
+const streakBadgeStyles = {
+  fontSize: '0.55rem',
+  fontFamily: '"Press Start 2P", monospace',
+  padding: '3px 8px',
+  borderRadius: '3px',
+  background: 'rgba(34, 197, 94, 0.2)',
+  color: '#22c55e',
+  border: '1px solid rgba(34, 197, 94, 0.4)',
+  whiteSpace: 'nowrap' as const,
+}
+
+const familyRatingStyles = {
+  display: 'flex',
+  gap: '0.5rem',
+  justifyContent: 'center',
+  marginBottom: '0.25rem',
+}
+
+const familyStarBtnStyles = {
+  flex: '1',
+  fontSize: '0.8rem',
+  fontFamily: '"Press Start 2P", monospace',
+  padding: '0.5rem',
+  minWidth: '0',
+}
+
+const familyScaleLabelStyles = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: '0.45rem',
+  fontFamily: '"Press Start 2P", monospace',
+  color: 'var(--text-muted)',
+  padding: '0 0.25rem',
+}
+
+const familyScoredStyles = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  alignItems: 'center',
+  gap: '0.25rem',
+  padding: '0.5rem',
+}
+
+const familyScoredStarsStyles = {
+  fontSize: '1.5rem',
+  color: '#e8a838',
+  letterSpacing: '2px',
+}
+
+const familyScoredLabelStyles = {
   fontSize: '0.55rem',
   fontFamily: '"Press Start 2P", monospace',
   color: 'var(--text-bright)',
