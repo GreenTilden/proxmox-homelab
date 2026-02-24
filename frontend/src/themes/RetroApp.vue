@@ -93,68 +93,98 @@
           </div>
         </div>
 
-        <!-- Navigation Links with Emoji -->
-        <div :style="controlsStyles">
-          <button
-            class="nes-btn is-warning"
-            @click="toggleScanlines"
-            :style="controlButtonStyles"
-          >
+        <!-- TODAY Button -->
+        <router-link to="/today" class="nes-btn" :style="todayButtonStyles">
+          <span style="font-size: 1.2em;">&#x2600;&#xFE0F;</span> TODAY
+        </router-link>
+
+        <!-- Three Pillars Navigation -->
+        <div :style="pillarsContainerStyles">
+          <!-- Personal Development -->
+          <div :style="pillarSectionStyles('#22c55e')">
+            <div :style="pillarHeaderStyles('#22c55e')">
+              <span>&#x1F331;</span> Personal Development
+            </div>
+            <div :style="pillarGridStyles">
+              <router-link to="/health" class="nes-btn" :style="controlButtonStyles" style="background: #22c55e; color: white;">
+                <span class="nav-emoji">&#x1F3CB;&#xFE0F;</span> Health
+              </router-link>
+              <router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
+                <span class="nav-emoji">&#x1F916;</span> EllaBot
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Professional Development -->
+          <div :style="pillarSectionStyles('#4a6741')">
+            <div :style="pillarHeaderStyles('#4a6741')">
+              <span>&#x1F3AF;</span> Professional Development
+            </div>
+            <div :style="pillarGridStyles">
+              <router-link to="/ops" class="nes-btn" :style="controlButtonStyles" style="background: #4a6741; color: white;">
+                <span class="nav-emoji">&#x1F3AF;</span> Ops Center
+              </router-link>
+              <router-link to="/docs" class="nes-btn is-success" :style="controlButtonStyles">
+                <span class="nav-emoji">&#x1F4DA;</span> Docs
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Domestic Development -->
+          <div :style="pillarSectionStyles('#e8a838')">
+            <div :style="pillarHeaderStyles('#e8a838')">
+              <span>&#x1F3E0;</span> Domestic Development
+            </div>
+            <div :style="pillarGridStyles">
+              <router-link to="/freezer-meals" class="nes-btn" :style="controlButtonStyles" style="background: #e8a838; color: white;">
+                <span class="nav-emoji">&#x1F9CA;</span> Freezer Meals
+              </router-link>
+              <router-link to="/nanit" class="nes-btn" :style="controlButtonStyles" style="background: #da70d6; color: white;">
+                <span class="nav-emoji">&#x1F476;</span> Baby Cam
+              </router-link>
+              <router-link to="/calendar" class="nes-btn" :style="controlButtonStyles" style="background: #8b5cf6; color: white;">
+                <span class="nav-emoji">&#x1F4C5;</span> Calendar
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infrastructure -->
+        <div :style="infraSectionStyles">
+          <div :style="infraHeaderStyles">Infrastructure</div>
+          <div :style="infraGridStyles">
+            <router-link to="/file-manager" class="nes-btn is-primary" :style="controlButtonStyles">
+              <span class="nav-emoji">&#x1F4C1;</span> File Manager
+            </router-link>
+            <router-link to="/vault" class="nes-btn" :style="controlButtonStyles" style="background: #6a9fb5; color: white;">
+              <span class="nav-emoji">&#x1F510;</span> Vault
+            </router-link>
+            <router-link to="/weather" class="nes-btn is-warning" :style="controlButtonStyles">
+              <span class="nav-emoji">&#x1F324;&#xFE0F;</span> Weather
+            </router-link>
+            <a href="http://192.168.0.99:8083" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #68bc71; color: white;">
+              <span class="nav-emoji">&#x1F6E1;&#xFE0F;</span> AdGuard
+            </a>
+            <a href="http://192.168.0.99:8087" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #ff4444; color: white;">
+              <span class="nav-emoji">&#x1F4F9;</span> yt-dlp
+            </a>
+            <a href="http://192.168.0.131:8080" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #f78c6c; color: white;">
+              <span class="nav-emoji">&#x1F4F0;</span> FreshRSS
+            </a>
+          </div>
+        </div>
+
+        <!-- Theme Controls -->
+        <div :style="themeControlsStyles">
+          <button class="nes-btn is-warning" @click="toggleScanlines" :style="controlButtonStyles">
             {{ enableScanlines ? 'Disable' : 'Enable' }} Scanlines
           </button>
-          <button
-            class="nes-btn is-success"
-            @click="toggleParticles"
-            :style="controlButtonStyles"
-          >
+          <button class="nes-btn is-success" @click="toggleParticles" :style="controlButtonStyles">
             {{ enableParticles ? 'Disable' : 'Enable' }} Particles
           </button>
-          <button
-            class="nes-btn is-primary"
-            @click="toggleTheme"
-            :style="controlButtonStyles"
-          >
+          <button class="nes-btn is-primary" @click="toggleTheme" :style="controlButtonStyles">
             {{ getThemeIcon(currentSeason) }} {{ getThemeName(currentSeason) }}
           </button>
-          <router-link to="/file-manager" class="nes-btn is-primary" :style="controlButtonStyles">
-            <span class="nav-emoji">📁</span> File Manager
-          </router-link>
-          <router-link to="/weather" class="nes-btn is-warning" :style="controlButtonStyles">
-            <span class="nav-emoji">🌤️</span> Weather
-          </router-link>
-          <router-link to="/docs" class="nes-btn is-success" :style="controlButtonStyles">
-            <span class="nav-emoji">📚</span> Docs
-          </router-link>
-          <router-link to="/calendar" class="nes-btn" :style="controlButtonStyles" style="background: #8b5cf6; color: white;">
-            <span class="nav-emoji">📅</span> Calendar
-          </router-link>
-          <router-link to="/vault" class="nes-btn" :style="controlButtonStyles" style="background: #6a9fb5; color: white;">
-            <span class="nav-emoji">🔐</span> Vault
-          </router-link>
-          <router-link to="/nanit" class="nes-btn" :style="controlButtonStyles" style="background: #da70d6; color: white;">
-            <span class="nav-emoji">👶</span> Baby Cam
-          </router-link>
-          <a href="http://192.168.0.99:8083" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #68bc71; color: white;">
-            <span class="nav-emoji">🛡️</span> AdGuard
-          </a>
-          <a href="http://192.168.0.99:8087" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #ff4444; color: white;">
-            <span class="nav-emoji">📹</span> yt-dlp
-          </a>
-          <a href="http://192.168.0.131:8080" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #f78c6c; color: white;">
-            <span class="nav-emoji">📰</span> FreshRSS
-          </a>
-          <router-link to="/freezer-meals" class="nes-btn" :style="controlButtonStyles" style="background: #e8a838; color: white;">
-            <span class="nav-emoji">🧊</span> Freezer Meals
-          </router-link>
-<router-link to="/ellabot" class="nes-btn" :style="controlButtonStyles" style="background: #4a9eff; color: white;">
-            <span class="nav-emoji">🤖</span> EllaBot
-          </router-link>
-          <router-link to="/health" class="nes-btn" :style="controlButtonStyles" style="background: #22c55e; color: white;">
-            <span class="nav-emoji">🏋️</span> Health
-          </router-link>
-          <router-link to="/ops" class="nes-btn" :style="controlButtonStyles" style="background: #4a6741; color: white;">
-            <span class="nav-emoji">🎯</span> Ops Center
-          </router-link>
         </div>
       </main>
 
@@ -382,6 +412,91 @@ const controlButtonStyles = computed(() => ({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '4px'
+}))
+
+const todayButtonStyles = computed(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  width: '100%',
+  padding: '1rem',
+  fontSize: '14px !important',
+  background: 'linear-gradient(135deg, #e8a838, #d4942e)',
+  color: 'white',
+  border: '3px solid #c4842e',
+  borderRadius: '6px',
+  fontFamily: '"Press Start 2P", monospace',
+  textDecoration: 'none',
+  textAlign: 'center' as const,
+  cursor: 'pointer',
+}))
+
+const pillarsContainerStyles = computed(() => ({
+  display: 'grid',
+  gridTemplateColumns: isMobile.value ? '1fr' : 'repeat(3, 1fr)',
+  gap: 'var(--space-md)',
+}))
+
+function pillarSectionStyles(color: string) {
+  return {
+    background: 'var(--bg-card)',
+    borderRadius: '6px',
+    border: `2px solid ${color}40`,
+    borderLeft: `4px solid ${color}`,
+    padding: 'var(--space-md)',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 'var(--space-sm)',
+  }
+}
+
+function pillarHeaderStyles(color: string) {
+  return {
+    fontSize: '0.6rem',
+    fontFamily: '"Press Start 2P", monospace',
+    color: color,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    marginBottom: '4px',
+  }
+}
+
+const pillarGridStyles = {
+  display: 'flex',
+  flexWrap: 'wrap' as const,
+  gap: 'var(--space-xs)',
+}
+
+const infraSectionStyles = computed(() => ({
+  background: 'var(--bg-card)',
+  borderRadius: '6px',
+  border: '1px solid var(--color-primary-2)40',
+  padding: 'var(--space-md)',
+}))
+
+const infraHeaderStyles = {
+  fontSize: '0.6rem',
+  fontFamily: '"Press Start 2P", monospace',
+  color: 'var(--text-muted)',
+  marginBottom: '8px',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '1px',
+}
+
+const infraGridStyles = computed(() => ({
+  display: 'flex',
+  flexWrap: 'wrap' as const,
+  justifyContent: 'center',
+  gap: 'var(--space-xs)',
+}))
+
+const themeControlsStyles = computed(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 'var(--space-xs)',
+  flexWrap: 'wrap' as const,
 }))
 
 // Methods

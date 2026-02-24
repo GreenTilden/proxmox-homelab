@@ -5,6 +5,7 @@ from flask_cors import CORS
 from blueprints.shared import CONFIG, check_token
 from blueprints import infrastructure, ha, oliver, calendar, cathy, freezer, tasks, financials
 from blueprints import health as health_bp
+from blueprints import today as today_bp
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 * 1024  # 50 GB max upload
@@ -13,7 +14,7 @@ app.before_request(check_token)
 
 for bp in [infrastructure.bp, ha.bp, oliver.bp, calendar.bp,
            cathy.bp, freezer.bp, tasks.bp, financials.bp,
-           health_bp.bp]:
+           health_bp.bp, today_bp.bp]:
     app.register_blueprint(bp)
 
 

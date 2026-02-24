@@ -89,6 +89,11 @@ const router = createRouter({
       path: '/health',
       name: 'Health',
       component: () => import('@/pages/HealthPage.vue')
+    },
+    {
+      path: '/today',
+      name: 'Today',
+      component: () => import('@/pages/TodayPage.vue')
     }
   ]
 })
