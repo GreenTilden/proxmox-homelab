@@ -30,6 +30,8 @@ DEFAULT_HABITS = [
      'durationMinutes': 10, 'defaultDays': [1, 2, 3, 4, 5, 6, 7], 'linkedTracker': None},
     {'name': 'Journaling', 'category': 'mindfulness', 'emoji': '\U0001F4D3',
      'durationMinutes': 10, 'defaultDays': [1, 3, 5], 'linkedTracker': None},
+    {'name': 'Check Outlook', 'category': 'admin', 'emoji': '\U0001F4E7',
+     'durationMinutes': 5, 'defaultDays': [1, 2, 3, 4, 5], 'linkedTracker': None},
 ]
 
 
