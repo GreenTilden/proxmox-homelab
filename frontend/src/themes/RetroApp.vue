@@ -125,6 +125,9 @@
           <router-link to="/docs" class="nes-btn is-success" :style="controlButtonStyles">
             <span class="nav-emoji">📚</span> Docs
           </router-link>
+          <router-link to="/calendar" class="nes-btn" :style="controlButtonStyles" style="background: #8b5cf6; color: white;">
+            <span class="nav-emoji">📅</span> Calendar
+          </router-link>
           <router-link to="/vault" class="nes-btn" :style="controlButtonStyles" style="background: #6a9fb5; color: white;">
             <span class="nav-emoji">🔐</span> Vault
           </router-link>

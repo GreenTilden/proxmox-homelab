@@ -21,6 +21,7 @@
 | n8n | 5678 | n8n.darrenarney.com | Authelia | Workflow automation |
 | Headscale | 8180 | headscale.darrenarney.com | OIDC | VPN mesh network |
 | RustDesk | 21115-21119 | - | Own auth | Remote desktop |
+| Chatterbox TTS | 8004 | - | - | GPU voice cloning (RTX 5070 Ti) |
 
 ## Services on LXC 100 (192.168.0.250)
 
@@ -30,7 +31,7 @@
 | WeatherStar | 8082 | Weather display |
 | Code Server | 8081 | VS Code in browser |
 | CouchDB | 5984 | Obsidian sync |
-| Flask API | 5001 | Command server (dashboard backend) |
+| Flask API | 5001 | Command server (10 blueprints: shared, infrastructure, ha, oliver, calendar, cathy, freezer, tasks, financials, health) |
 | FreshRSS | 8085 | RSS reader (dashboard link; primary instance on CT 131) |
 
 ## LXC Containers
@@ -39,7 +40,7 @@
 |------|------|-----|---------|
 | 100 | frontend-server | 192.168.0.250 | Nginx, dashboard, APIs |
 | 110 | qbittorrent-secure | 192.168.0.111 | qBittorrent client |
-| 120 | gbgreg | 192.168.0.120 | Ollama, Kokoro TTS API (:5011) |
+| 120 | gbgreg | 192.168.0.120 | Ollama, Kokoro TTS API (:5011), EllaBot RAG (:5010) |
 | 131 | podcast-factory | 192.168.0.131 | FreshRSS (:80), Podcast Feed (:8081) |
 
 ## Docker Compose Locations
@@ -55,6 +56,7 @@ All Docker services on Proxmox are managed via compose files:
 | n8n | `/opt/docker/apps/n8n/docker-compose.yml` |
 | Headscale | `/opt/docker/apps/headscale/docker-compose.yml` |
 | Immich | `/opt/immich/docker-compose.yml` |
+| Chatterbox TTS | `/opt/docker/apps/chatterbox/docker-compose.yml` |
 
 ## Docker Network
 

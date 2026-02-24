@@ -113,6 +113,36 @@ export interface RewardsEstimate {
   annualizedRewards: number
 }
 
+export interface RdLogEntry {
+  id: string
+  date: string
+  hours: number
+  project: string
+  description: string
+  category: string
+  createdAt: string
+}
+
+export interface RdLogSummary {
+  totalHours: number
+  totalEntries: number
+  byQuarter: Record<string, number>
+  byProject: Record<string, number>
+  byCategory: Record<string, number>
+  imputedRdSpend: number
+  estimatedIndianaCreditAt15Pct: number
+}
+
+export const RD_CATEGORIES = [
+  'Software Development',
+  'AI/ML Development',
+  'RAG Pipeline',
+  'Automation Engineering',
+  'System Integration',
+  'Prototyping',
+  'Architecture Design',
+]
+
 // --- Phase definitions ---
 
 export const PHASES = [
@@ -136,6 +166,8 @@ export function useFinancials() {
   const scenarios = ref<Scenario[]>([])
   const projections = ref<Map<string, ScenarioProjection>>(new Map())
   const rewards = ref<RewardsEstimate | null>(null)
+  const rdLog = ref<RdLogEntry[]>([])
+  const rdLogSummary = ref<RdLogSummary | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   const expenseTotals = ref({ total: 0, businessTotal: 0, personalTotal: 0 })
@@ -506,6 +538,54 @@ export function useFinancials() {
     return results
   }
 
+  // --- R&D Hour Log ---
+
+  async function fetchRdLog(filters?: { project?: string; quarter?: string; month?: string }) {
+    try {
+      const params = new URLSearchParams()
+      if (filters?.project) params.set('project', filters.project)
+      if (filters?.quarter) params.set('quarter', filters.quarter)
+      if (filters?.month) params.set('month', filters.month)
+      const qs = params.toString() ? `?${params}` : ''
+      const data = await apiFetch(`/financials/rd-log${qs}`)
+      rdLog.value = data.entries || []
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function addRdEntry(entry: { date?: string; hours: number; project?: string; description?: string; category?: string }) {
+    try {
+      await apiFetch('/financials/rd-log', {
+        method: 'POST',
+        body: JSON.stringify(entry),
+      })
+      await fetchRdLog()
+      await fetchRdLogSummary()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function deleteRdEntry(id: string) {
+    try {
+      await apiFetch(`/financials/rd-log/${id}`, { method: 'DELETE' })
+      await fetchRdLog()
+      await fetchRdLogSummary()
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
+  async function fetchRdLogSummary() {
+    try {
+      const data = await apiFetch('/financials/rd-log/summary')
+      rdLogSummary.value = data
+    } catch (e: any) {
+      error.value = e.message
+    }
+  }
+
   // --- Rewards ---
 
   async function fetchRewards() {
@@ -560,6 +640,8 @@ export function useFinancials() {
         fetchExpenses(),
         fetchRevenue(),
         fetchScenarios(),
+        fetchRdLog(),
+        fetchRdLogSummary(),
       ])
       // Fetch projections after scenarios are loaded
       if (scenarios.value.length > 0) {
@@ -601,6 +683,10 @@ export function useFinancials() {
     // Scenario actions
     fetchScenarios, addScenario, updateScenario, deleteScenario, seedDefaultScenarios,
     fetchProjection, fetchAllProjections,
+
+    // R&D Hour Log
+    rdLog, rdLogSummary,
+    fetchRdLog, addRdEntry, deleteRdEntry, fetchRdLogSummary,
 
     // Rewards
     fetchRewards,

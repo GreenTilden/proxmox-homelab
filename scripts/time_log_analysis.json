@@ -1,0 +1,299 @@
+{
+  "generated": "2026-02-23T17:14:59.273764",
+  "years": [
+    {
+      "year": 2019,
+      "active_weeks": 13,
+      "work_hours": 546.5,
+      "avg_hours_per_week": 42.0,
+      "max_week_hours": 64.0,
+      "min_week_hours": 16.5,
+      "pto_days": 0,
+      "by_class": {
+        "billable": 312.5,
+        "overhead": 234.0,
+        "personal": 132.0
+      },
+      "by_category": {
+        "Biosero": 234.0,
+        "Lilly": 204.0,
+        "Personal": 132.0,
+        "Unknown (FFFFD965)": 106.0,
+        "Unknown (FFA8D08D)": 2.5
+      },
+      "negative_space": {
+        "avg_work_hours": 42.0,
+        "avg_free_hours": 126.0,
+        "waking_free_hours": 77.0,
+        "overhead_hours_per_week": 18.0,
+        "overhead_reclaimed_monthly": 77.9,
+        "billable_efficiency": 57.2
+      }
+    },
+    {
+      "year": 2020,
+      "active_weeks": 52,
+      "work_hours": 2019.5,
+      "avg_hours_per_week": 38.8,
+      "max_week_hours": 60.5,
+      "min_week_hours": 7.0,
+      "pto_days": 0,
+      "by_class": {
+        "billable": 1069.5,
+        "overhead": 950.0,
+        "personal": 779.5
+      },
+      "by_category": {
+        "Biosero": 950.0,
+        "Lilly": 670.5,
+        "Personal": 660.5,
+        "Unknown (FFFFFF99)": 208.0,
+        "EMD Serono": 144.0,
+        "BBC Book Time": 119.0,
+        "Unknown (FFFF99FF)": 21.5,
+        "Unknown (FF00B0F0)": 18.5,
+        "Unknown (FFFF0000)": 3.5,
+        "Unknown (FFC55A11)": 3.0,
+        "Unknown (FFFFFF00)": 0.5
+      },
+      "negative_space": {
+        "avg_work_hours": 38.8,
+        "avg_free_hours": 129.2,
+        "waking_free_hours": 80.2,
+        "overhead_hours_per_week": 18.3,
+        "overhead_reclaimed_monthly": 79.1,
+        "billable_efficiency": 53.0
+      }
+    },
+    {
+      "year": 2021,
+      "active_weeks": 52,
+      "work_hours": 2427.0,
+      "avg_hours_per_week": 46.7,
+      "max_week_hours": 72.0,
+      "min_week_hours": 4.0,
+      "pto_days": 44,
+      "by_class": {
+        "billable": 1492.5,
+        "overhead": 934.5,
+        "personal": 302.5
+      },
+      "by_category": {
+        "Biosero": 707.5,
+        "Personal": 302.5,
+        "Illumina": 276.5,
+        "4055 - Lilly ICAN": 270.5,
+        "Unknown (FFF7CAAC)": 229.5,
+        "Presales": 227.0,
+        "Unknown (FFDADADA)": 208.5,
+        "Unknown (FFC5E0B3)": 131.5,
+        "4060 - Color Genomics": 76.5,
+        "Lilly": 70.5,
+        "Unknown (FF00B050)": 70.5,
+        "BMS": 58.0,
+        "Xenon": 31.0,
+        "3889 - Lilly AME": 24.0,
+        "CCHMC": 17.5,
+        "Unknown (FFF4B083)": 13.5,
+        "Unknown (FF9933FF)": 9.0,
+        "Unknown (FF9999FF)": 5.5
+      },
+      "negative_space": {
+        "avg_work_hours": 46.7,
+        "avg_free_hours": 121.3,
+        "waking_free_hours": 72.3,
+        "overhead_hours_per_week": 18.0,
+        "overhead_reclaimed_monthly": 77.8,
+        "billable_efficiency": 61.5
+      }
+    },
+    {
+      "year": 2022,
+      "active_weeks": 52,
+      "work_hours": 2649.5,
+      "avg_hours_per_week": 51.0,
+      "max_week_hours": 68.5,
+      "min_week_hours": 19.0,
+      "pto_days": 29,
+      "by_class": {
+        "billable": 1907.0,
+        "overhead": 742.5,
+        "personal": 70.0
+      },
+      "by_category": {
+        "Apps / Post-Sales": 352.0,
+        "Biosero": 344.5,
+        "4227 - Grail": 234.0,
+        "4488 - Mayo Clinic": 227.5,
+        "4290 - Lilly Cell Picker Update": 210.5,
+        "4379 - LTC Firefly": 203.0,
+        "Unknown (FFCC3300)": 196.5,
+        "4448 - Guardant PFS": 174.0,
+        "4454 - Invitae": 165.5,
+        "4168 - Cooper Genomics WGA": 149.5,
+        "Unknown (FF66FFCC)": 138.0,
+        "CCHMC": 112.5,
+        "Personal (hrs)": 70.0,
+        "Lilly": 48.0,
+        "Unknown (FFFF9900)": 48.0,
+        "Presales": 46.0
+      },
+      "negative_space": {
+        "avg_work_hours": 51.0,
+        "avg_free_hours": 117.0,
+        "waking_free_hours": 68.0,
+        "overhead_hours_per_week": 14.3,
+        "overhead_reclaimed_monthly": 61.8,
+        "billable_efficiency": 72.0
+      }
+    },
+    {
+      "year": 2023,
+      "active_weeks": 51,
+      "work_hours": 2406.5,
+      "avg_hours_per_week": 47.2,
+      "max_week_hours": 73.0,
+      "min_week_hours": 3.5,
+      "pto_days": 46,
+      "by_class": {
+        "billable": 1634.5,
+        "overhead": 772.0,
+        "personal": 68.5
+      },
+      "by_category": {
+        "Biosero": 405.0,
+        "Apps / Post-Sales": 350.5,
+        "4647 - Recursion": 248.5,
+        "4488 - Mayo Clinic": 230.0,
+        "4815 - AssayQuant": 194.5,
+        "Unknown (FF00FF99)": 176.5,
+        "Unknown (FF0070C0)": 138.5,
+        "4448 - Guardant PFS": 107.0,
+        "Unknown (FFBF9000)": 94.0,
+        "Personal (hrs)": 68.5,
+        "4379 - LTC Firefly": 63.5,
+        "4335 - Evotec": 63.0,
+        "4860 - Odyssey Tx": 60.5,
+        "4759 - Valo": 56.0,
+        "4168 - Cooper Genomics": 45.0,
+        "4846 - Moldev Tempus OEM": 41.5,
+        "Lilly": 41.5,
+        "Unknown (FF9933FF)": 30.5,
+        "4727 - EMD Serono": 26.5,
+        "Presales": 16.5,
+        "Unknown (FFFF00FF)": 9.5,
+        "Unknown (FFCAFF7A)": 7.5,
+        "Unknown (FFFFFFCC)": 0.5
+      },
+      "negative_space": {
+        "avg_work_hours": 47.2,
+        "avg_free_hours": 120.8,
+        "waking_free_hours": 71.8,
+        "overhead_hours_per_week": 15.1,
+        "overhead_reclaimed_monthly": 65.5,
+        "billable_efficiency": 67.9
+      }
+    },
+    {
+      "year": 2024,
+      "active_weeks": 50,
+      "work_hours": 2296.5,
+      "avg_hours_per_week": 45.9,
+      "max_week_hours": 90.5,
+      "min_week_hours": 24.0,
+      "pto_days": 25,
+      "by_class": {
+        "billable": 1498.5,
+        "overhead": 798.0,
+        "personal": 20.0
+      },
+      "by_category": {
+        "Management": 584.5,
+        "4795/4799/5145/5151 - AZ UK": 531.5,
+        "5099 - Corteva": 355.0,
+        "General Apps / Post-Sales": 130.5,
+        "5062 - Janssen": 124.5,
+        "4670 - Regeneron": 84.5,
+        "Biosero (Admin)": 83.0,
+        "5138 - Merck West Point": 74.5,
+        "5076 5077 5079 - Guardant 2023": 58.5,
+        "4955 - Scribe Therapeutics": 54.0,
+        "4379 - LTC Firefly": 44.0,
+        "5012/5183 Takeda MR": 38.5,
+        "4675 - Alkermes": 29.5,
+        "4926 - Novartis": 28.0,
+        "Unknown (FF5C99AC)": 25.5,
+        "Personal (hrs)": 20.0,
+        "4759 - Valo": 19.5,
+        "5209 - Boehringer-Ingelheim": 16.0,
+        "4935/5070 - Loxo Oncology": 8.0,
+        "4518 - Roche LASR": 5.5,
+        "5119 - EMD": 1.5
+      },
+      "negative_space": {
+        "avg_work_hours": 45.9,
+        "avg_free_hours": 122.1,
+        "waking_free_hours": 73.1,
+        "overhead_hours_per_week": 16.0,
+        "overhead_reclaimed_monthly": 69.1,
+        "billable_efficiency": 65.3
+      }
+    },
+    {
+      "year": 2025,
+      "active_weeks": 42,
+      "work_hours": 1577.5,
+      "avg_hours_per_week": 37.6,
+      "max_week_hours": 64.0,
+      "min_week_hours": 3.0,
+      "pto_days": 35,
+      "by_class": {
+        "billable": 1149.5,
+        "overhead": 428.0,
+        "personal": 36.0,
+        "unknown": 32.0
+      },
+      "by_category": {
+        "5099 - Corteva": 503.5,
+        "Management": 318.5,
+        "5393 - AZ": 270.5,
+        "4923 - Novo Nordisk": 222.5,
+        "General Apps / Post-Sales": 90.0,
+        "5278 - Cell Picker 2024": 79.5,
+        "Unknown (FFCCCCCC)": 32.0,
+        "Dadmin": 28.5,
+        "5480 - Sanofi": 25.5,
+        "5457 - Takeda": 20.0,
+        "5409 - Merck": 13.0,
+        "\ud83e\uddd1\u200d\ud83d\udcbbPlanner work": 11.5,
+        "Biosero (Admin)": 8.0,
+        "\ud83d\udc6aFamily Time": 7.5,
+        "5062 - Janssen": 5.0,
+        "5062 - Janssen Phase 1": 3.5,
+        "Unknown (FFCAFF7A)": 3.5,
+        "Unknown (FFCC3300)": 3.0
+      },
+      "negative_space": {
+        "avg_work_hours": 37.6,
+        "avg_free_hours": 130.4,
+        "waking_free_hours": 81.4,
+        "overhead_hours_per_week": 10.2,
+        "overhead_reclaimed_monthly": 44.1,
+        "billable_efficiency": 72.9
+      }
+    }
+  ],
+  "career_summary": {
+    "total_weeks": 312,
+    "total_work_hours": 13923.0,
+    "avg_work_hours_per_week": 44.6,
+    "total_billable": 9064.0,
+    "total_overhead": 4859.0,
+    "total_personal": 1408.5,
+    "billable_efficiency": 65.1,
+    "overhead_pct": 34.9,
+    "overhead_per_week": 15.6,
+    "billable_per_week": 29.1,
+    "unique_client_accounts": 45
+  }
+}

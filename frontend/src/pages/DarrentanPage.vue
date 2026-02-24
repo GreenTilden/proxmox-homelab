@@ -106,6 +106,12 @@
           <div :style="cardStyles" v-if="highPriorityTasks.length > 0">
             <h3 :style="cardTitleStyles">Priority Intel</h3>
             <div v-for="task in highPriorityTasks" :key="task.id" :style="quickTaskStyles">
+              <button
+                class="nes-btn"
+                :class="task.status === 'completed' ? 'is-success' : ''"
+                :style="quickToggleStyles"
+                @click="handleToggleTask(task.id)"
+              >{{ task.status === 'completed' ? '\u2713' : '\u25CB' }}</button>
               <span :style="priorityBadgeStyles(task.priority)">P{{ task.priority }}</span>
               <span :style="quickTaskNameStyles">{{ task.summary }}</span>
               <span v-if="task.due" :style="dueDateStyles">{{ formatDate(task.due) }}</span>
@@ -254,6 +260,7 @@
             <button class="nes-btn" :class="supplyView === 'revenue' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'revenue'">Revenue</button>
             <button class="nes-btn" :class="supplyView === 'goals' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'goals'">Goals</button>
             <button class="nes-btn" :class="supplyView === 'expenses' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'expenses'">Expenses</button>
+            <button class="nes-btn" :class="supplyView === 'rd-log' ? 'is-primary' : ''" :style="filterBtnStyles" @click="supplyView = 'rd-log'">R&D Log</button>
           </div>
 
           <!-- SCENARIOS VIEW -->
@@ -475,6 +482,87 @@
               </div>
             </div>
           </template>
+
+          <!-- R&D LOG VIEW -->
+          <template v-if="supplyView === 'rd-log'">
+            <!-- R&D Entry Form -->
+            <div :style="cardStyles">
+              <h3 :style="cardTitleStyles">Log R&D Hours</h3>
+              <div :style="expenseFormStyles">
+                <input v-model="newRdDate" type="date" class="nes-input" :style="smallInputStyles" />
+                <input v-model.number="newRdHours" type="number" step="0.5" min="0.5" placeholder="Hours" class="nes-input" :style="tinyInputStyles" />
+                <select v-model="newRdProject" class="nes-select" :style="selectInputStyles">
+                  <option value="proxmox-homelab">proxmox-homelab</option>
+                  <option value="sprite-forge">sprite-forge</option>
+                  <option value="gbgreg">gbgreg</option>
+                  <option value="diller-queen">diller-queen</option>
+                  <option value="consulting">consulting</option>
+                </select>
+                <select v-model="newRdCategory" class="nes-select" :style="selectInputStyles">
+                  <option v-for="cat in RD_CATEGORIES" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+                <input v-model="newRdDescription" placeholder="What did you work on?" class="nes-input" :style="inputStyles" />
+                <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleAddRdEntry" :disabled="!newRdHours">Log</button>
+              </div>
+            </div>
+
+            <!-- R&D Summary -->
+            <div :style="cardStyles" v-if="fin.rdLogSummary.value">
+              <h3 :style="cardTitleStyles">R&D Summary</h3>
+              <div :style="expenseSummaryRow">
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Total Hours</span>
+                  <span :style="expenseStatValue">{{ fin.rdLogSummary.value.totalHours.toFixed(1) }}h</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Entries</span>
+                  <span :style="expenseStatValue">{{ fin.rdLogSummary.value.totalEntries }}</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">Imputed Spend</span>
+                  <span :style="expenseStatValueBiz">${{ fin.rdLogSummary.value.imputedRdSpend.toLocaleString() }}</span>
+                </div>
+                <div :style="expenseStat">
+                  <span :style="expenseStatLabel">IN Credit (15%)</span>
+                  <span :style="expenseStatValueBiz">${{ fin.rdLogSummary.value.estimatedIndianaCreditAt15Pct.toLocaleString() }}</span>
+                </div>
+              </div>
+
+              <!-- By Quarter -->
+              <div v-if="Object.keys(fin.rdLogSummary.value.byQuarter).length > 0" style="margin-top: 0.5rem;">
+                <span :style="rdSectionLabel">By Quarter</span>
+                <div v-for="(hours, quarter) in fin.rdLogSummary.value.byQuarter" :key="quarter" :style="expenseRowStyles">
+                  <span :style="expenseDescCol">{{ quarter }}</span>
+                  <span :style="expenseAmountCol">{{ hours.toFixed(1) }}h</span>
+                </div>
+              </div>
+
+              <!-- By Project -->
+              <div v-if="Object.keys(fin.rdLogSummary.value.byProject).length > 0" style="margin-top: 0.5rem;">
+                <span :style="rdSectionLabel">By Project</span>
+                <div v-for="(hours, project) in fin.rdLogSummary.value.byProject" :key="project" :style="expenseRowStyles">
+                  <span :style="expenseDescCol">{{ project }}</span>
+                  <span :style="expenseAmountCol">{{ hours.toFixed(1) }}h</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent R&D Entries -->
+            <div :style="cardStyles" v-if="fin.rdLog.value.length > 0">
+              <h3 :style="cardTitleStyles">Recent Entries</h3>
+              <div v-for="entry in fin.rdLog.value.slice(0, 15)" :key="entry.id" :style="expenseRowStyles">
+                <span :style="expenseDateCol">{{ entry.date }}</span>
+                <span :style="rdHoursCol">{{ entry.hours }}h</span>
+                <span :style="rdProjectCol">{{ entry.project }}</span>
+                <span :style="expenseDescCol">{{ entry.description || entry.category }}</span>
+                <button class="nes-btn is-error" style="font-size: 0.4rem; padding: 0.1rem 0.2rem;" @click="handleDeleteRdEntry(entry.id)">X</button>
+              </div>
+            </div>
+
+            <div v-else-if="!fin.rdLogSummary.value || fin.rdLogSummary.value.totalEntries === 0" :style="emptyStyles">
+              <p class="nes-text">No R&D hours logged yet. Start tracking to qualify for Indiana 15% R&D credit.</p>
+            </div>
+          </template>
         </section>
 
         <!-- RECON TAB — Risk Board -->
@@ -515,6 +603,7 @@ import type { QuickLink } from '../components/project/ProjectQuickLinks.vue'
 import { useProjectHub } from '../composables/useProjectHub'
 import { useFinancials } from '../composables/useFinancials'
 import type { DecisionGate, RiskItem, RevenueStream } from '../composables/useFinancials'
+import { RD_CATEGORIES } from '../composables/useFinancials'
 
 // Set page favicon
 const originalFavicon = document.querySelector('link[rel="icon"]')?.getAttribute('href') || ''
@@ -552,7 +641,14 @@ const newGoalTarget = ref<number>(0)
 const newGoalCurrent = ref<number>(0)
 
 // Supply sub-view
-const supplyView = ref<'scenarios' | 'revenue' | 'goals' | 'expenses'>('scenarios')
+const supplyView = ref<'scenarios' | 'revenue' | 'goals' | 'expenses' | 'rd-log'>('scenarios')
+
+// R&D log form state
+const newRdHours = ref<number>(0)
+const newRdProject = ref('proxmox-homelab')
+const newRdDescription = ref('')
+const newRdCategory = ref('Software Development')
+const newRdDate = ref(new Date().toISOString().slice(0, 10))
 
 // Expense form state
 const newExpenseAmount = ref<number>(0)
@@ -726,6 +822,25 @@ async function handleSeedScenarios() {
   await fin.fetchAllProjections()
 }
 
+// --- R&D Log Handlers ---
+async function handleAddRdEntry() {
+  if (!newRdHours.value) return
+  await fin.addRdEntry({
+    date: newRdDate.value || undefined,
+    hours: newRdHours.value,
+    project: newRdProject.value || undefined,
+    description: newRdDescription.value || undefined,
+    category: newRdCategory.value || undefined,
+  })
+  newRdHours.value = 0
+  newRdDescription.value = ''
+  newRdDate.value = new Date().toISOString().slice(0, 10)
+}
+
+async function handleDeleteRdEntry(id: string) {
+  await fin.deleteRdEntry(id)
+}
+
 // --- Expense Handlers ---
 async function handleAddExpense() {
   if (!newExpenseAmount.value) return
@@ -842,6 +957,10 @@ const priorityBadgeStyles = (priority: number) => ({
   background: priority <= 1 ? '#ef4444' : priority <= 3 ? '#f59e0b' : '#6b7280', color: '#fff',
 })
 const dueDateStyles = computed(() => ({ fontSize: '0.6rem', color: 'var(--text-muted)' }))
+const quickToggleStyles = computed(() => ({
+  fontSize: '0.5rem', padding: '0.15rem 0.3rem', minWidth: '1.5rem',
+  lineHeight: '1', cursor: 'pointer',
+}))
 
 // --- HQ events ---
 const eventItemStyles = computed(() => ({ display: 'flex', gap: '0.75rem', padding: '0.35rem 0', borderBottom: `1px solid ${OPS_GREEN}22`, alignItems: 'baseline' }))
@@ -909,6 +1028,11 @@ function expenseClassBadge(classification: string) {
   }
 }
 const rewardAmtStyle = { fontWeight: '700', color: '#22c55e', fontSize: '0.65rem' }
+
+// --- R&D Log styles ---
+const rdSectionLabel = { fontSize: '0.55rem', color: OPS_GOLD, fontWeight: '600', textTransform: 'uppercase' as const, display: 'block', marginBottom: '0.2rem' }
+const rdHoursCol = { fontWeight: '700', color: OPS_GOLD, fontSize: '0.65rem', minWidth: '2.5rem' }
+const rdProjectCol = { fontSize: '0.55rem', color: OPS_GREEN, minWidth: '5rem' }
 
 // --- Scenario styles ---
 const scenarioItemStyles = computed(() => ({

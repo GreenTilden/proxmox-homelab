@@ -191,6 +191,66 @@ export const useServiceMonitoring = () => {
       instance: "sd-generator",
       url: "http://192.168.0.99:8188",
       healthEndpoint: "http://192.168.0.99:8188/system_stats"
+    },
+    {
+      id: "ellabot",
+      name: "EllaBot",
+      description: "RAG AI Assistant",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "ellabot",
+      instance: "rag-assistant",
+      url: "http://192.168.0.120:5010",
+      healthEndpoint: "http://192.168.0.120:5010/api/ellabot/health"
+    },
+    {
+      id: "command-server",
+      name: "Command Server",
+      description: "Dashboard Backend API",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "command-server",
+      instance: "dashboard-api",
+      url: "http://192.168.0.250:5001",
+      healthEndpoint: "http://192.168.0.250:5001/api/health"
+    },
+    {
+      id: "chatterbox-tts",
+      name: "Chatterbox TTS",
+      description: "GPU Voice Cloning",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "chatterbox-tts",
+      instance: "voice-cloning",
+      url: "http://192.168.0.99:8004",
+      healthEndpoint: "http://192.168.0.99:8004/docs"
+    },
+    {
+      id: "kokoro-tts",
+      name: "Kokoro TTS",
+      description: "CPU Text-to-Speech",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "kokoro-tts",
+      instance: "tts-cpu",
+      url: "http://192.168.0.120:5011",
+      healthEndpoint: "http://192.168.0.120:5011"
+    },
+    {
+      id: "podcast-feed",
+      name: "Podcast Feed",
+      description: "Article Digest Podcast",
+      status: "unknown",
+      lastChecked: null,
+      responseTime: null,
+      job: "podcast-feed",
+      instance: "podcast-factory",
+      url: "http://192.168.0.131:8081",
+      healthEndpoint: "http://192.168.0.131:8081/feed.xml"
     }
   ])
 

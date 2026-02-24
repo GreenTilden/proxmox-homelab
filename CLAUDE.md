@@ -105,6 +105,18 @@ Daily journal of things Oliver says. Entries are stored in `/opt/oliver-quotes.j
 4. If that fails with "User token invalid" in HA logs (`docker logs homeassistant`), you must **re-authenticate Cync** in the HA UI: Settings > Devices & Services > Cync > Reconfigure
 5. The Cync integration uses cloud auth — tokens expire periodically, this is a known issue
 
+## Ops-Driven Development Principle
+
+Every project follows a dashboard-first workflow:
+1. Daily ops check: tasks, goals, gates, R&D log — update the dashboard before writing code
+2. All work is trackable: hours logged, expenses captured, decisions documented
+3. The system runs itself: if the developer steps away, the dashboard reflects current state
+4. Build the ops system AS the product — improving traceability and automation is always valid work
+5. The goal is not maximum output — it's sustainable output with full visibility
+
+This is both a development methodology and a business requirement. The ops dashboard
+at /ops is the single source of truth for project status, financial health, and decision readiness.
+
 ## Post-Plan Rule
 
 At the end of any plan or infrastructure change, always update the relevant Obsidian notes on the remote vault (192.168.0.250) to reflect what was done.

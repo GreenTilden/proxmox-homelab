@@ -83,6 +83,21 @@
                 {{ (health.summary.value.rowingThisMonth.totalMeters / 1000).toFixed(1) }}km total
               </div>
             </div>
+
+            <!-- Self Care Card -->
+            <div :style="cardStyles">
+              <h3 :style="cardTitleStyles">Self Care</h3>
+              <div :style="bigNumberStyles">
+                {{ health.todaysCompleted.value.length }}
+                <span :style="unitStyles">/ {{ health.todaysSuggested.value.length }} today</span>
+              </div>
+              <div :style="progressBarStyles">
+                <div :style="selfCareProgressFill"></div>
+              </div>
+              <div :style="metaStyles">
+                ~{{ health.todayMinutesCompleted.value }} of {{ health.todayMinutesBudget.value }} min
+              </div>
+            </div>
           </div>
 
           <!-- Weight Trend -->
@@ -243,15 +258,159 @@
             <p class="nes-text">No rowing sessions. Log your first one above.</p>
           </div>
         </section>
+
+        <!-- SELF CARE TAB -->
+        <section v-else-if="activeTab === 'selfcare'">
+          <!-- Today's Progress -->
+          <div :style="cardStyles">
+            <h3 :style="cardTitleStyles">Today's Self Care</h3>
+            <div :style="{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }">
+              <span :style="{ fontSize: '0.75rem', color: 'var(--text-bright)' }">
+                {{ health.todaysCompleted.value.length }}/{{ health.todaysSuggested.value.length }} habits
+              </span>
+              <span :style="{ fontSize: '0.65rem', color: 'var(--text-muted)' }">
+                ~{{ health.todayMinutesCompleted.value }} of {{ health.todayMinutesBudget.value }} min
+              </span>
+            </div>
+            <div :style="progressBarStyles">
+              <div :style="selfCareProgressFill"></div>
+            </div>
+          </div>
+
+          <!-- Suggested Habits -->
+          <div :style="cardStyles" v-if="health.todaysSuggested.value.length > 0">
+            <h3 :style="cardTitleStyles">Here's what you could do today</h3>
+            <div
+              v-for="habit in health.todaysSuggested.value"
+              :key="habit.id"
+              :style="habitRowStyles(health.isHabitCompletedToday(habit.id))"
+            >
+              <span :style="{ fontSize: '1rem', width: '1.5rem', textAlign: 'center' as const }">{{ habit.emoji }}</span>
+              <span :style="habitNameStyles(health.isHabitCompletedToday(habit.id))">{{ habit.name }}</span>
+              <span :style="categoryChipStyles(habit.category)">{{ habit.category }}</span>
+              <span :style="{ fontSize: '0.6rem', color: 'var(--text-muted)', marginLeft: 'auto' }">~{{ habit.durationMinutes }}min</span>
+              <span
+                v-if="health.getHabitLogEntry(habit.id)?.source === 'auto'"
+                :style="{ fontSize: '0.55rem', color: ACCENT, fontStyle: 'italic' }"
+              >(auto)</span>
+              <button
+                class="nes-btn"
+                :class="health.isHabitCompletedToday(habit.id) ? 'is-success' : ''"
+                :style="checkBtnStyles"
+                @click="health.toggleHabit(habit.id)"
+              >{{ health.isHabitCompletedToday(habit.id) ? '\u2714' : '\u25CB' }}</button>
+            </div>
+          </div>
+          <div v-else :style="emptyStyles">
+            <p class="nes-text">No habits scheduled for today. Add some below!</p>
+          </div>
+
+          <!-- Manage Habits -->
+          <div :style="cardStyles">
+            <div
+              :style="{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }"
+              @click="showManageHabits = !showManageHabits"
+            >
+              <h3 :style="{ ...cardTitleStyles, margin: '0' }">Manage Habits</h3>
+              <span :style="{ fontSize: '0.7rem', color: 'var(--text-muted)' }">{{ showManageHabits ? '\u25B2' : '\u25BC' }}</span>
+            </div>
+
+            <div v-if="showManageHabits" :style="{ marginTop: '0.75rem' }">
+              <!-- Existing Habits -->
+              <div
+                v-for="habit in health.habits.value"
+                :key="habit.id"
+                :style="entryRowStyles"
+              >
+                <span>{{ habit.emoji }}</span>
+                <span :style="{ flex: '1', fontSize: '0.7rem', color: 'var(--text-bright)' }">{{ habit.name }}</span>
+                <span :style="categoryChipStyles(habit.category)">{{ habit.category }}</span>
+                <span :style="{ fontSize: '0.55rem', color: 'var(--text-muted)' }">{{ habit.durationMinutes }}min</span>
+                <span :style="{ fontSize: '0.5rem', color: 'var(--text-muted)' }">{{ formatDays(habit.defaultDays) }}</span>
+                <button
+                  v-if="editingHabitId !== habit.id"
+                  class="nes-btn is-warning"
+                  :style="delBtnStyles"
+                  @click="startEditHabit(habit)"
+                >E</button>
+                <button class="nes-btn is-error" :style="delBtnStyles" @click="health.deleteHabit(habit.id)">X</button>
+              </div>
+
+              <!-- Edit Habit Inline -->
+              <div v-if="editingHabitId" :style="{ ...formCardStyles, marginTop: '0.5rem' }">
+                <h4 :style="{ fontSize: '0.65rem', color: GOLD, margin: '0 0 0.5rem 0' }">Edit Habit</h4>
+                <div :style="formRowStyles">
+                  <input v-model="editName" placeholder="Name" class="nes-input" :style="smallInputStyles" />
+                  <select v-model="editCategory" class="nes-select" :style="selectStyles">
+                    <option value="movement">movement</option>
+                    <option value="relaxation">relaxation</option>
+                    <option value="mindfulness">mindfulness</option>
+                    <option value="hygiene">hygiene</option>
+                  </select>
+                  <input v-model="editEmoji" placeholder="Emoji" class="nes-input" :style="tinyInputStyles" />
+                  <input v-model.number="editDuration" type="number" placeholder="Min" class="nes-input" :style="tinyInputStyles" />
+                </div>
+                <div :style="{ ...formRowStyles, marginTop: '0.4rem' }">
+                  <span :style="{ fontSize: '0.6rem', color: 'var(--text-muted)' }">Days:</span>
+                  <button
+                    v-for="d in dayOptions"
+                    :key="d.value"
+                    class="nes-btn"
+                    :class="editDays.includes(d.value) ? 'is-primary' : ''"
+                    :style="dayBtnStyles"
+                    @click="toggleDay(editDays, d.value)"
+                  >{{ d.label }}</button>
+                </div>
+                <div :style="{ display: 'flex', gap: '0.3rem', marginTop: '0.4rem' }">
+                  <button class="nes-btn is-success" :style="actionBtnStyles" @click="handleUpdateHabit">Save</button>
+                  <button class="nes-btn" :style="actionBtnStyles" @click="editingHabitId = null">Cancel</button>
+                </div>
+              </div>
+
+              <!-- Add New Habit -->
+              <div :style="{ ...formCardStyles, marginTop: '0.75rem' }">
+                <h4 :style="{ fontSize: '0.65rem', color: GOLD, margin: '0 0 0.5rem 0' }">Add Habit</h4>
+                <div :style="formRowStyles">
+                  <input v-model="newHabitName" placeholder="Name" class="nes-input" :style="smallInputStyles" />
+                  <select v-model="newHabitCategory" class="nes-select" :style="selectStyles">
+                    <option value="movement">movement</option>
+                    <option value="relaxation">relaxation</option>
+                    <option value="mindfulness">mindfulness</option>
+                    <option value="hygiene">hygiene</option>
+                  </select>
+                  <input v-model="newHabitEmoji" placeholder="Emoji" class="nes-input" :style="tinyInputStyles" />
+                  <input v-model.number="newHabitDuration" type="number" placeholder="Min" class="nes-input" :style="tinyInputStyles" />
+                </div>
+                <div :style="{ ...formRowStyles, marginTop: '0.4rem' }">
+                  <span :style="{ fontSize: '0.6rem', color: 'var(--text-muted)' }">Days:</span>
+                  <button
+                    v-for="d in dayOptions"
+                    :key="d.value"
+                    class="nes-btn"
+                    :class="newHabitDays.includes(d.value) ? 'is-primary' : ''"
+                    :style="dayBtnStyles"
+                    @click="toggleDay(newHabitDays, d.value)"
+                  >{{ d.label }}</button>
+                </div>
+                <button
+                  class="nes-btn is-success"
+                  :style="{ ...actionBtnStyles, marginTop: '0.4rem' }"
+                  :disabled="!newHabitName.trim()"
+                  @click="handleCreateHabit"
+                >Add</button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </SeasonalThemeProvider>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import SeasonalThemeProvider from '../components/themes/retro/SeasonalThemeProvider.vue'
-import { useHealth } from '../composables/useHealth'
+import { useHealth, type HabitDefinition } from '../composables/useHealth'
 
 // Favicon
 const originalFavicon = document.querySelector('link[rel="icon"]')?.getAttribute('href') || ''
@@ -272,6 +431,7 @@ const tabs = [
   { id: 'dashboard', label: 'Dashboard', icon: '\uD83D\uDCCA' },
   { id: 'weight', label: 'Weight', icon: '\u2696\uFE0F' },
   { id: 'rowing', label: 'Rowing', icon: '\uD83D\uDEA3' },
+  { id: 'selfcare', label: 'Self Care', icon: '\uD83E\uDDD8' },
 ]
 
 // Weight form
@@ -288,6 +448,32 @@ const newSplitPace = ref('')
 const newStrokeRate = ref<number | null>(null)
 const newCalories = ref<number | null>(null)
 const newRowingDate = ref('')
+
+// Self care form
+const showManageHabits = ref(false)
+const newHabitName = ref('')
+const newHabitCategory = ref('movement')
+const newHabitEmoji = ref('\u2B50')
+const newHabitDuration = ref<number>(15)
+const newHabitDays = reactive<number[]>([1, 2, 3, 4, 5, 6, 7])
+
+// Edit habit form
+const editingHabitId = ref<string | null>(null)
+const editName = ref('')
+const editCategory = ref('movement')
+const editEmoji = ref('')
+const editDuration = ref<number>(15)
+const editDays = reactive<number[]>([])
+
+const dayOptions = [
+  { value: 1, label: 'M' },
+  { value: 2, label: 'T' },
+  { value: 3, label: 'W' },
+  { value: 4, label: 'Th' },
+  { value: 5, label: 'F' },
+  { value: 6, label: 'Sa' },
+  { value: 7, label: 'Su' },
+]
 
 const currentDate = computed(() =>
   new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
@@ -328,6 +514,59 @@ async function handleAddRowing() {
   newRowingDate.value = ''
 }
 
+async function handleCreateHabit() {
+  if (!newHabitName.value.trim()) return
+  await health.createHabit({
+    name: newHabitName.value.trim(),
+    category: newHabitCategory.value,
+    emoji: newHabitEmoji.value,
+    durationMinutes: newHabitDuration.value,
+    defaultDays: [...newHabitDays],
+  })
+  newHabitName.value = ''
+  newHabitCategory.value = 'movement'
+  newHabitEmoji.value = '\u2B50'
+  newHabitDuration.value = 15
+  newHabitDays.splice(0, newHabitDays.length, 1, 2, 3, 4, 5, 6, 7)
+}
+
+function startEditHabit(habit: HabitDefinition) {
+  editingHabitId.value = habit.id
+  editName.value = habit.name
+  editCategory.value = habit.category
+  editEmoji.value = habit.emoji
+  editDuration.value = habit.durationMinutes
+  editDays.splice(0, editDays.length, ...habit.defaultDays)
+}
+
+async function handleUpdateHabit() {
+  if (!editingHabitId.value) return
+  await health.updateHabit(editingHabitId.value, {
+    name: editName.value,
+    category: editCategory.value as any,
+    emoji: editEmoji.value,
+    durationMinutes: editDuration.value,
+    defaultDays: [...editDays],
+  })
+  editingHabitId.value = null
+}
+
+function toggleDay(days: number[], day: number) {
+  const idx = days.indexOf(day)
+  if (idx >= 0) {
+    days.splice(idx, 1)
+  } else {
+    days.push(day)
+    days.sort()
+  }
+}
+
+function formatDays(days: number[]): string {
+  const labels = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su']
+  if (days.length === 7) return 'Daily'
+  return days.map((d) => labels[d - 1]).join('')
+}
+
 // --- Weight trend helpers ---
 const trendMin = computed(() => {
   const weights = health.weightTrend.value.map((e) => e.weight)
@@ -342,6 +581,13 @@ const trendMax = computed(() => {
 const ACCENT = '#2d7d46'
 const GOLD = '#c4a747'
 const BG = '#1a2a2a'
+
+const CATEGORY_COLORS: Record<string, string> = {
+  movement: '#22c55e',
+  relaxation: '#3b82f6',
+  mindfulness: '#a855f7',
+  hygiene: '#14b8a6',
+}
 
 const appStyles = computed(() => ({ minHeight: '100vh', padding: '0', margin: '0', position: 'relative' as const, zIndex: '2' }))
 
@@ -380,9 +626,13 @@ const cardTitleStyles = computed(() => ({
   fontSize: '0.75rem', color: GOLD, margin: '0 0 0.5rem 0',
   fontWeight: '600', letterSpacing: '0.5px', textTransform: 'uppercase' as const,
 }))
+const formCardStyles = computed(() => ({
+  background: `${BG}88`, border: `1px solid ${ACCENT}33`,
+  borderRadius: '4px', padding: '0.6rem',
+}))
 
 const summaryGridStyles = computed(() => ({
-  display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem',
+  display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem',
 }))
 
 const bigNumberStyles = { fontSize: '1.8rem', fontWeight: '700', color: 'var(--text-bright)', lineHeight: '1.2' }
@@ -398,6 +648,8 @@ const progressFillStyles = (pct: number) => ({
   background: pct >= 100 ? '#22c55e' : `linear-gradient(90deg, ${ACCENT}, ${ACCENT}cc)`,
   transition: 'width 0.3s ease',
 })
+
+const selfCareProgressFill = computed(() => progressFillStyles(health.todayProgress.value))
 
 // Trend chart (simple bar chart)
 const trendContainerStyles = computed(() => ({
@@ -448,6 +700,35 @@ const entryValueStyles = { fontWeight: '700', color: 'var(--text-bright)', fontS
 const entryMetaStyles = { color: 'var(--text-muted)', fontSize: '0.6rem' }
 const entryNotesStyles = { flex: '1', color: 'var(--text-muted)', fontSize: '0.6rem', fontStyle: 'italic' }
 const delBtnStyles = { padding: '0.1rem 0.35rem', fontSize: '0.55rem', flexShrink: '0' }
+
+// Self care styles
+function habitRowStyles(completed: boolean) {
+  return {
+    display: 'flex', alignItems: 'center', gap: '0.5rem',
+    padding: '0.5rem 0.25rem', borderBottom: `1px solid ${ACCENT}22`,
+    opacity: completed ? '0.7' : '1',
+    transition: 'opacity 0.2s ease',
+  }
+}
+
+function habitNameStyles(completed: boolean) {
+  return {
+    fontSize: '0.75rem', color: 'var(--text-bright)',
+    textDecoration: completed ? 'line-through' : 'none',
+  }
+}
+
+function categoryChipStyles(category: string) {
+  const color = CATEGORY_COLORS[category] || 'var(--text-muted)'
+  return {
+    fontSize: '0.5rem', color, border: `1px solid ${color}66`,
+    borderRadius: '2px', padding: '0.1rem 0.3rem',
+    textTransform: 'uppercase' as const, letterSpacing: '0.5px',
+  }
+}
+
+const checkBtnStyles = { padding: '0.15rem 0.4rem', fontSize: '0.7rem', flexShrink: '0', minWidth: '2rem' }
+const dayBtnStyles = { padding: '0.15rem 0.3rem', fontSize: '0.5rem', minWidth: '1.5rem' }
 </script>
 
 <style scoped>
