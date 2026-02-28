@@ -8,9 +8,9 @@
 ## 🎯 **Quick Navigation**
 
 ### **Essential Documents**
+- [Node 2 Build Plan](../NODE2-BUILD-PLAN.md) - **NEW** Dell 5820 build, network topology, 5-wave service migration
 - [Gemini Development Framework](./FRAMEWORK/gemini_development_framework.md) - **Our new workflow guide.**
 - [Post-Clear Context Packages](./OPERATIONS/post-clear-thread-context-packages.md) - **NEW** Complete context recovery for all threads
-- [Cycle 14 Transition Summary](./CURRENT/cycle-14-transition-summary.md) - **NEW** User guide generation and maintenance phase
 - [Enterprise AI Assessment](./ARCHITECTURE/enterprise-ai-deployment-assessment.md) - 3-tier scaling strategy & business case
 - [RTX 5070 Ti Guide](./ARCHITECTURE/rtx-5070-ti-acceleration-guide.md) - ✅ **ENTERPRISE VALIDATED** GPU acceleration
 
@@ -40,8 +40,9 @@
 | [enterprise-ai-deployment-assessment.md](./ARCHITECTURE/enterprise-ai-deployment-assessment.md) | 3-tier scaling strategy & ROI analysis | Documentation |
 | [enterprise-performance-addendum.md](./ARCHITECTURE/enterprise-performance-addendum.md) | Performance validation supplement | Documentation |
 | [gbgreg-integration-roadmap.md](./ARCHITECTURE/gbgreg-integration-roadmap.md) | ✅ Multi-cycle roadmap with validated capabilities | Documentation |
-| [HARDWARE_OVERVIEW.md](./ARCHITECTURE/HARDWARE_OVERVIEW.md) | System configuration and shopping list. | Writer |
-| [SERVICES_OVERVIEW.md](./ARCHITECTURE/SERVICES_OVERVIEW.md) | Deployed services and their architecture. | Writer |
+| [HARDWARE_OVERVIEW.md](./ARCHITECTURE/HARDWARE_OVERVIEW.md) | Two-node system configuration and shopping list. | Writer |
+| [SERVICES_OVERVIEW.md](./ARCHITECTURE/SERVICES_OVERVIEW.md) | Deployed services, migration plan, and architecture. | Writer |
+| [Node 2 Build Plan](../NODE2-BUILD-PLAN.md) | Dell 5820 build, network topology, service migration waves. | Writer |
 | [DEPLOYMENT_PATTERNS.md](./ARCHITECTURE/DEPLOYMENT_PATTERNS.md) | Standardized deployment patterns. | Writer |
 | container-standards.md | Docker/LXC patterns | Writer |
 | network-services.md | Network architecture | Writer |
@@ -102,8 +103,10 @@
 - Debug: `/home/darney/projects/proxmox-homelab-debug-agent/`
 
 ### **System Access**
-- Proxmox UI: https://192.168.0.99:8006
-- SSH: `ssh root@192.168.0.99`
+- Proxmox Node 1: https://192.168.0.99:8006
+- Proxmox Node 2: https://192.168.0.98:8006 (planned)
+- SSH Node 1: `ssh root@192.168.0.99`
+- SSH Node 2: `ssh root@192.168.0.98` (planned)
 - Plex: http://192.168.0.99:32400
 - Prometheus: http://192.168.0.99:9090
 - Ollama Coordinator: http://192.168.0.99:11436
@@ -119,7 +122,7 @@
 
 ### **By Topic**
 - **AI Deployment**: [Enterprise AI Deployment Assessment](./ARCHITECTURE/enterprise-ai-deployment-assessment.md), [Performance Validation](./ARCHITECTURE/enterprise-performance-addendum.md), [Model Performance Matrix](./ARCHITECTURE/enterprise-performance-addendum.md)
-- **Hardware & Infrastructure**: [Hardware Overview](./ARCHITECTURE/HARDWARE_OVERVIEW.md), [RTX 5070 Ti Guide](./ARCHITECTURE/rtx-5070-ti-acceleration-guide.md)
+- **Hardware & Infrastructure**: [Hardware Overview](./ARCHITECTURE/HARDWARE_OVERVIEW.md), [Node 2 Build Plan](../NODE2-BUILD-PLAN.md), [RTX 5070 Ti Guide](./ARCHITECTURE/rtx-5070-ti-acceleration-guide.md)
 - **Performance & Monitoring**: [Monitoring and Safety](./OPERATIONS/MONITORING_AND_SAFETY.md), [Vue Performance Optimization](./MOBILE/vue-performance-optimization-patterns.md)
 - **Storage & Containers**: [ZFS Pools](./ARCHITECTURE/storage-zfs-pools.md), [Deployment Patterns](./ARCHITECTURE/DEPLOYMENT_PATTERNS.md)
 - **Development Methodology**: [Gemini Development Framework](./FRAMEWORK/gemini_development_framework.md), [Git Workflow](./OPERATIONS/GIT_WORKTREE_STRATEGY.md)

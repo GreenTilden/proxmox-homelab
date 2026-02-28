@@ -1,6 +1,10 @@
 # Services Overview
 
-## Active Services (Docker on Proxmox 192.168.0.99)
+## Two-Node Architecture (Planned)
+
+Node 2 (192.168.0.98, Dell Precision 5820) will take over stable/infrastructure services. Node 1 (192.168.0.99) retains GPU workloads. See [Node 2 Build Plan](../../NODE2-BUILD-PLAN.md) for the full migration plan and wave order.
+
+## Active Services (Docker on Proxmox 192.168.0.99 — Node 1)
 
 | Service | Port | Subdomain | Auth | Purpose |
 |---------|------|-----------|------|---------|
@@ -68,6 +72,32 @@ All Docker services on Proxmox are managed via compose files:
 - Most containers need `security_opt: apparmor=unconfined` (AppArmor blocks process spawning)
 - Docker log rotation configured: max-size 10m, max-file 3
 - Weekly Docker prune cron at `/etc/cron.weekly/docker-prune`
+
+## Service Migration Plan (Node 1 → Node 2)
+
+### Stays on Node 1 (GPU workloads)
+
+| Service | Reason |
+|---------|--------|
+| Plex | NVENC transcoding (RTX 5070 Ti) |
+| Immich | ML classification uses GPU |
+| Chatterbox TTS | GPU voice cloning |
+| Ollama / CT 120 | LLM inference |
+| ComfyUI | Image generation |
+| Gaming VMs | GPU passthrough |
+| Prometheus + Node Exporter | Run exporters on BOTH nodes |
+
+### Migrates to Node 2 (5 waves)
+
+| Wave | Services | Priority |
+|------|----------|----------|
+| 1 - DNS & Gateway | AdGuard Home, nginx reverse proxy | Must-first |
+| 2 - Auth & HA | Authelia, Home Assistant | High |
+| 3 - Databases | CouchDB, PostgreSQL instances, Command Server | High |
+| 4 - Applications | Nextcloud, n8n, Tandoor, SearXNG, ArchiveBox, Headscale, Uptime Kuma | Medium |
+| 5 - Content & LXCs | FreshRSS, Podcast Factory, qBittorrent, Diller Queen | Low |
+
+Each wave is independent. Execute one per session, verify, move on.
 
 ## Frontend Dashboard
 

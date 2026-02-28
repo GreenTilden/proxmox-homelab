@@ -1,22 +1,54 @@
 # Hardware Overview
 
-## Current System Configuration
+## Node 1 — Current Proxmox Host (192.168.0.99)
+
 - **CPU**: Intel i7-8700 (6 cores, 12 threads, VT-x/VT-d enabled)
 - **Motherboard**: 6 SATA ports, 2 M.2 slots, multiple PCIe slots
 - **RAM**: 32GB total (all 4 DIMM slots occupied)
   - DIMM_A1/A2: 16GB Corsair Vengeance LPX DDR4-2400 (2x8GB)
   - DIMM_B1/B2: 16GB T-Force DARK DDR4-3000 (2x8GB)
-- **Primary GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ✅
-  - Reserved for: AI/LLM inference, Gaming VMs
+- **GPU**: NVIDIA GeForce RTX 5070 Ti 16GB (PCIe x16_1 slot) - **INSTALLED** ✅
+  - Reserved for: AI/LLM inference, Plex NVENC transcoding, Gaming VMs
   - Driver: NVIDIA 570.86.16 with CUDA 12.5
-- **Secondary GPU**: AMD Radeon RX 6800 XT 16GB (PCIe x16_2 slot) - **PLANNED**
-  - Role: Host display, VM passthrough, macOS, Plex transcoding
-  - Offloads general workloads from 5070 Ti
-  - Native macOS support (Monterey/Ventura compatible)
-- **PSU**: Seasonic Focus PX-750 (750W 80+ Platinum) - Excellent for upgrades
+- **PSU**: Seasonic Focus PX-750 (750W 80+ Platinum)
 - **Network**: 192.168.0.99
+- **Role**: GPU workloads — Plex, Immich ML, Chatterbox TTS, Ollama, ComfyUI, gaming VMs
 
-## Current Storage Architecture (Post-Recovery)
+## Node 2 — Dell Precision 5820 (192.168.0.98) — PLANNED
+
+- **Chassis**: Dell Precision 5820 Tower (~$275 acquired)
+- **CPU**: Intel Xeon W-2145 (8 cores, 16 threads, 3.7/4.5GHz turbo) — upgraded from stock W-2102 (~$100 acquired)
+- **Socket**: LGA 2066
+- **RAM**: 32GB ECC RDIMM DDR4 (included with tower)
+- **GPU**: AMD Radeon RX 6800 XT 16GB — moving from Node 1 (if PSU supports 300W TDP)
+  - Provides display output (Xeon W-2145 has NO iGPU)
+  - Batocera retro gaming VM passthrough
+  - If PSU too small (425W): run headless, manage via web UI at https://192.168.0.98:8006
+- **PSU**: Check label on unit — need 950W for GPU. Dell 5820 specific PSU ($30-50 used on eBay if upgrade needed)
+- **Stock HDD**: 2TB (staging, bulk, non-critical)
+- **Network**: 192.168.0.98
+- **Role**: Stable services — DNS, auth, reverse proxy, databases, home automation, application services
+
+### Node 2 Storage Layout
+
+```
+├── Boot SSD (256-500GB SATA) — Proxmox OS + local-lvm
+├── Service Pool (ZFS mirror recommended)
+│   ├── SSD 1 (500GB-1TB SATA) ─┐
+│   └── SSD 2 (matching SATA)   ┘── ZFS mirror "service-pool"
+│       ├── /services/          — container rootfs, app data
+│       ├── /clients/           — consulting client isolation (per-client snapshots, quotas)
+│       └── /backups/           — cross-node backup target
+└── Stock 2TB HDD — staging, bulk, non-critical
+```
+
+### Node 2 Setup Notes
+- **Do NOT cluster** with Node 1 — standalone instances, migrate via vzdump/SCP
+- **Hostname**: `pve2`
+- **DNS**: Points to Node 1 AdGuard initially, then to itself after AdGuard migrates
+- **Full build plan**: [Node 2 Build Plan](../../NODE2-BUILD-PLAN.md)
+
+## Node 1 Storage Architecture (Post-Recovery)
 - **M.2_1**: HP SSD EX920 512GB NVMe (Proxmox OS + 347.9G LVM)
 - **M.2_2**: Available
 
@@ -48,14 +80,20 @@
 
 ## Hardware Shopping Guide
 
-### Current System Summary for Shopping
-- **Motherboard**: 6 SATA ports (3-4 used), PCIe x16_2 slot available
-- **PSU**: 750W 80+ Platinum (excellent for upgrades)
-- **Available Storage**: 4TB blank drive ready for data recovery staging
-- **Expansion Ready**: 3 USB drives to shuck, multiple PCIe slots free
-- **Goal**: ZFS pool recovery + AI/LLM inference capabilities
+### Node 2 Build (Next Micro Center Trip)
 
-### Priority 1: Storage Infrastructure (Essential - $80-120)
+| Item | Purpose | ~Price | Priority |
+|------|---------|--------|----------|
+| 256-500GB SATA SSD | Node 2 Proxmox boot drive | $20-30 | Must |
+| 500GB-1TB SATA SSD | Node 2 service pool | $35-55 | Must |
+| 2nd matching SATA SSD | ZFS mirror for service pool | $35-55 | Recommended |
+| Razer Pro Click Mini | Laptop mouse, quiet clicks | $55-70 | Must |
+| UPS (APC Back-UPS 1500VA) | Protect both nodes + networking | $170-200 | Recommended |
+| **Total range** | | **$160-505** | |
+
+**Skip at Micro Center:** ECC RDIMMs ($15-25/stick on eBay), GPU (existing RX 6800 XT), HDDs (2TB included).
+
+### Node 1 Expansion (Parked)
 
 #### LSI HBA Card ($50-70)
 - **LSI 9211-8i in IT Mode** - Install in PCIe x16_2 slot
@@ -65,39 +103,13 @@
 #### SATA Power Expansion ($20-30)
 - **2x GELRHONR 4-Way SATA Power Splitters**
 - **SATA cable variety pack** (18", 24", 36" lengths)
-- **Result**: Power for all current + shucked drives
 
-### Priority 2: Future GPU Transcoding (Dependent on Drivers)
+### IoT & Smart Home (Nice-to-have)
 
-#### RTX 5070 Ti Hardware Transcoding
-- **Status**: Awaiting NVIDIA 575+ driver release for Blackwell architecture
-- **Current Workaround**: Software transcoding in Plex container
-- **Future Setup**: Hardware transcoding with proper GPU passthrough
-- **Power**: Already installed and powered
+| Item | Purpose | ~Price |
+|------|---------|--------|
+| Zigbee USB dongle (Sonoff ZBDongle-E) | HA gateway, no cloud dependency | $20-25 |
+| Water leak sensors (2-3) | Basement, under sinks — baby safety | $30-45 |
+| Smart plug 4-pack (TP-Link Kasa) | Remote reboot, HA integration | $25 |
 
-### Priority 3: GPU Driver Configuration (Essential - $0)
-- **Fix nvidia-smi**: Install proper NVIDIA drivers
-- **Enable Passthrough**: Configure IOMMU for both GPUs
-- **Container Access**: Set up GPU sharing for Plex/AI services
-
-### Optimized Microcenter Shopping List
-```
-Essential (Phase 1) - ~$100:
-□ LSI 9211-8i HBA Card (IT Mode) + breakout cables
-□ 2x 4-way SATA power splitters
-□ SATA cable variety pack (3-4 cables)
-
-Immediate Hardware Tasks:
-□ Wait for NVIDIA 575+ driver release
-□ Configure single GPU passthrough when drivers available
-□ Implement hardware transcoding in Plex
-
-Optional Tools:
-□ USB 3.0 to SATA adapter (~$25)
-□ External drive dock (~$40)
-```
-
-### Expected Capabilities When Drivers Available
-- **Storage Expansion**: 10+ drive capacity with LSI HBA card
-- **RTX 5070 Ti Full Utilization**: Hardware transcoding, AI/LLM inference
-- **Professional AI Stack**: Multiple models, custom agents, local development
+### Full build plan: [Node 2 Build Plan](../../NODE2-BUILD-PLAN.md)
