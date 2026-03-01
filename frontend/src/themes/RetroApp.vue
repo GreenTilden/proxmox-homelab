@@ -124,6 +124,9 @@
               <router-link to="/ops" class="nes-btn" :style="controlButtonStyles" style="background: #4a6741; color: white;">
                 <span class="nav-emoji">&#x1F3AF;</span> Ops Center
               </router-link>
+              <a href="https://ops.darrenarney.com" target="_blank" class="nes-btn" :style="controlButtonStyles" style="background: #2d4a1e; color: white;">
+                <span class="nav-emoji">&#x1F4BC;</span> DArnTech
+              </a>
               <router-link to="/docs" class="nes-btn is-success" :style="controlButtonStyles">
                 <span class="nav-emoji">&#x1F4DA;</span> Docs
               </router-link>
