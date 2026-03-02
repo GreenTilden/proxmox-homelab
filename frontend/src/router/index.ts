@@ -13,6 +13,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
+      component: () => import('@/pages/FamilyReportPage.vue')
+    },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
       component: () => {
         const currentEnv = getCurrentEnvironment()
         if (currentEnv === 'naive') return NaiveApp()

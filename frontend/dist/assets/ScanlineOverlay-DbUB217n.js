@@ -1,4 +1,4 @@
-import{d as t,c as l,a as o,n as r,b as i}from"./index-Cb9bHEfA.js";import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";const s=t({__name:"ScanlineOverlay",props:{opacity:{default:.08},color:{default:"#ffffff"},lineHeight:{default:8},enable:{type:Boolean,default:!0}},setup(n){const e=n,a=l(()=>e.enable?{background:`repeating-linear-gradient(
+import{d as t,c as l,a as o,n as r,b as i}from"./index-4Qg2Vc8x.js";import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";const s=t({__name:"ScanlineOverlay",props:{opacity:{default:.08},color:{default:"#ffffff"},lineHeight:{default:8},enable:{type:Boolean,default:!0}},setup(n){const e=n,a=l(()=>e.enable?{background:`repeating-linear-gradient(
       0deg,
       transparent,
       transparent ${e.lineHeight-1}px,

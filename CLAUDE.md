@@ -117,6 +117,37 @@ Every project follows a dashboard-first workflow:
 This is both a development methodology and a business requirement. The ops dashboard
 at /ops is the single source of truth for project status, financial health, and decision readiness.
 
+## Audio Briefing Generation
+
+When a substantial analysis, plan, or decision document is produced, **offer to generate an audio briefing** the user can listen to on the go (shower, walk, drive). This is a core workflow — it allows context-switching without losing the thread.
+
+### How to generate a briefing
+
+1. **Write a narrative script** — Convert the analysis into spoken-word format. No tables, no markdown. Spell out numbers. Use conversational phrasing. Save to `/tmp/<name>-briefing.txt`.
+2. **Send to Chatterbox TTS** — Use the Olivia voice (premium), `split_text: true`, `speed_factor: 0.95`, `exaggeration: 0.4`. API at `http://192.168.0.99:8004/tts`.
+   ```bash
+   curl -X POST http://192.168.0.99:8004/tts \
+     -H "Content-Type: application/json" \
+     -d '{"text": "...", "voice_mode": "predefined", "predefined_voice_id": "Olivia.wav", "output_format": "mp3", "split_text": true, "chunk_size": 120, "temperature": 0.7, "exaggeration": 0.4, "speed_factor": 0.95}' \
+     --output /tmp/<name>-briefing.mp3 --max-time 600
+   ```
+3. **Push to podcast feed** — Copy MP3 to CT 131 episodes dir and add to episodes.json:
+   ```bash
+   scp /tmp/<name>-briefing.mp3 root@192.168.0.99:/tmp/
+   ssh root@192.168.0.99 'pct push 131 /tmp/<name>-briefing.mp3 /var/www/podcast/episodes/<name>.mp3'
+   ```
+   Then add episode entry to `/opt/podcast/episodes.json` on CT 131 (via `pct exec 131`) and regenerate feeds with the feed_generator.py module.
+4. **Episode metadata** — Use `tier: "premium"` and `category: "Darrentan Briefings"` for personal briefings.
+5. **Feed URL** — `https://podcasts.darrenarney.com/feed-premium.xml` (premium feed includes briefings).
+6. **Also drop a direct link** on the frontend server for quick access: `scp` to `root@192.168.0.250:/var/www/vue-frontend/dist/` — accessible at `https://home.darrenarney.com/<filename>.mp3`.
+
+### When to offer
+
+- After generating a financial analysis, decision matrix, or strategy document
+- After a long brain dump session that produced organized output
+- When the user says they're about to switch contexts (shower, walk, commute)
+- Any time a document would benefit from a "listen while you think" format
+
 ## Post-Plan Rule
 
 At the end of any plan or infrastructure change, always update the relevant Obsidian notes on the remote vault (192.168.0.250) to reflect what was done.
