@@ -1,7 +1,7 @@
 # 📚 MASTER INDEX - Proxmox Homelab Documentation
 
 **Status**: ✅ **SINGLE SOURCE OF TRUTH**
-**Updated**: 2025-08-29 - **GBGREG ENTERPRISE INTEGRATION COMPLETE**
+**Updated**: 2026-03-02 - **TWO-NODE ARCHITECTURE ACTIVE**
 **Location**: `/home/darney/projects/proxmox-homelab/docs/UNIFIED-REFERENCE/`
 **Purpose**: Central navigation hub for all project documentation
 
@@ -69,7 +69,7 @@
 
 ## 🚀 **Quick Start Guides**
 
-- Access operational services: Frontend (http://192.168.0.218:5000), API gateway, monitoring (Port 9090).
+- Access operational services: Frontend (http://192.168.0.250), API gateway, monitoring (http://192.168.0.98:9090).
 - Refer to the [Gemini Development Framework](./FRAMEWORK/gemini_development_framework.md) for our updated workflow.
 
 
@@ -104,13 +104,13 @@
 
 ### **System Access**
 - Proxmox Node 1: https://192.168.0.99:8006
-- Proxmox Node 2: https://192.168.0.98:8006 (planned)
+- Proxmox Node 2: https://192.168.0.98:8006
 - SSH Node 1: `ssh root@192.168.0.99`
-- SSH Node 2: `ssh root@192.168.0.98` (planned)
+- SSH Node 2: `ssh root@192.168.0.98`
+- Frontend: http://192.168.0.250
+- Prometheus: http://192.168.0.98:9090
+- Uptime Kuma: http://192.168.0.98:3001
 - Plex: http://192.168.0.99:32400
-- Prometheus: http://192.168.0.99:9090
-- Ollama Coordinator: http://192.168.0.99:11436
-- Ollama Technical: http://192.168.0.99:11437
 - qBittorrent: http://192.168.0.111:8112
 
 ### **Service Documentation**

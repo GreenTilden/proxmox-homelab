@@ -14,20 +14,18 @@
 - **Network**: 192.168.0.99
 - **Role**: GPU workloads — Plex, Immich ML, Chatterbox TTS, Ollama, ComfyUI, gaming VMs
 
-## Node 2 — Dell Precision 5820 (192.168.0.98) — PLANNED
+## Node 2 — Dell Precision 5820 (192.168.0.98) — ACTIVE
 
 - **Chassis**: Dell Precision 5820 Tower (~$275 acquired)
 - **CPU**: Intel Xeon W-2145 (8 cores, 16 threads, 3.7/4.5GHz turbo) — upgraded from stock W-2102 (~$100 acquired)
 - **Socket**: LGA 2066
 - **RAM**: 32GB ECC RDIMM DDR4 (included with tower)
-- **GPU**: AMD Radeon RX 6800 XT 16GB — moving from Node 1 (if PSU supports 300W TDP)
-  - Provides display output (Xeon W-2145 has NO iGPU)
-  - Batocera retro gaming VM passthrough
-  - If PSU too small (425W): run headless, manage via web UI at https://192.168.0.98:8006
-- **PSU**: Check label on unit — need 950W for GPU. Dell 5820 specific PSU ($30-50 used on eBay if upgrade needed)
-- **Stock HDD**: 2TB (staging, bulk, non-critical)
+- **GPU**: Quadro K2200 (display output only, no compute use)
+- **PSU**: Dell 5820 stock (425W)
+- **Storage**: pve-root 94G (52% used as of 2026-03-02), stock 2TB HDD
 - **Network**: 192.168.0.98
-- **Role**: Stable services — DNS, auth, reverse proxy, databases, home automation, application services
+- **Role**: Stable services — Immich, Nextcloud, Uptime Kuma, SearXNG, ArchiveBox, n8n, Headscale, Kavita, Prometheus
+- **Known issue**: 3.5" flex bays need 2.5"-to-3.5" adapter brackets for SSDs (loose SSD caused POST failure on first move)
 
 ### Node 2 Storage Layout
 
@@ -66,13 +64,14 @@
 - Carved originals: 1,246 files (123MB) forensic archive
 - Organized recovery: 929 files (80MB) categorized content
 
-## Hardware Status Update (2026-01-16)
+## Hardware Status Update (2026-03-02)
+- ✅ **Node 2 ACTIVE**: Dell 5820 online, 11 services migrated, stable at 52% disk
 - ✅ **GPU Setup**: RTX 5070 Ti operational with NVIDIA 570.86.16 drivers
 - ✅ **ICY DOCK**: MB024SP-B mobile rack operational
-- 🔄 **Dual GPU Plan**: RX 6800 XT incoming for workload separation
-  - AMD GPU handles: host, VMs, macOS passthrough, Plex (VAAPI/AMF)
-  - NVIDIA GPU reserved: AI inference, gaming (dedicated)
-- 🔧 **Storage Expansion Plans**:
+- ✅ **Cross-node monitoring**: Prometheus scraping both nodes, watchdog on Node 1
+- ⚠️ **Node 1 pve-root at 76%**: Clean up stopped containers from pre-migration
+- 🔧 **Node 2 SSD**: Needs 2.5"-to-3.5" adapter bracket for flex bay
+- 🔧 **Storage Expansion Plans** (parked):
   - LSI HBA card in PCIe x16_2 slot (adds 8 SATA ports)
   - SATA power splitters for additional drives
   - Shuck 3 external USB drives for pool growth
